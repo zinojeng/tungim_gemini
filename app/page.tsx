@@ -2,20 +2,13 @@ import { LectureCard } from "@/components/LectureCard"
 import { Button } from "@/components/ui/button"
 import { Lecture } from "@/types"
 import Link from "next/link"
+import { db } from '@/lib/db'
+import { lectures } from '@/db/schema'
 
 async function getLectures(): Promise<Lecture[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
-    const res = await fetch(`${baseUrl}/api/lectures`, {
-      cache: 'no-store' // Always fetch fresh data
-    })
-
-    if (!res.ok) {
-      console.error('Failed to fetch lectures')
-      return []
-    }
-
-    return res.json()
+    const allLectures = await db.select().from(lectures)
+    return allLectures as Lecture[]
   } catch (error) {
     console.error('Error fetching lectures:', error)
     return []
@@ -23,7 +16,7 @@ async function getLectures(): Promise<Lecture[]> {
 }
 
 export default async function Home() {
-  const lectures = await getLectures()
+  const lectureList = await getLectures()
 
   return (
     <div className="container py-8 space-y-10">
@@ -52,13 +45,13 @@ export default async function Home() {
             <Link href="/lectures">View all</Link>
           </Button>
         </div>
-        {lectures.length === 0 ? (
+        {lectureList.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
             <p>No lectures found. Upload your first lecture from the Admin page!</p>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {lectures.map((lecture) => (
+            {lectureList.map((lecture) => (
               <LectureCard key={lecture.id} lecture={lecture} />
             ))}
           </div>
