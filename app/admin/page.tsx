@@ -52,7 +52,10 @@ export default function AdminPage() {
                 })
             })
 
-            if (!res.ok) throw new Error('Failed to create lecture')
+            if (!res.ok) {
+                const data = await res.json()
+                throw new Error(data.error || 'Failed to create lecture')
+            }
 
             alert("Lecture created successfully!")
             // Reset form
@@ -60,9 +63,9 @@ export default function AdminPage() {
             setTitle("")
             setTranscript("")
             setSummary("")
-        } catch (error) {
+        } catch (error: any) {
             console.error(error)
-            alert("Error creating lecture")
+            alert("Error creating lecture: " + error.message)
         } finally {
             setIsLoading(false)
         }
