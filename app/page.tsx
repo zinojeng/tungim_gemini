@@ -24,21 +24,29 @@ export default async function Home() {
 
   return (
     <div className="container py-8 space-y-10">
-      <section className="flex flex-col items-center text-center space-y-4 py-12 md:py-24 bg-gradient-to-b from-background to-muted/20 rounded-3xl border">
-        <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-primary">
-          Master Medical Knowledge <br className="hidden sm:inline" /> in Minutes
-        </h1>
-        <p className="max-w-[700px] text-muted-foreground md:text-xl">
-          AI-powered summaries, slides, and transcripts for busy medical professionals.
-          Turn hour-long lectures into 5-minute high-yield notes.
-        </p>
-        <div className="flex gap-4">
-          <Button size="lg" asChild>
-            <Link href="/lectures">Browse Lectures</Link>
-          </Button>
-          <Button variant="outline" size="lg" asChild>
-            <Link href="/admin">Upload Lecture</Link>
-          </Button>
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center py-12 md:py-24">
+        <div className="flex flex-col items-start text-left space-y-4">
+          <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl text-primary">
+            Master Medical Knowledge <br className="hidden sm:inline" /> in Minutes
+          </h1>
+          <p className="max-w-[700px] text-muted-foreground md:text-xl">
+            AI-powered summaries, slides, and transcripts for busy medical professionals.
+            Turn hour-long lectures into 5-minute high-yield notes.
+          </p>
+          <div className="flex gap-4">
+            <Button size="lg" asChild>
+              <Link href="/lectures">Browse Lectures</Link>
+            </Button>
+          </div>
+        </div>
+        <div className="flex justify-center md:justify-end">
+          <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px]">
+            <img
+              src="/nanobanana.png"
+              alt="Dr. Nanobanana"
+              className="object-contain w-full h-full drop-shadow-2xl hover:scale-105 transition-transform duration-300"
+            />
+          </div>
         </div>
       </section>
 

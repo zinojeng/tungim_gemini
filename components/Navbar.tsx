@@ -30,10 +30,15 @@ export function Navbar() {
                             <Input placeholder="Search lectures..." className="pl-8 w-full md:w-[300px]" />
                         </div>
                     </div>
-                    <nav className="flex items-center">
+                    <nav className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" asChild>
+                            <Link href="/admin">
+                                Admin
+                            </Link>
+                        </Button>
                         <Button variant="ghost" size="icon">
                             <Avatar className="h-8 w-8">
-                                <AvatarImage src="/avatars/01.png" alt="@shadcn" />
+                                <AvatarImage src="/nanobanana.png" alt="User" />
                                 <AvatarFallback>MD</AvatarFallback>
                             </Avatar>
                         </Button>
