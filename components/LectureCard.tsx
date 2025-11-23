@@ -9,17 +9,40 @@ interface LectureCardProps {
 }
 
 export function LectureCard({ lecture }: LectureCardProps) {
+    // Map categories to cover images
+    const getCoverImage = (category: string | null) => {
+        const cat = category?.toLowerCase() || ''
+        if (cat.includes('cardio')) return '/cover-cardiology.png'
+        if (cat.includes('endo')) return '/cover-endocrinology.png'
+        if (cat.includes('nephro')) return '/cover-nephrology.png'
+        if (cat.includes('gastro')) return '/cover-gastroenterology.png'
+        // Default fallback
+        return '/nanobanana.png'
+    }
+
+    const coverImage = getCoverImage(lecture.category)
+
     return (
         <Link href={`/lectures/${lecture.id}`}>
             <Card className="h-full overflow-hidden transition-all hover:shadow-lg hover:border-primary/50 group">
-                <div className="aspect-video w-full bg-gradient-to-br from-primary/10 to-primary/5 relative">
-                    {/* Placeholder for thumbnail */}
-                    <div className="absolute inset-0 flex items-center justify-center text-primary/40 group-hover:text-primary/60 transition-colors">
-                        <PlayCircle className="h-16 w-16" />
+                <div className="aspect-video w-full relative bg-muted">
+                    <img
+                        src={coverImage}
+                        alt={lecture.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
+
+                    {/* Play Icon Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="bg-background/80 backdrop-blur-sm rounded-full p-3 shadow-lg">
+                            <PlayCircle className="h-8 w-8 text-primary" />
+                        </div>
                     </div>
+
                     {lecture.category && (
                         <div className="absolute top-3 right-3">
-                            <Badge className="bg-primary/90 hover:bg-primary">
+                            <Badge className="bg-background/90 text-foreground hover:bg-background backdrop-blur-md shadow-sm">
                                 {lecture.category}
                             </Badge>
                         </div>
