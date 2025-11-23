@@ -1,7 +1,33 @@
 import { db } from '@/lib/db';
-import { lectures, transcripts, summaries, slides } from '@/db/schema';
+import { lectures, transcripts, summaries } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
+
+export async function GET(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const { id } = await params;
+
+        const [lecture] = await db.select().from(lectures).where(eq(lectures.id, id));
+        if (!lecture) {
+            return NextResponse.json({ error: 'Lecture not found' }, { status: 404 });
+        }
+
+        const [transcript] = await db.select().from(transcripts).where(eq(transcripts.lectureId, id));
+        const [summary] = await db.select().from(summaries).where(eq(summaries.lectureId, id));
+
+        return NextResponse.json({
+            lecture,
+            transcript: transcript?.content || '',
+            summary: summary?.executiveSummary || summary?.fullMarkdownContent || '',
+        });
+    } catch (error: any) {
+        console.error('Error fetching lecture details:', error);
+        return NextResponse.json({ error: error.message || 'Failed to fetch lecture' }, { status: 500 });
+    }
+}
 
 export async function PUT(
     request: Request,
@@ -77,7 +103,6 @@ export async function DELETE(
         // Delete related records first (foreign key constraints)
         await db.delete(transcripts).where(eq(transcripts.lectureId, id));
         await db.delete(summaries).where(eq(summaries.lectureId, id));
-        await db.delete(slides).where(eq(slides.lectureId, id));
 
         // Delete the lecture
         await db.delete(lectures).where(eq(lectures.id, id));

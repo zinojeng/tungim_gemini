@@ -12,7 +12,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { useState, useEffect } from "react"
-import { Trash2, Plus, Pencil } from "lucide-react"
+import { Trash2, Plus, Pencil, Lock } from "lucide-react"
 import { Lecture } from "@/types"
 
 const CATEGORIES = [
@@ -30,7 +30,15 @@ const CATEGORIES = [
     "General"
 ]
 
+// Simple password (in production, use proper authentication)
+const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"
+
 export default function AdminPage() {
+    // Authentication
+    const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [password, setPassword] = useState("")
+    const [authError, setAuthError] = useState("")
+
     const [isLoading, setIsLoading] = useState(false)
     const [lectures, setLectures] = useState<Lecture[]>([])
     const [isLoadingLectures, setIsLoadingLectures] = useState(true)
@@ -51,6 +59,71 @@ export default function AdminPage() {
     const [editTranscript, setEditTranscript] = useState("")
     const [editSummary, setEditSummary] = useState("")
 
+    // Check if already authenticated in session
+    useEffect(() => {
+        const auth = sessionStorage.getItem('admin_auth')
+        if (auth === 'true') {
+            setIsAuthenticated(true)
+        }
+    }, [])
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault()
+        if (password === ADMIN_PASSWORD) {
+            setIsAuthenticated(true)
+            sessionStorage.setItem('admin_auth', 'true')
+            setAuthError("")
+        } else {
+            setAuthError("密碼錯誤")
+        }
+    }
+
+    const handleLogout = () => {
+        setIsAuthenticated(false)
+        sessionStorage.removeItem('admin_auth')
+        setPassword("")
+    }
+
+    // If not authenticated, show login form
+    if (!isAuthenticated) {
+        return (
+            <div className="container py-10 max-w-md">
+                <Card>
+                    <CardHeader>
+                        <div className="flex items-center justify-center mb-4">
+                            <Lock className="h-12 w-12 text-primary" />
+                        </div>
+                        <CardTitle className="text-center">Admin Login</CardTitle>
+                        <CardDescription className="text-center">
+                            請輸入管理員密碼
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={handleLogin} className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="password">Password</Label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    placeholder="Enter admin password"
+                                    required
+                                />
+                                {authError && (
+                                    <p className="text-sm text-destructive">{authError}</p>
+                                )}
+                            </div>
+                            <Button type="submit" className="w-full">
+                                Login
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
+            </div>
+        )
+    }
+
     // Fetch lectures
     const fetchLectures = async () => {
         setIsLoadingLectures(true)
@@ -70,25 +143,24 @@ export default function AdminPage() {
     // Fetch lecture details for editing
     const fetchLectureDetails = async (id: string) => {
         try {
-            const [lectureRes, transcriptRes, summaryRes] = await Promise.all([
-                fetch(`/api/lectures`),
-                fetch(`/api/lectures`),
-                fetch(`/api/lectures`)
-            ])
+            const res = await fetch(`/api/lectures/${id}`)
+            if (!res.ok) throw new Error('Failed to fetch lecture details')
 
-            // For now, we'll use the lecture data we already have
+            const data = await res.json()
             const lecture = lectures.find(l => l.id === id)
+
             if (lecture) {
                 setEditingLecture(lecture)
                 setEditTitle(lecture.title || '')
                 setEditCategory(lecture.category || 'General')
                 setEditProvider(lecture.provider || '')
-                setEditTranscript('')
-                setEditSummary('')
+                setEditTranscript(data.transcript || '')
+                setEditSummary(data.summary || '')
                 setEditDialogOpen(true)
             }
         } catch (error) {
             console.error('Error fetching lecture details:', error)
+            alert('Failed to load lecture details')
         }
     }
 
@@ -183,7 +255,12 @@ export default function AdminPage() {
 
     return (
         <div className="container py-10 max-w-6xl">
-            <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+                <Button variant="outline" onClick={handleLogout}>
+                    Logout
+                </Button>
+            </div>
 
             <Tabs defaultValue="create" className="space-y-6">
                 <TabsList className="grid w-full grid-cols-2">
