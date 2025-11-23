@@ -61,9 +61,11 @@ export default function AdminPage() {
 
     // Check if already authenticated in session
     useEffect(() => {
-        const auth = sessionStorage.getItem('admin_auth')
-        if (auth === 'true') {
-            setIsAuthenticated(true)
+        if (typeof window !== 'undefined') {
+            const auth = sessionStorage.getItem('admin_auth')
+            if (auth === 'true') {
+                setIsAuthenticated(true)
+            }
         }
     }, [])
 
@@ -71,7 +73,9 @@ export default function AdminPage() {
         e.preventDefault()
         if (password === ADMIN_PASSWORD) {
             setIsAuthenticated(true)
-            sessionStorage.setItem('admin_auth', 'true')
+            if (typeof window !== 'undefined') {
+                sessionStorage.setItem('admin_auth', 'true')
+            }
             setAuthError("")
         } else {
             setAuthError("密碼錯誤")
@@ -80,7 +84,9 @@ export default function AdminPage() {
 
     const handleLogout = () => {
         setIsAuthenticated(false)
-        sessionStorage.removeItem('admin_auth')
+        if (typeof window !== 'undefined') {
+            sessionStorage.removeItem('admin_auth')
+        }
         setPassword("")
     }
 
