@@ -30,9 +30,6 @@ const CATEGORIES = [
     "General"
 ]
 
-// Simple password (in production, use proper authentication)
-// const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"
-
 export default function AdminPage() {
     // Hydration safety
     const [isMounted, setIsMounted] = useState(false)
@@ -48,7 +45,10 @@ export default function AdminPage() {
 
     // Form States
     const [category, setCategory] = useState("Internal Medicine")
+    const [customCategory, setCustomCategory] = useState("")
+    const [isCustomCategory, setIsCustomCategory] = useState(false)
     const [url, setUrl] = useState("")
+    const [coverImage, setCoverImage] = useState("")
     const [title, setTitle] = useState("")
     const [transcript, setTranscript] = useState("")
     const [summary, setSummary] = useState("")
@@ -58,7 +58,10 @@ export default function AdminPage() {
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [editTitle, setEditTitle] = useState("")
     const [editCategory, setEditCategory] = useState("")
+    const [editCustomCategory, setEditCustomCategory] = useState("")
+    const [isEditCustomCategory, setIsEditCustomCategory] = useState(false)
     const [editProvider, setEditProvider] = useState("")
+    const [editCoverImage, setEditCoverImage] = useState("")
     const [editTranscript, setEditTranscript] = useState("")
     const [editSummary, setEditSummary] = useState("")
 
@@ -90,8 +93,20 @@ export default function AdminPage() {
             if (lecture) {
                 setEditingLecture(lecture)
                 setEditTitle(lecture.title || '')
-                setEditCategory(lecture.category || 'General')
+
+                // Handle custom category
+                if (lecture.category && !CATEGORIES.includes(lecture.category)) {
+                    setEditCategory("Custom")
+                    setEditCustomCategory(lecture.category)
+                    setIsEditCustomCategory(true)
+                } else {
+                    setEditCategory(lecture.category || 'General')
+                    setIsEditCustomCategory(false)
+                    setEditCustomCategory("")
+                }
+
                 setEditProvider(lecture.provider || '')
+                setEditCoverImage(data.coverImage || '')
                 setEditTranscript(data.transcript || '')
                 setEditSummary(data.summary || '')
                 setEditDialogOpen(true)
@@ -179,7 +194,7 @@ export default function AdminPage() {
                             <Lock className="h-12 w-12 text-primary" />
                         </div>
                         <CardTitle className="text-center">Admin Login</CardTitle>
-                        <CardDescription className="text-center">
+                        <CardDescription>
                             請輸入管理員密碼
                         </CardDescription>
                     </CardHeader>
@@ -209,10 +224,11 @@ export default function AdminPage() {
         )
     }
 
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsLoading(true)
+
+        const finalCategory = isCustomCategory ? customCategory : category
 
         try {
             const res = await fetch('/api/lectures', {
@@ -221,7 +237,8 @@ export default function AdminPage() {
                 body: JSON.stringify({
                     url,
                     title,
-                    category,
+                    category: finalCategory,
+                    coverImage,
                     transcript,
                     summary,
                     provider: 'Manual Import'
@@ -238,6 +255,10 @@ export default function AdminPage() {
             setTitle("")
             setTranscript("")
             setSummary("")
+            setCoverImage("")
+            setCategory("Internal Medicine")
+            setIsCustomCategory(false)
+            setCustomCategory("")
             fetchLectures()
         } catch (error: any) {
             console.error(error)
@@ -250,14 +271,17 @@ export default function AdminPage() {
     const handleEdit = async () => {
         if (!editingLecture) return
 
+        const finalCategory = isEditCustomCategory ? editCustomCategory : editCategory
+
         try {
             const res = await fetch(`/api/lectures/${editingLecture.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     title: editTitle,
-                    category: editCategory,
+                    category: finalCategory,
                     provider: editProvider,
+                    coverImage: editCoverImage,
                     transcript: editTranscript,
                     summary: editSummary,
                 })
@@ -334,16 +358,37 @@ export default function AdminPage() {
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div className="space-y-2">
                                         <Label>Category</Label>
-                                        <Select value={category} onValueChange={setCategory}>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select category" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {CATEGORIES.map(cat => (
-                                                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
+                                        <div className="flex gap-2">
+                                            <Select
+                                                value={isCustomCategory ? "Custom" : category}
+                                                onValueChange={(val) => {
+                                                    if (val === "Custom") {
+                                                        setIsCustomCategory(true)
+                                                    } else {
+                                                        setIsCustomCategory(false)
+                                                        setCategory(val)
+                                                    }
+                                                }}
+                                            >
+                                                <SelectTrigger className="w-[200px]">
+                                                    <SelectValue placeholder="Select category" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {CATEGORIES.map(cat => (
+                                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                                    ))}
+                                                    <SelectItem value="Custom">Custom...</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            {isCustomCategory && (
+                                                <Input
+                                                    placeholder="Enter custom category"
+                                                    value={customCategory}
+                                                    onChange={(e) => setCustomCategory(e.target.value)}
+                                                    className="flex-1"
+                                                />
+                                            )}
+                                        </div>
                                     </div>
 
                                     <TabsContent value="youtube" className="space-y-4">
@@ -367,6 +412,16 @@ export default function AdminPage() {
                                                 value={title}
                                                 onChange={(e) => setTitle(e.target.value)}
                                                 required
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label htmlFor="coverImage">Cover Image URL (Optional)</Label>
+                                            <Input
+                                                id="coverImage"
+                                                placeholder="https://example.com/image.jpg"
+                                                value={coverImage}
+                                                onChange={(e) => setCoverImage(e.target.value)}
                                             />
                                         </div>
 
@@ -491,7 +546,6 @@ export default function AdminPage() {
                 </TabsContent>
             </Tabs>
 
-            {/* Edit Dialog */}
             <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
                 <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
@@ -510,17 +564,47 @@ export default function AdminPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="edit-category">Category</Label>
-                            <Select value={editCategory} onValueChange={setEditCategory}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {CATEGORIES.map(cat => (
-                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <Label>Category</Label>
+                            <div className="flex gap-2">
+                                <Select
+                                    value={isEditCustomCategory ? "Custom" : editCategory}
+                                    onValueChange={(val) => {
+                                        if (val === "Custom") {
+                                            setIsEditCustomCategory(true)
+                                        } else {
+                                            setIsEditCustomCategory(false)
+                                            setEditCategory(val)
+                                        }
+                                    }}
+                                >
+                                    <SelectTrigger className="w-[200px]">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {CATEGORIES.map(cat => (
+                                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                        ))}
+                                        <SelectItem value="Custom">Custom...</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                {isEditCustomCategory && (
+                                    <Input
+                                        placeholder="Enter custom category"
+                                        value={editCustomCategory}
+                                        onChange={(e) => setEditCustomCategory(e.target.value)}
+                                        className="flex-1"
+                                    />
+                                )}
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-coverImage">Cover Image URL</Label>
+                            <Input
+                                id="edit-coverImage"
+                                value={editCoverImage}
+                                onChange={(e) => setEditCoverImage(e.target.value)}
+                                placeholder="https://example.com/image.jpg"
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="edit-provider">Provider</Label>

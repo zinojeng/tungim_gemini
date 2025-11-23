@@ -9,18 +9,22 @@ interface LectureCardProps {
 }
 
 export function LectureCard({ lecture }: LectureCardProps) {
-    // Map categories to cover images
-    const getCoverImage = (category: string | null) => {
-        const cat = category?.toLowerCase() || ''
+    const getCoverImage = (lecture: any) => {
+        // 1. Use custom cover image if available
+        if (lecture.coverImage) return lecture.coverImage
+
+        // 2. Map categories to cover images
+        const cat = lecture.category?.toLowerCase() || ''
         if (cat.includes('cardio')) return '/cover-cardiology.png'
         if (cat.includes('endo')) return '/cover-endocrinology.png'
         if (cat.includes('nephro')) return '/cover-nephrology.png'
         if (cat.includes('gastro')) return '/cover-gastroenterology.png'
-        // Default fallback
+
+        // 3. Default fallback
         return '/nanobanana.png'
     }
 
-    const coverImage = getCoverImage(lecture.category)
+    const coverImage = getCoverImage(lecture)
 
     return (
         <Link href={`/lectures/${lecture.id}`}>

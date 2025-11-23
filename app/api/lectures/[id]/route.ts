@@ -11,17 +11,19 @@ export async function GET(
         const { id } = await params;
 
         const [lecture] = await db.select().from(lectures).where(eq(lectures.id, id));
+
         if (!lecture) {
             return NextResponse.json({ error: 'Lecture not found' }, { status: 404 });
         }
 
-        const [transcript] = await db.select().from(transcripts).where(eq(transcripts.lectureId, id));
-        const [summary] = await db.select().from(summaries).where(eq(summaries.lectureId, id));
+        const [transcriptData] = await db.select().from(transcripts).where(eq(transcripts.lectureId, id));
+        const [summaryData] = await db.select().from(summaries).where(eq(summaries.lectureId, id));
 
         return NextResponse.json({
-            lecture,
-            transcript: transcript?.content || '',
-            summary: summary?.executiveSummary || summary?.fullMarkdownContent || '',
+            ...lecture,
+            transcript: transcriptData?.content || '',
+            summary: summaryData?.executiveSummary || '', // Use executiveSummary as the main summary content
+            coverImage: lecture.coverImage || '',
         });
     } catch (error: any) {
         console.error('Error fetching lecture details:', error);
@@ -36,7 +38,7 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await request.json();
-        const { title, category, provider, transcript, summary } = body;
+        const { title, category, provider, transcript, summary, coverImage } = body;
 
         // Update lecture
         await db.update(lectures)
@@ -44,6 +46,7 @@ export async function PUT(
                 title,
                 category,
                 provider,
+                coverImage,
             })
             .where(eq(lectures.id, id));
 

@@ -88,7 +88,6 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
                                     <article className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-base prose-p:leading-7 prose-li:text-base prose-ul:my-4 prose-ol:my-4 prose-li:my-1">
                                         {summary.executiveSummary && (
                                             <div>
-                                                <h2>Executive Summary</h2>
                                                 <ReactMarkdown>{summary.executiveSummary}</ReactMarkdown>
                                             </div>
                                         )}

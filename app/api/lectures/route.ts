@@ -20,6 +20,7 @@ export async function POST(request: Request) {
             category,
             provider,
             publishDate,
+            coverImage, // Add coverImage
             // Manual import fields
             transcript,
             summary,
@@ -40,6 +41,7 @@ export async function POST(request: Request) {
             sourceUrl: url ? url : null, // Ensure empty string becomes null
             provider: provider || 'Manual Import',
             category: category || 'Uncategorized',
+            coverImage: coverImage || null, // Add coverImage
             status: 'completed', // Manual import is immediately completed
             publishDate: publishDate ? new Date(publishDate) : new Date(),
         }).returning();

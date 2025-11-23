@@ -15,6 +15,7 @@ export const lectures = pgTable('lectures', {
     provider: text('provider'),
     category: text('category'), // Added category field
     publishDate: timestamp('publish_date'),
+    coverImage: text('cover_image'), // Custom cover image URL
     status: text('status').default('processing'),
 });
 
