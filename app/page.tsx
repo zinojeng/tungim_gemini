@@ -1,45 +1,30 @@
 import { LectureCard } from "@/components/LectureCard"
 import { Button } from "@/components/ui/button"
 import { Lecture } from "@/types"
+import Link from "next/link"
 
-// Mock data
-const lectures: Lecture[] = [
-  {
-    id: "1",
-    title: "2024 Updates in Heart Failure Management",
-    provider: "TSIM",
-    publishDate: new Date("2024-03-15"),
-    status: "completed",
-    sourceUrl: "",
-    videoFileUrl: "",
-    audioFileUrl: "",
-    category: "Cardiology",
-  },
-  {
-    id: "2",
-    title: "Diabetes Mellitus: New Therapeutic Targets",
-    provider: "NEJM",
-    publishDate: new Date("2024-02-20"),
-    status: "completed",
-    sourceUrl: "",
-    videoFileUrl: "",
-    audioFileUrl: "",
-    category: "Endocrinology",
-  },
-  {
-    id: "3",
-    title: "Approach to Hyponatremia in Emergency Setting",
-    provider: "RSROC",
-    publishDate: new Date("2024-01-10"),
-    status: "processing",
-    sourceUrl: "",
-    videoFileUrl: "",
-    audioFileUrl: "",
-    category: "Nephrology",
-  },
-]
+async function getLectures(): Promise<Lecture[]> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+    const res = await fetch(`${baseUrl}/api/lectures`, {
+      cache: 'no-store' // Always fetch fresh data
+    })
 
-export default function Home() {
+    if (!res.ok) {
+      console.error('Failed to fetch lectures')
+      return []
+    }
+
+    return res.json()
+  } catch (error) {
+    console.error('Error fetching lectures:', error)
+    return []
+  }
+}
+
+export default async function Home() {
+  const lectures = await getLectures()
+
   return (
     <div className="container py-8 space-y-10">
       <section className="flex flex-col items-center text-center space-y-4 py-12 md:py-24 bg-gradient-to-b from-background to-muted/20 rounded-3xl border">
@@ -51,21 +36,33 @@ export default function Home() {
           Turn hour-long lectures into 5-minute high-yield notes.
         </p>
         <div className="flex gap-4">
-          <Button size="lg">Browse Lectures</Button>
-          <Button variant="outline" size="lg">Upload Lecture</Button>
+          <Button size="lg" asChild>
+            <Link href="/lectures">Browse Lectures</Link>
+          </Button>
+          <Button variant="outline" size="lg" asChild>
+            <Link href="/admin">Upload Lecture</Link>
+          </Button>
         </div>
       </section>
 
       <section>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold tracking-tight">Latest Lectures</h2>
-          <Button variant="link">View all</Button>
+          <Button variant="link" asChild>
+            <Link href="/lectures">View all</Link>
+          </Button>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {lectures.map((lecture) => (
-            <LectureCard key={lecture.id} lecture={lecture} />
-          ))}
-        </div>
+        {lectures.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground">
+            <p>No lectures found. Upload your first lecture from the Admin page!</p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {lectures.map((lecture) => (
+              <LectureCard key={lecture.id} lecture={lecture} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   )
