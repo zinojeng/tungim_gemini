@@ -4,8 +4,41 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { db } from '@/lib/db'
+import { lectures, transcripts, summaries } from '@/db/schema'
+import { eq } from 'drizzle-orm'
+import { notFound } from 'next/navigation'
+import ReactMarkdown from 'react-markdown'
 
-export default function LecturePage({ params }: { params: { id: string } }) {
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
+async function getLectureData(id: string) {
+    try {
+        const [lecture] = await db.select().from(lectures).where(eq(lectures.id, id))
+        if (!lecture) return null
+
+        const [transcript] = await db.select().from(transcripts).where(eq(transcripts.lectureId, id))
+        const [summary] = await db.select().from(summaries).where(eq(summaries.lectureId, id))
+
+        return { lecture, transcript, summary }
+    } catch (error) {
+        console.error('Error fetching lecture data:', error)
+        return null
+    }
+}
+
+export default async function LecturePage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params
+    const data = await getLectureData(id)
+
+    if (!data) {
+        notFound()
+    }
+
+    const { lecture, transcript, summary } = data
+
     return (
         <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden">
             {/* Sidebar / Outline */}
@@ -16,20 +49,15 @@ export default function LecturePage({ params }: { params: { id: string } }) {
                 <ScrollArea className="flex-1">
                     <div className="p-4 space-y-4">
                         <div className="space-y-2">
-                            <h3 className="text-sm font-medium text-muted-foreground">Introduction</h3>
-                            <Button variant="ghost" className="w-full justify-start h-auto whitespace-normal text-left">
-                                00:00 - Opening Remarks
-                            </Button>
+                            <h3 className="text-sm font-medium text-muted-foreground">Content</h3>
                             <Button variant="ghost" className="w-full justify-start h-auto whitespace-normal text-left bg-accent">
-                                02:15 - Epidemiology of Heart Failure
+                                Summary
                             </Button>
-                        </div>
-                        <Separator />
-                        <div className="space-y-2">
-                            <h3 className="text-sm font-medium text-muted-foreground">Main Topics</h3>
-                            <Button variant="ghost" className="w-full justify-start h-auto whitespace-normal text-left">
-                                15:30 - New Guidelines 2024
-                            </Button>
+                            {transcript && (
+                                <Button variant="ghost" className="w-full justify-start h-auto whitespace-normal text-left">
+                                    Transcript
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </ScrollArea>
@@ -40,43 +68,63 @@ export default function LecturePage({ params }: { params: { id: string } }) {
                 <div className="flex-1 overflow-y-auto p-6 pb-24">
                     <div className="max-w-3xl mx-auto space-y-8">
                         <div>
-                            <Badge className="mb-2">Cardiology</Badge>
-                            <h1 className="text-3xl font-bold mb-2">2024 Updates in Heart Failure Management</h1>
-                            <p className="text-muted-foreground">Dr. Sarah Chen • March 15, 2024</p>
+                            {lecture.category && (
+                                <Badge className="mb-2">{lecture.category}</Badge>
+                            )}
+                            <h1 className="text-3xl font-bold mb-2">{lecture.title}</h1>
+                            <p className="text-muted-foreground">
+                                {lecture.provider || 'Unknown'} • {lecture.publishDate ? new Date(lecture.publishDate).toLocaleDateString() : 'Unknown Date'}
+                            </p>
                         </div>
 
                         <Tabs defaultValue="summary">
                             <TabsList>
                                 <TabsTrigger value="summary">Summary</TabsTrigger>
-                                <TabsTrigger value="transcript">Transcript</TabsTrigger>
-                                <TabsTrigger value="slides">Slides</TabsTrigger>
+                                {transcript && <TabsTrigger value="transcript">Transcript</TabsTrigger>}
                             </TabsList>
+
                             <TabsContent value="summary" className="space-y-4 mt-4">
-                                <div className="prose dark:prose-invert max-w-none">
-                                    <h3>Executive Summary</h3>
-                                    <p>
-                                        This lecture covers the latest updates in heart failure management, focusing on the 2024 guidelines.
-                                        Key changes include the recommendation of SGLT2 inhibitors for all patients with HFpEF.
-                                    </p>
-                                    <h3>Key Takeaways</h3>
-                                    <ul>
-                                        <li>SGLT2i are now Class I recommendation for HFpEF.</li>
-                                        <li>Four pillars of GDMT should be initiated simultaneously if possible.</li>
-                                    </ul>
-                                </div>
+                                {summary ? (
+                                    <div className="prose dark:prose-invert max-w-none">
+                                        {summary.executiveSummary && (
+                                            <>
+                                                <h3>Executive Summary</h3>
+                                                <ReactMarkdown>{summary.executiveSummary}</ReactMarkdown>
+                                            </>
+                                        )}
+
+                                        {summary.keyTakeaways && Array.isArray(summary.keyTakeaways) && summary.keyTakeaways.length > 0 ? (
+                                            <div>
+                                                <h3>Key Takeaways</h3>
+                                                <ul>
+                                                    {summary.keyTakeaways.map((item: any, idx: number) => (
+                                                        <li key={idx}>{String(item)}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        ) : null}
+
+                                        {summary.fullMarkdownContent && (
+                                            <>
+                                                <Separator className="my-6" />
+                                                <ReactMarkdown>{summary.fullMarkdownContent}</ReactMarkdown>
+                                            </>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-12 text-muted-foreground">
+                                        <p>No summary available for this lecture.</p>
+                                    </div>
+                                )}
                             </TabsContent>
-                            <TabsContent value="transcript">
-                                <div className="prose dark:prose-invert max-w-none">
-                                    <p><span className="text-muted-foreground">[00:00]</span> Welcome everyone to this session...</p>
-                                    <p><span className="text-muted-foreground">[02:15]</span> Let's look at the epidemiology...</p>
-                                </div>
-                            </TabsContent>
-                            <TabsContent value="slides">
-                                <div className="grid gap-4 sm:grid-cols-2">
-                                    <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">Slide 1</div>
-                                    <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">Slide 2</div>
-                                </div>
-                            </TabsContent>
+
+                            {transcript && (
+                                <TabsContent value="transcript">
+                                    <div className="prose dark:prose-invert max-w-none whitespace-pre-wrap">
+                                        {transcript.content || 'No transcript available.'}
+                                    </div>
+                                </TabsContent>
+                            )}
                         </Tabs>
                     </div>
                 </div>
