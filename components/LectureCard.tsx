@@ -12,31 +12,32 @@ export function LectureCard({ lecture }: LectureCardProps) {
     return (
         <Link href={`/lectures/${lecture.id}`}>
             <Card className="h-full overflow-hidden transition-all hover:shadow-lg hover:border-primary/50 group">
-                <div className="aspect-video w-full bg-muted relative">
+                <div className="aspect-video w-full bg-gradient-to-br from-primary/10 to-primary/5 relative">
                     {/* Placeholder for thumbnail */}
-                    <div className="absolute inset-0 flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors">
-                        <PlayCircle className="h-12 w-12" />
+                    <div className="absolute inset-0 flex items-center justify-center text-primary/40 group-hover:text-primary/60 transition-colors">
+                        <PlayCircle className="h-16 w-16" />
                     </div>
+                    {lecture.category && (
+                        <div className="absolute top-3 right-3">
+                            <Badge className="bg-primary/90 hover:bg-primary">
+                                {lecture.category}
+                            </Badge>
+                        </div>
+                    )}
                 </div>
                 <CardHeader className="p-4">
-                    <div className="flex justify-between items-start gap-2">
-                        <CardTitle className="line-clamp-2 text-lg leading-tight group-hover:text-primary transition-colors">
-                            {lecture.title}
-                        </CardTitle>
-                    </div>
+                    <CardTitle className="line-clamp-2 text-lg leading-tight group-hover:text-primary transition-colors">
+                        {lecture.title}
+                    </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
-                    <div className="flex items-center text-sm text-muted-foreground mb-2">
-                        <Calendar className="mr-1 h-3 w-3" />
-                        {lecture.publishDate ? new Date(lecture.publishDate).toLocaleDateString() : 'Unknown Date'}
-                    </div>
-                    <div className="flex gap-2">
-                        <Badge variant="secondary" className="text-xs">
-                            {lecture.provider || 'General'}
-                        </Badge>
-                        <Badge variant={lecture.status === 'completed' ? 'default' : 'outline'} className="text-xs">
-                            {lecture.status}
-                        </Badge>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                        <Calendar className="mr-1.5 h-3.5 w-3.5" />
+                        {lecture.publishDate ? new Date(lecture.publishDate).toLocaleDateString('zh-TW', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        }) : 'Unknown Date'}
                     </div>
                 </CardContent>
             </Card>
