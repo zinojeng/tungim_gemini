@@ -5,6 +5,10 @@ import Link from "next/link"
 import { db } from '@/lib/db'
 import { lectures } from '@/db/schema'
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function getLectures(): Promise<Lecture[]> {
   try {
     const allLectures = await db.select().from(lectures)
