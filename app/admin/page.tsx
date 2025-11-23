@@ -62,6 +62,46 @@ export default function AdminPage() {
     const [editTranscript, setEditTranscript] = useState("")
     const [editSummary, setEditSummary] = useState("")
 
+    // Fetch lectures
+    const fetchLectures = async () => {
+        setIsLoadingLectures(true)
+        try {
+            const res = await fetch('/api/lectures')
+            if (res.ok) {
+                const data = await res.json()
+                setLectures(data)
+            }
+        } catch (error) {
+            console.error('Error fetching lectures:', error)
+        } finally {
+            setIsLoadingLectures(false)
+        }
+    }
+
+    // Fetch lecture details for editing
+    const fetchLectureDetails = async (id: string) => {
+        try {
+            const res = await fetch(`/api/lectures/${id}`)
+            if (!res.ok) throw new Error('Failed to fetch lecture details')
+
+            const data = await res.json()
+            const lecture = lectures.find(l => l.id === id)
+
+            if (lecture) {
+                setEditingLecture(lecture)
+                setEditTitle(lecture.title || '')
+                setEditCategory(lecture.category || 'General')
+                setEditProvider(lecture.provider || '')
+                setEditTranscript(data.transcript || '')
+                setEditSummary(data.summary || '')
+                setEditDialogOpen(true)
+            }
+        } catch (error) {
+            console.error('Error fetching lecture details:', error)
+            alert('Failed to load lecture details')
+        }
+    }
+
     // Check if already authenticated in session
     useEffect(() => {
         setIsMounted(true)
@@ -76,6 +116,13 @@ export default function AdminPage() {
             }
         }
     }, [])
+
+    // Fetch lectures when authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchLectures()
+        }
+    }, [isAuthenticated])
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -162,49 +209,6 @@ export default function AdminPage() {
         )
     }
 
-    // Fetch lectures
-    const fetchLectures = async () => {
-        setIsLoadingLectures(true)
-        try {
-            const res = await fetch('/api/lectures')
-            if (res.ok) {
-                const data = await res.json()
-                setLectures(data)
-            }
-        } catch (error) {
-            console.error('Error fetching lectures:', error)
-        } finally {
-            setIsLoadingLectures(false)
-        }
-    }
-
-    // Fetch lecture details for editing
-    const fetchLectureDetails = async (id: string) => {
-        try {
-            const res = await fetch(`/api/lectures/${id}`)
-            if (!res.ok) throw new Error('Failed to fetch lecture details')
-
-            const data = await res.json()
-            const lecture = lectures.find(l => l.id === id)
-
-            if (lecture) {
-                setEditingLecture(lecture)
-                setEditTitle(lecture.title || '')
-                setEditCategory(lecture.category || 'General')
-                setEditProvider(lecture.provider || '')
-                setEditTranscript(data.transcript || '')
-                setEditSummary(data.summary || '')
-                setEditDialogOpen(true)
-            }
-        } catch (error) {
-            console.error('Error fetching lecture details:', error)
-            alert('Failed to load lecture details')
-        }
-    }
-
-    useEffect(() => {
-        fetchLectures()
-    }, [])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
