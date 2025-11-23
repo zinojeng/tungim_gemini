@@ -26,25 +26,30 @@ export async function POST(request: Request) {
             keyTakeaways
         } = body;
 
+        console.log('Received body:', body);
+
         // Allow creation if either URL is present OR it's a manual import with a title
         if (!url && !title) {
             return NextResponse.json({ error: 'URL or Title is required' }, { status: 400 });
         }
 
+        console.log('Inserting lecture...');
         // 1. Create Lecture
         const newLecture = await db.insert(lectures).values({
             title: title || 'New Lecture',
-            sourceUrl: url || null,
+            sourceUrl: url ? url : null, // Ensure empty string becomes null
             provider: provider || 'Manual Import',
             category: category || 'Uncategorized',
             status: 'completed', // Manual import is immediately completed
             publishDate: publishDate ? new Date(publishDate) : new Date(),
         }).returning();
 
+        console.log('Lecture created:', newLecture[0]);
         const lectureId = newLecture[0].id;
 
         // 2. Create Transcript if provided
         if (transcript) {
+            console.log('Inserting transcript...');
             await db.insert(transcripts).values({
                 lectureId,
                 content: transcript,
@@ -54,6 +59,7 @@ export async function POST(request: Request) {
 
         // 3. Create Summary if provided
         if (summary) {
+            console.log('Inserting summary...');
             await db.insert(summaries).values({
                 lectureId,
                 executiveSummary: summary,
@@ -63,9 +69,12 @@ export async function POST(request: Request) {
             });
         }
 
+        console.log('Success!');
         return NextResponse.json(newLecture[0]);
     } catch (error: any) {
         console.error('Error creating lecture:', error);
+        // Log the full error object to see stack trace in Zeabur logs
+        console.error(JSON.stringify(error, null, 2));
         return NextResponse.json({ error: error.message || 'Failed to create lecture' }, { status: 500 });
     }
 }
