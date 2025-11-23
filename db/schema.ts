@@ -13,6 +13,7 @@ export const lectures = pgTable('lectures', {
     videoFileUrl: text('video_file_url'),
     audioFileUrl: text('audio_file_url'),
     provider: text('provider'),
+    category: text('category'), // Added category field
     publishDate: timestamp('publish_date'),
     status: text('status').default('processing'),
 });

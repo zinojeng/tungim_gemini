@@ -15,6 +15,7 @@ export interface Lecture {
     videoFileUrl: string | null;
     audioFileUrl: string | null;
     provider: string | null;
+    category: string | null;
     publishDate: Date | null;
     status: string | null;
 }

@@ -13,6 +13,7 @@ const lectures: Lecture[] = [
     sourceUrl: "",
     videoFileUrl: "",
     audioFileUrl: "",
+    category: "Cardiology",
   },
   {
     id: "2",
@@ -23,6 +24,7 @@ const lectures: Lecture[] = [
     sourceUrl: "",
     videoFileUrl: "",
     audioFileUrl: "",
+    category: "Endocrinology",
   },
   {
     id: "3",
@@ -33,6 +35,7 @@ const lectures: Lecture[] = [
     sourceUrl: "",
     videoFileUrl: "",
     audioFileUrl: "",
+    category: "Nephrology",
   },
 ]
 
