@@ -12,7 +12,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { useState, useEffect } from "react"
-import { Trash2, Plus, Pencil, Lock } from "lucide-react"
+import { Trash2, Plus, Pencil, Lock, Wand2, Loader2 } from "lucide-react"
 import { Lecture } from "@/types"
 
 const CATEGORIES = [
@@ -64,6 +64,9 @@ export default function AdminPage() {
     const [editCoverImage, setEditCoverImage] = useState("")
     const [editTranscript, setEditTranscript] = useState("")
     const [editSummary, setEditSummary] = useState("")
+
+    // AI Generation State
+    const [isGenerating, setIsGenerating] = useState(false)
 
     // Fetch lectures
     const fetchLectures = async () => {
@@ -178,6 +181,46 @@ export default function AdminPage() {
         }
         setPassword("")
     }
+
+    // Generate AI Cover
+    const handleGenerateCover = async (isEdit: boolean) => {
+        const currentTitle = isEdit ? editTitle : title;
+        const currentCategory = isEdit ? (isEditCustomCategory ? editCustomCategory : editCategory) : (isCustomCategory ? customCategory : category);
+
+        if (!currentTitle) {
+            alert("Please enter a title first.");
+            return;
+        }
+
+        setIsGenerating(true);
+        try {
+            const res = await fetch('/api/generate-cover', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: currentTitle,
+                    category: currentCategory
+                })
+            });
+
+            if (!res.ok) {
+                const error = await res.json();
+                throw new Error(error.error || "Failed to generate image");
+            }
+
+            const data = await res.json();
+            if (isEdit) {
+                setEditCoverImage(data.url);
+            } else {
+                setCoverImage(data.url);
+            }
+        } catch (error: any) {
+            console.error("Generation error:", error);
+            alert("Error generating image: " + error.message);
+        } finally {
+            setIsGenerating(false);
+        }
+    };
 
     // Prevent hydration mismatch
     if (!isMounted) {
@@ -417,12 +460,33 @@ export default function AdminPage() {
 
                                         <div className="space-y-2">
                                             <Label htmlFor="coverImage">Cover Image URL (Optional)</Label>
-                                            <Input
-                                                id="coverImage"
-                                                placeholder="https://example.com/image.jpg"
-                                                value={coverImage}
-                                                onChange={(e) => setCoverImage(e.target.value)}
-                                            />
+                                            <div className="flex gap-2">
+                                                <Input
+                                                    id="coverImage"
+                                                    placeholder="https://example.com/image.jpg"
+                                                    value={coverImage}
+                                                    onChange={(e) => setCoverImage(e.target.value)}
+                                                    className="flex-1"
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant="secondary"
+                                                    onClick={() => handleGenerateCover(false)}
+                                                    disabled={isGenerating || !title}
+                                                >
+                                                    {isGenerating ? (
+                                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                                    ) : (
+                                                        <Wand2 className="h-4 w-4 mr-2" />
+                                                    )}
+                                                    Generate AI Cover
+                                                </Button>
+                                            </div>
+                                            {coverImage && (
+                                                <div className="mt-2 relative aspect-video w-40 rounded-md overflow-hidden border">
+                                                    <img src={coverImage} alt="Cover preview" className="object-cover w-full h-full" />
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="space-y-2">
@@ -599,12 +663,33 @@ export default function AdminPage() {
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="edit-coverImage">Cover Image URL</Label>
-                            <Input
-                                id="edit-coverImage"
-                                value={editCoverImage}
-                                onChange={(e) => setEditCoverImage(e.target.value)}
-                                placeholder="https://example.com/image.jpg"
-                            />
+                            <div className="flex gap-2">
+                                <Input
+                                    id="edit-coverImage"
+                                    value={editCoverImage}
+                                    onChange={(e) => setEditCoverImage(e.target.value)}
+                                    placeholder="https://example.com/image.jpg"
+                                    className="flex-1"
+                                />
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={() => handleGenerateCover(true)}
+                                    disabled={isGenerating || !editTitle}
+                                >
+                                    {isGenerating ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Wand2 className="h-4 w-4 mr-2" />
+                                    )}
+                                    Generate
+                                </Button>
+                            </div>
+                            {editCoverImage && (
+                                <div className="mt-2 relative aspect-video w-40 rounded-md overflow-hidden border">
+                                    <img src={editCoverImage} alt="Cover preview" className="object-cover w-full h-full" />
+                                </div>
+                            )}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="edit-provider">Provider</Label>
