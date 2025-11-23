@@ -9,9 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { useState, useEffect } from "react"
-import { Trash2, Plus } from "lucide-react"
+import { Trash2, Plus, Pencil } from "lucide-react"
 import { Lecture } from "@/types"
 
 const CATEGORIES = [
@@ -41,6 +42,15 @@ export default function AdminPage() {
     const [transcript, setTranscript] = useState("")
     const [summary, setSummary] = useState("")
 
+    // Edit States
+    const [editingLecture, setEditingLecture] = useState<Lecture | null>(null)
+    const [editDialogOpen, setEditDialogOpen] = useState(false)
+    const [editTitle, setEditTitle] = useState("")
+    const [editCategory, setEditCategory] = useState("")
+    const [editProvider, setEditProvider] = useState("")
+    const [editTranscript, setEditTranscript] = useState("")
+    const [editSummary, setEditSummary] = useState("")
+
     // Fetch lectures
     const fetchLectures = async () => {
         setIsLoadingLectures(true)
@@ -54,6 +64,31 @@ export default function AdminPage() {
             console.error('Error fetching lectures:', error)
         } finally {
             setIsLoadingLectures(false)
+        }
+    }
+
+    // Fetch lecture details for editing
+    const fetchLectureDetails = async (id: string) => {
+        try {
+            const [lectureRes, transcriptRes, summaryRes] = await Promise.all([
+                fetch(`/api/lectures`),
+                fetch(`/api/lectures`),
+                fetch(`/api/lectures`)
+            ])
+
+            // For now, we'll use the lecture data we already have
+            const lecture = lectures.find(l => l.id === id)
+            if (lecture) {
+                setEditingLecture(lecture)
+                setEditTitle(lecture.title || '')
+                setEditCategory(lecture.category || 'General')
+                setEditProvider(lecture.provider || '')
+                setEditTranscript('')
+                setEditSummary('')
+                setEditDialogOpen(true)
+            }
+        } catch (error) {
+            console.error('Error fetching lecture details:', error)
         }
     }
 
@@ -85,18 +120,46 @@ export default function AdminPage() {
             }
 
             alert("Lecture created successfully!")
-            // Reset form
             setUrl("")
             setTitle("")
             setTranscript("")
             setSummary("")
-            // Refresh list
             fetchLectures()
         } catch (error: any) {
             console.error(error)
             alert("Error creating lecture: " + error.message)
         } finally {
             setIsLoading(false)
+        }
+    }
+
+    const handleEdit = async () => {
+        if (!editingLecture) return
+
+        try {
+            const res = await fetch(`/api/lectures/${editingLecture.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    title: editTitle,
+                    category: editCategory,
+                    provider: editProvider,
+                    transcript: editTranscript,
+                    summary: editSummary,
+                })
+            })
+
+            if (!res.ok) {
+                throw new Error('Failed to update lecture')
+            }
+
+            alert("Lecture updated successfully!")
+            setEditDialogOpen(false)
+            setEditingLecture(null)
+            fetchLectures()
+        } catch (error) {
+            console.error(error)
+            alert("Error updating lecture")
         }
     }
 
@@ -129,7 +192,7 @@ export default function AdminPage() {
                         Create Lecture
                     </TabsTrigger>
                     <TabsTrigger value="manage">
-                        <Trash2 className="h-4 w-4 mr-2" />
+                        <Pencil className="h-4 w-4 mr-2" />
                         Manage Lectures
                     </TabsTrigger>
                 </TabsList>
@@ -235,7 +298,7 @@ export default function AdminPage() {
                         <CardHeader>
                             <CardTitle>Manage Lectures</CardTitle>
                             <CardDescription>
-                                View and delete existing lectures
+                                View, edit, and delete existing lectures
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -269,7 +332,14 @@ export default function AdminPage() {
                                                         {lecture.status}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="text-right">
+                                                <TableCell className="text-right space-x-2">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => fetchLectureDetails(lecture.id)}
+                                                    >
+                                                        <Pencil className="h-4 w-4" />
+                                                    </Button>
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
                                                             <Button variant="destructive" size="sm">
@@ -301,6 +371,77 @@ export default function AdminPage() {
                     </Card>
                 </TabsContent>
             </Tabs>
+
+            {/* Edit Dialog */}
+            <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Edit Lecture</DialogTitle>
+                        <DialogDescription>
+                            Update lecture information, transcript, and summary
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-title">Title</Label>
+                            <Input
+                                id="edit-title"
+                                value={editTitle}
+                                onChange={(e) => setEditTitle(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-category">Category</Label>
+                            <Select value={editCategory} onValueChange={setEditCategory}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {CATEGORIES.map(cat => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-provider">Provider</Label>
+                            <Input
+                                id="edit-provider"
+                                value={editProvider}
+                                onChange={(e) => setEditProvider(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-summary">Summary (Markdown)</Label>
+                            <Textarea
+                                id="edit-summary"
+                                className="min-h-[200px] font-mono"
+                                value={editSummary}
+                                onChange={(e) => setEditSummary(e.target.value)}
+                                placeholder="Leave empty to keep existing summary"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-transcript">Transcript</Label>
+                            <Textarea
+                                id="edit-transcript"
+                                className="min-h-[150px]"
+                                value={editTranscript}
+                                onChange={(e) => setEditTranscript(e.target.value)}
+                                placeholder="Leave empty to keep existing transcript"
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button onClick={handleEdit}>
+                            Save Changes
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }
