@@ -64,9 +64,9 @@ export async function POST(request: Request) {
             console.log('Inserting summary...');
             await db.insert(summaries).values({
                 lectureId,
-                executiveSummary: summary,
+                executiveSummary: null, // Don't duplicate content
                 keyTakeaways: keyTakeaways ? JSON.parse(keyTakeaways) : [],
-                fullMarkdownContent: summary, // Use summary as full content for now
+                fullMarkdownContent: summary, // Only save to fullMarkdownContent
                 tags: [category || 'General'],
             });
         }

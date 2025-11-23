@@ -22,7 +22,7 @@ export async function GET(
         return NextResponse.json({
             ...lecture,
             transcript: transcriptData?.content || '',
-            summary: summaryData?.executiveSummary || '', // Use executiveSummary as the main summary content
+            summary: summaryData?.fullMarkdownContent || '', // Use fullMarkdownContent as the main summary content
             coverImage: lecture.coverImage || '',
         });
     } catch (error: any) {
@@ -74,15 +74,14 @@ export async function PUT(
             if (existingSummary) {
                 await db.update(summaries)
                     .set({
-                        executiveSummary: summary,
-                        fullMarkdownContent: summary,
+                        fullMarkdownContent: summary, // Only save to fullMarkdownContent
                     })
                     .where(eq(summaries.lectureId, id));
             } else if (summary) {
                 await db.insert(summaries).values({
                     lectureId: id,
-                    executiveSummary: summary,
-                    fullMarkdownContent: summary,
+                    executiveSummary: null, // Don't duplicate content
+                    fullMarkdownContent: summary, // Only save to fullMarkdownContent
                     keyTakeaways: [],
                     tags: [category || 'General'],
                 });
