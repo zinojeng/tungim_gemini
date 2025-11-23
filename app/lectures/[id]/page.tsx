@@ -83,19 +83,19 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
                                 {transcript && <TabsTrigger value="transcript">Transcript</TabsTrigger>}
                             </TabsList>
 
-                            <TabsContent value="summary" className="space-y-4 mt-4">
+                            <TabsContent value="summary" className="mt-6">
                                 {summary ? (
-                                    <div className="prose dark:prose-invert max-w-none">
+                                    <article className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-base prose-p:leading-7 prose-li:text-base prose-ul:my-4 prose-ol:my-4 prose-li:my-1">
                                         {summary.executiveSummary && (
-                                            <>
-                                                <h3>Executive Summary</h3>
+                                            <div>
+                                                <h2>Executive Summary</h2>
                                                 <ReactMarkdown>{summary.executiveSummary}</ReactMarkdown>
-                                            </>
+                                            </div>
                                         )}
 
                                         {summary.keyTakeaways && Array.isArray(summary.keyTakeaways) && summary.keyTakeaways.length > 0 ? (
                                             <div>
-                                                <h3>Key Takeaways</h3>
+                                                <h2>Key Takeaways</h2>
                                                 <ul>
                                                     {summary.keyTakeaways.map((item: any, idx: number) => (
                                                         <li key={idx}>{String(item)}</li>
@@ -105,12 +105,12 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
                                         ) : null}
 
                                         {summary.fullMarkdownContent && (
-                                            <>
-                                                <Separator className="my-6" />
+                                            <div>
+                                                <Separator className="my-8" />
                                                 <ReactMarkdown>{summary.fullMarkdownContent}</ReactMarkdown>
-                                            </>
+                                            </div>
                                         )}
-                                    </div>
+                                    </article>
                                 ) : (
                                     <div className="text-center py-12 text-muted-foreground">
                                         <p>No summary available for this lecture.</p>
@@ -119,10 +119,12 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
                             </TabsContent>
 
                             {transcript && (
-                                <TabsContent value="transcript">
-                                    <div className="prose dark:prose-invert max-w-none whitespace-pre-wrap">
-                                        {transcript.content || 'No transcript available.'}
-                                    </div>
+                                <TabsContent value="transcript" className="mt-6">
+                                    <article className="prose prose-slate dark:prose-invert max-w-none">
+                                        <div className="whitespace-pre-wrap leading-relaxed text-base">
+                                            {transcript.content || 'No transcript available.'}
+                                        </div>
+                                    </article>
                                 </TabsContent>
                             )}
                         </Tabs>
