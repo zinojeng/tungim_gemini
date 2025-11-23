@@ -9,6 +9,7 @@ import { lectures, transcripts, summaries } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -88,7 +89,7 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
                                     <article className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-base prose-p:leading-7 prose-li:text-base prose-ul:my-4 prose-ol:my-4 prose-li:my-1">
                                         {summary.executiveSummary && (
                                             <div>
-                                                <ReactMarkdown>{summary.executiveSummary}</ReactMarkdown>
+                                                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{summary.executiveSummary}</ReactMarkdown>
                                             </div>
                                         )}
 
@@ -106,7 +107,7 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
                                         {summary.fullMarkdownContent && (
                                             <div>
                                                 <Separator className="my-8" />
-                                                <ReactMarkdown>{summary.fullMarkdownContent}</ReactMarkdown>
+                                                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{summary.fullMarkdownContent}</ReactMarkdown>
                                             </div>
                                         )}
                                     </article>

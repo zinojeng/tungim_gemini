@@ -16,6 +16,7 @@ export interface Lecture {
     audioFileUrl: string | null;
     provider: string | null;
     category: string | null;
+    coverImage: string | null;
     publishDate: Date | null;
     status: string | null;
 }

@@ -9,40 +9,33 @@ interface LectureCardProps {
 }
 
 export function LectureCard({ lecture }: LectureCardProps) {
-    const getCoverImage = (lecture: any) => {
-        // 1. Use custom cover image if available
-        if (lecture.coverImage) return lecture.coverImage
-
-        // 2. Map categories to cover images
-        const cat = lecture.category?.toLowerCase() || ''
-        if (cat.includes('cardio')) return '/cover-cardiology.png'
-        if (cat.includes('endo')) return '/cover-endocrinology.png'
-        if (cat.includes('nephro')) return '/cover-nephrology.png'
-        if (cat.includes('gastro')) return '/cover-gastroenterology.png'
-
-        // 3. Default fallback
-        return '/nanobanana.png'
-    }
-
-    const coverImage = getCoverImage(lecture)
+    const coverImage = lecture.coverImage || null
 
     return (
         <Link href={`/lectures/${lecture.id}`}>
             <Card className="h-full overflow-hidden transition-all hover:shadow-lg hover:border-primary/50 group">
                 <div className="aspect-video w-full relative bg-muted">
-                    <img
-                        src={coverImage}
-                        alt={lecture.title}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
+                    {coverImage ? (
+                        <>
+                            <img
+                                src={coverImage}
+                                alt={lecture.title}
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
 
-                    {/* Play Icon Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="bg-background/80 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                            <PlayCircle className="h-8 w-8 text-primary" />
+                            {/* Play Icon Overlay */}
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="bg-background/80 backdrop-blur-sm rounded-full p-3 shadow-lg">
+                                    <PlayCircle className="h-8 w-8 text-primary" />
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                            <PlayCircle className="h-12 w-12 text-muted-foreground/30" />
                         </div>
-                    </div>
+                    )}
 
                     {lecture.category && (
                         <div className="absolute top-3 right-3">
