@@ -31,7 +31,7 @@ const CATEGORIES = [
 ]
 
 // Simple password (in production, use proper authentication)
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"
+// const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"
 
 export default function AdminPage() {
     // Hydration safety
@@ -77,20 +77,31 @@ export default function AdminPage() {
         }
     }, [])
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (password === ADMIN_PASSWORD) {
-            setIsAuthenticated(true)
-            if (typeof window !== 'undefined') {
-                try {
-                    sessionStorage.setItem('admin_auth', 'true')
-                } catch (e) {
-                    console.error("Session storage error:", e)
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            })
+
+            if (res.ok) {
+                setIsAuthenticated(true)
+                if (typeof window !== 'undefined') {
+                    try {
+                        sessionStorage.setItem('admin_auth', 'true')
+                    } catch (e) {
+                        console.error("Session storage error:", e)
+                    }
                 }
+                setAuthError("")
+            } else {
+                setAuthError("密碼錯誤")
             }
-            setAuthError("")
-        } else {
-            setAuthError("密碼錯誤")
+        } catch (error) {
+            console.error("Login error:", error)
+            setAuthError("登入時發生錯誤")
         }
     }
 
