@@ -34,6 +34,9 @@ const CATEGORIES = [
 const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"
 
 export default function AdminPage() {
+    // Hydration safety
+    const [isMounted, setIsMounted] = useState(false)
+
     // Authentication
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [password, setPassword] = useState("")
@@ -61,10 +64,15 @@ export default function AdminPage() {
 
     // Check if already authenticated in session
     useEffect(() => {
+        setIsMounted(true)
         if (typeof window !== 'undefined') {
-            const auth = sessionStorage.getItem('admin_auth')
-            if (auth === 'true') {
-                setIsAuthenticated(true)
+            try {
+                const auth = sessionStorage.getItem('admin_auth')
+                if (auth === 'true') {
+                    setIsAuthenticated(true)
+                }
+            } catch (e) {
+                console.error("Session storage error:", e)
             }
         }
     }, [])
@@ -74,7 +82,11 @@ export default function AdminPage() {
         if (password === ADMIN_PASSWORD) {
             setIsAuthenticated(true)
             if (typeof window !== 'undefined') {
-                sessionStorage.setItem('admin_auth', 'true')
+                try {
+                    sessionStorage.setItem('admin_auth', 'true')
+                } catch (e) {
+                    console.error("Session storage error:", e)
+                }
             }
             setAuthError("")
         } else {
@@ -85,9 +97,18 @@ export default function AdminPage() {
     const handleLogout = () => {
         setIsAuthenticated(false)
         if (typeof window !== 'undefined') {
-            sessionStorage.removeItem('admin_auth')
+            try {
+                sessionStorage.removeItem('admin_auth')
+            } catch (e) {
+                console.error("Session storage error:", e)
+            }
         }
         setPassword("")
+    }
+
+    // Prevent hydration mismatch
+    if (!isMounted) {
+        return null
     }
 
     // If not authenticated, show login form
