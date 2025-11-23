@@ -87,12 +87,6 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
                             <TabsContent value="summary" className="mt-6">
                                 {summary ? (
                                     <article className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-p:text-base prose-p:leading-7 prose-li:text-base prose-ul:my-4 prose-ol:my-4 prose-li:my-1">
-                                        {summary.executiveSummary && (
-                                            <div>
-                                                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{summary.executiveSummary}</ReactMarkdown>
-                                            </div>
-                                        )}
-
                                         {summary.keyTakeaways && Array.isArray(summary.keyTakeaways) && summary.keyTakeaways.length > 0 ? (
                                             <div>
                                                 <h2>Key Takeaways</h2>
@@ -106,7 +100,6 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
 
                                         {summary.fullMarkdownContent && (
                                             <div>
-                                                <Separator className="my-8" />
                                                 <ReactMarkdown rehypePlugins={[rehypeRaw]}>{summary.fullMarkdownContent}</ReactMarkdown>
                                             </div>
                                         )}
