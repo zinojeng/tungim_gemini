@@ -1,4 +1,3 @@
-import { AudioPlayer } from "@/components/AudioPlayer"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
@@ -124,8 +123,6 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
                     </div>
                 </div>
             </main>
-
-            <AudioPlayer />
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, PlayCircle } from "lucide-react"
+import { Calendar } from "lucide-react"
 import { Lecture } from "@/types"
 
 interface LectureCardProps {
@@ -23,17 +23,10 @@ export function LectureCard({ lecture }: LectureCardProps) {
                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
-
-                            {/* Play Icon Overlay */}
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                <div className="bg-background/80 backdrop-blur-sm rounded-full p-3 shadow-lg">
-                                    <PlayCircle className="h-8 w-8 text-primary" />
-                                </div>
-                            </div>
                         </>
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                            <PlayCircle className="h-12 w-12 text-muted-foreground/30" />
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground/50">
+                            <span className="text-sm">No Cover Image</span>
                         </div>
                     )}
 
