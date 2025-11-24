@@ -67,6 +67,10 @@ export default function AdminPage() {
 
     // AI Generation State
     const [isGenerating, setIsGenerating] = useState(false)
+    const [promptTemplate, setPromptTemplate] = useState("infographic")
+    const [editPromptTemplate, setEditPromptTemplate] = useState("infographic")
+    const [customPrompt, setCustomPrompt] = useState("")
+    const [editCustomPrompt, setEditCustomPrompt] = useState("")
 
     // Fetch lectures
     const fetchLectures = async () => {
@@ -201,7 +205,9 @@ export default function AdminPage() {
                     title: currentTitle,
                     category: currentCategory,
                     summary: isEdit ? editSummary : summary,
-                    transcript: isEdit ? editTranscript : transcript
+                    transcript: isEdit ? editTranscript : transcript,
+                    promptTemplate: isEdit ? editPromptTemplate : promptTemplate,
+                    customPrompt: isEdit ? editCustomPrompt : customPrompt
                 })
             });
 
@@ -461,6 +467,31 @@ export default function AdminPage() {
                                         </div>
 
                                         <div className="space-y-2">
+                                            <Label htmlFor="promptTemplate">AI Cover Style</Label>
+                                            <Select value={promptTemplate} onValueChange={setPromptTemplate}>
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="infographic">📊 教育插圖 - 純圖示和圖表</SelectItem>
+                                                    <SelectItem value="figurine">🎨 寫實公仔 - 醫學概念立體模型</SelectItem>
+                                                    <SelectItem value="plush">🧸 絨毛玩具 - 可愛風格</SelectItem>
+                                                    <SelectItem value="crochet">🧶 手工鉤織 - 娃娃風格</SelectItem>
+                                                    <SelectItem value="character">😊 角色吉祥物 - 友善風格</SelectItem>
+                                                    <SelectItem value="custom">✏️ 自訂 Prompt</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            {promptTemplate === "custom" && (
+                                                <Textarea
+                                                    placeholder="輸入您的自訂 prompt..."
+                                                    value={customPrompt}
+                                                    onChange={(e) => setCustomPrompt(e.target.value)}
+                                                    className="mt-2 min-h-[100px] font-mono text-sm"
+                                                />
+                                            )}
+                                        </div>
+
+                                        <div className="space-y-2">
                                             <Label htmlFor="coverImage">Cover Image URL (Optional)</Label>
                                             <div className="flex gap-2">
                                                 <Input
@@ -662,6 +693,30 @@ export default function AdminPage() {
                                     />
                                 )}
                             </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-promptTemplate">AI Cover Style</Label>
+                            <Select value={editPromptTemplate} onValueChange={setEditPromptTemplate}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="infographic">📊 教育插圖 - 純圖示和圖表</SelectItem>
+                                    <SelectItem value="figurine">🎨 寫實公仔 - 醫學概念立體模型</SelectItem>
+                                    <SelectItem value="plush">🧸 絨毛玩具 - 可愛風格</SelectItem>
+                                    <SelectItem value="crochet">🧶 手工鉤織 - 娃娃風格</SelectItem>
+                                    <SelectItem value="character">😊 角色吉祥物 - 友善風格</SelectItem>
+                                    <SelectItem value="custom">✏️ 自訂 Prompt</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {editPromptTemplate === "custom" && (
+                                <Textarea
+                                    placeholder="輸入您的自訂 prompt..."
+                                    value={editCustomPrompt}
+                                    onChange={(e) => setEditCustomPrompt(e.target.value)}
+                                    className="mt-2 min-h-[100px] font-mono text-sm"
+                                />
+                            )}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="edit-coverImage">Cover Image URL</Label>
