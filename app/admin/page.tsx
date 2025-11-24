@@ -199,7 +199,9 @@ export default function AdminPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     title: currentTitle,
-                    category: currentCategory
+                    category: currentCategory,
+                    summary: isEdit ? editSummary : summary,
+                    transcript: isEdit ? editTranscript : transcript
                 })
             });
 
