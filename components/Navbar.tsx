@@ -31,11 +31,7 @@ export function Navbar() {
                         </div>
                     </div>
                     <nav className="flex items-center gap-2">
-                        <Button variant="ghost" size="sm" asChild>
-                            <Link href="/admin">
-                                Admin
-                            </Link>
-                        </Button>
+
                         <Button variant="ghost" size="icon">
                             <Avatar className="h-8 w-8">
                                 <AvatarImage src="/nanobanana.png" alt="User" />

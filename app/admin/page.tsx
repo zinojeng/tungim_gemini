@@ -12,8 +12,10 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { useState, useEffect } from "react"
-import { Trash2, Plus, Pencil, Lock, Wand2, Loader2 } from "lucide-react"
+import { Trash2, Plus, Pencil, Lock, Wand2, Loader2, Upload } from "lucide-react"
 import { Lecture } from "@/types"
+import mammoth from "mammoth"
+import TurndownService from "turndown"
 
 const CATEGORIES = [
     "Internal Medicine",
@@ -71,6 +73,35 @@ export default function AdminPage() {
     const [editPromptTemplate, setEditPromptTemplate] = useState("infographic")
     const [customPrompt, setCustomPrompt] = useState("")
     const [editCustomPrompt, setEditCustomPrompt] = useState("")
+
+    // File Upload State
+    const [isUploading, setIsUploading] = useState(false)
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setIsUploading(true)
+        try {
+            const arrayBuffer = await file.arrayBuffer()
+            const result = await mammoth.convertToHtml({ arrayBuffer })
+            const turndownService = new TurndownService()
+            const markdown = turndownService.turndown(result.value)
+
+            if (isEdit) {
+                setEditSummary(markdown)
+            } else {
+                setSummary(markdown)
+            }
+        } catch (error) {
+            console.error("Error parsing file:", error)
+            alert("Failed to parse .docx file")
+        } finally {
+            setIsUploading(false)
+            // Reset input
+            e.target.value = ""
+        }
+    }
 
     // Fetch lectures
     const fetchLectures = async () => {
@@ -523,7 +554,33 @@ export default function AdminPage() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <Label htmlFor="summary">Summary / Notes (Markdown)</Label>
+                                            <div className="flex justify-between items-center">
+                                                <Label htmlFor="summary">Summary / Notes (Markdown)</Label>
+                                                <div className="flex items-center gap-2">
+                                                    <Input
+                                                        type="file"
+                                                        accept=".docx"
+                                                        className="hidden"
+                                                        id="summary-upload"
+                                                        onChange={(e) => handleFileUpload(e, false)}
+                                                        disabled={isUploading}
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => document.getElementById('summary-upload')?.click()}
+                                                        disabled={isUploading}
+                                                    >
+                                                        {isUploading ? (
+                                                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                                        ) : (
+                                                            <Upload className="h-4 w-4 mr-2" />
+                                                        )}
+                                                        Import .docx
+                                                    </Button>
+                                                </div>
+                                            </div>
                                             <Textarea
                                                 id="summary"
                                                 placeholder="# Key Takeaways..."
@@ -757,7 +814,33 @@ export default function AdminPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="edit-summary">Summary (Markdown)</Label>
+                            <div className="flex justify-between items-center">
+                                <Label htmlFor="edit-summary">Summary (Markdown)</Label>
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        type="file"
+                                        accept=".docx"
+                                        className="hidden"
+                                        id="edit-summary-upload"
+                                        onChange={(e) => handleFileUpload(e, true)}
+                                        disabled={isUploading}
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => document.getElementById('edit-summary-upload')?.click()}
+                                        disabled={isUploading}
+                                    >
+                                        {isUploading ? (
+                                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                        ) : (
+                                            <Upload className="h-4 w-4 mr-2" />
+                                        )}
+                                        Import .docx
+                                    </Button>
+                                </div>
+                            </div>
                             <Textarea
                                 id="edit-summary"
                                 className="min-h-[200px] font-mono"
