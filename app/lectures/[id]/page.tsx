@@ -10,6 +10,8 @@ import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
+import remarkMath from 'remark-math'
+import rehypeKatex from 'rehype-katex'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -101,7 +103,12 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
                                         {summary.fullMarkdownContent && (
                                             <div>
                                                 <div>
-                                                    <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>{summary.fullMarkdownContent}</ReactMarkdown>
+                                                    <ReactMarkdown
+                                                        rehypePlugins={[rehypeRaw, rehypeKatex]}
+                                                        remarkPlugins={[remarkGfm, remarkMath]}
+                                                    >
+                                                        {summary.fullMarkdownContent}
+                                                    </ReactMarkdown>
                                                 </div>
                                             </div>
                                         )}
