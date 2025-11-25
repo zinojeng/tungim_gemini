@@ -9,6 +9,7 @@ import { eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -99,7 +100,9 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
 
                                         {summary.fullMarkdownContent && (
                                             <div>
-                                                <ReactMarkdown rehypePlugins={[rehypeRaw]}>{summary.fullMarkdownContent}</ReactMarkdown>
+                                                <div>
+                                                    <ReactMarkdown rehypePlugins={[rehypeRaw]} remarkPlugins={[remarkGfm]}>{summary.fullMarkdownContent}</ReactMarkdown>
+                                                </div>
                                             </div>
                                         )}
                                     </article>

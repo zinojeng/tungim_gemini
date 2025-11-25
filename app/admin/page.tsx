@@ -16,6 +16,7 @@ import { Trash2, Plus, Pencil, Lock, Wand2, Loader2, Upload } from "lucide-react
 import { Lecture } from "@/types"
 import mammoth from "mammoth"
 import TurndownService from "turndown"
+import { gfm } from "turndown-plugin-gfm"
 
 const CATEGORIES = [
     "Internal Medicine",
@@ -86,6 +87,7 @@ export default function AdminPage() {
             const arrayBuffer = await file.arrayBuffer()
             const result = await mammoth.convertToHtml({ arrayBuffer })
             const turndownService = new TurndownService()
+            turndownService.use(gfm)
             const markdown = turndownService.turndown(result.value)
 
             if (isEdit) {
