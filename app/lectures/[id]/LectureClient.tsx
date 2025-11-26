@@ -288,11 +288,19 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
             {/* Hover Zoom Overlay */}
             {hoveredSlide && (
                 <div
-                    className="fixed left-80 z-50 w-96 bg-background border shadow-xl rounded-lg overflow-hidden pointer-events-none"
-                    style={{ top: Math.max(10, Math.min(hoveredSlide.top - 40, window.innerHeight - 250)) }}
+                    className="fixed left-80 z-50 bg-background border shadow-xl rounded-lg overflow-hidden pointer-events-none"
+                    style={{
+                        top: Math.max(10, Math.min(hoveredSlide.top - 100, window.innerHeight - 500)),
+                        maxWidth: '600px',
+                        width: 'auto'
+                    }}
                 >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={hoveredSlide.url} alt="Slide Preview" className="w-full h-auto" />
+                    <img
+                        src={hoveredSlide.url}
+                        alt="Slide Preview"
+                        className="w-auto h-auto max-w-[600px] max-h-[60vh] object-contain"
+                    />
                 </div>
             )}
 
