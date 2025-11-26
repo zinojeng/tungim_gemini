@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import { lectures, transcripts, summaries } from '@/db/schema';
+import { lectures, transcripts, summaries, slides } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 
@@ -18,12 +18,14 @@ export async function GET(
 
         const [transcriptData] = await db.select().from(transcripts).where(eq(transcripts.lectureId, id));
         const [summaryData] = await db.select().from(summaries).where(eq(summaries.lectureId, id));
+        const slidesData = await db.select().from(slides).where(eq(slides.lectureId, id));
 
         return NextResponse.json({
             ...lecture,
             transcript: transcriptData?.content || '',
             summary: summaryData?.fullMarkdownContent || '', // Use fullMarkdownContent as the main summary content
             coverImage: lecture.coverImage || '',
+            slides: slidesData || [],
         });
     } catch (error: any) {
         console.error('Error fetching lecture details:', error);
@@ -38,7 +40,7 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await request.json();
-        const { title, category, provider, transcript, summary, coverImage } = body;
+        const { title, category, provider, transcript, summary, coverImage, slides: newSlides } = body;
 
         // Update lecture
         await db.update(lectures)
@@ -88,6 +90,23 @@ export async function PUT(
             }
         }
 
+        // Update slides if provided
+        if (newSlides !== undefined && Array.isArray(newSlides)) {
+            // Delete existing slides
+            await db.delete(slides).where(eq(slides.lectureId, id));
+
+            // Insert new slides
+            if (newSlides.length > 0) {
+                await db.insert(slides).values(
+                    newSlides.map((slide: any) => ({
+                        lectureId: id,
+                        imageUrl: slide.imageUrl,
+                        timestampSeconds: slide.timestampSeconds || 0,
+                    }))
+                );
+            }
+        }
+
         return NextResponse.json({ success: true });
     } catch (error: any) {
         console.error('Error updating lecture:', error);
@@ -105,6 +124,7 @@ export async function DELETE(
         // Delete related records first (foreign key constraints)
         await db.delete(transcripts).where(eq(transcripts.lectureId, id));
         await db.delete(summaries).where(eq(summaries.lectureId, id));
+        await db.delete(slides).where(eq(slides.lectureId, id));
 
         // Delete the lecture
         await db.delete(lectures).where(eq(lectures.id, id));

@@ -55,6 +55,7 @@ export default function AdminPage() {
     const [title, setTitle] = useState("")
     const [transcript, setTranscript] = useState("")
     const [summary, setSummary] = useState("")
+    const [slides, setSlides] = useState<{ imageUrl: string, timestampSeconds: number }[]>([])
 
     // Edit States
     const [editingLecture, setEditingLecture] = useState<Lecture | null>(null)
@@ -67,6 +68,7 @@ export default function AdminPage() {
     const [editCoverImage, setEditCoverImage] = useState("")
     const [editTranscript, setEditTranscript] = useState("")
     const [editSummary, setEditSummary] = useState("")
+    const [editSlides, setEditSlides] = useState<{ imageUrl: string, timestampSeconds: number }[]>([])
 
     // AI Generation State
     const [isGenerating, setIsGenerating] = useState(false)
@@ -101,6 +103,48 @@ export default function AdminPage() {
         } finally {
             setIsUploading(false)
             // Reset input
+            e.target.value = ""
+        }
+    }
+
+    // Batch Upload Handler
+    const handleBatchUpload = async (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean) => {
+        const files = e.target.files
+        if (!files || files.length === 0) return
+
+        setIsUploading(true)
+        const formData = new FormData()
+        for (let i = 0; i < files.length; i++) {
+            formData.append("files", files[i])
+        }
+
+        try {
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+
+            if (!res.ok) {
+                const errorData = await res.json()
+                throw new Error(errorData.error || "Upload failed")
+            }
+
+            const data = await res.json()
+            const newSlides = data.urls.map((url: string) => ({
+                imageUrl: url,
+                timestampSeconds: 0
+            }))
+
+            if (isEdit) {
+                setEditSlides((prev) => [...prev, ...newSlides])
+            } else {
+                setSlides((prev) => [...prev, ...newSlides])
+            }
+        } catch (error: any) {
+            console.error("Batch upload error:", error)
+            alert(`Failed to upload images: ${error.message}`)
+        } finally {
+            setIsUploading(false)
             e.target.value = ""
         }
     }
@@ -149,6 +193,7 @@ export default function AdminPage() {
                 setEditCoverImage(data.coverImage || '')
                 setEditTranscript(data.transcript || '')
                 setEditSummary(data.summary || '')
+                setEditSlides(data.slides || [])
                 setEditDialogOpen(true)
             }
         } catch (error) {
@@ -325,7 +370,8 @@ export default function AdminPage() {
                     coverImage,
                     transcript,
                     summary,
-                    provider: 'Manual Import'
+                    provider: 'Manual Import',
+                    slides: slides
                 })
             })
 
@@ -340,6 +386,7 @@ export default function AdminPage() {
             setTranscript("")
             setSummary("")
             setCoverImage("")
+            setSlides([])
             setCategory("Internal Medicine")
             setIsCustomCategory(false)
             setCustomCategory("")
@@ -368,6 +415,7 @@ export default function AdminPage() {
                     coverImage: editCoverImage,
                     transcript: editTranscript,
                     summary: editSummary,
+                    slides: editSlides
                 })
             })
 
@@ -611,6 +659,74 @@ export default function AdminPage() {
                                                 value={url}
                                                 onChange={(e) => setUrl(e.target.value)}
                                             />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label>Slides (Image URLs)</Label>
+                                            <div className="space-y-2">
+                                                {slides.map((slide, index) => (
+                                                    <div key={index} className="flex gap-2">
+                                                        <Input
+                                                            placeholder="Image URL"
+                                                            value={slide.imageUrl}
+                                                            onChange={(e) => {
+                                                                const newSlides = [...slides];
+                                                                newSlides[index].imageUrl = e.target.value;
+                                                                setSlides(newSlides);
+                                                            }}
+                                                        />
+                                                        <Input
+                                                            type="number"
+                                                            placeholder="Time (s)"
+                                                            className="w-24"
+                                                            value={slide.timestampSeconds}
+                                                            onChange={(e) => {
+                                                                const newSlides = [...slides];
+                                                                newSlides[index].timestampSeconds = parseInt(e.target.value) || 0;
+                                                                setSlides(newSlides);
+                                                            }}
+                                                        />
+                                                        <Button
+                                                            type="button"
+                                                            variant="destructive"
+                                                            size="icon"
+                                                            onClick={() => {
+                                                                const newSlides = slides.filter((_, i) => i !== index);
+                                                                setSlides(newSlides);
+                                                            }}
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                ))}
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    onClick={() => setSlides([...slides, { imageUrl: "", timestampSeconds: 0 }])}
+                                                >
+                                                    <Plus className="h-4 w-4 mr-2" /> Add Slide
+                                                </Button>
+                                                <div className="relative inline-block">
+                                                    <Input
+                                                        type="file"
+                                                        multiple
+                                                        accept="image/*"
+                                                        className="hidden"
+                                                        id="batch-upload"
+                                                        onChange={(e) => handleBatchUpload(e, false)}
+                                                        disabled={isUploading}
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        variant="secondary"
+                                                        onClick={() => document.getElementById('batch-upload')?.click()}
+                                                        disabled={isUploading}
+                                                    >
+                                                        {isUploading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Upload className="h-4 w-4 mr-2" />}
+                                                        Batch Upload
+                                                    </Button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </TabsContent>
 
@@ -860,6 +976,73 @@ export default function AdminPage() {
                                 onChange={(e) => setEditTranscript(e.target.value)}
                                 placeholder="Leave empty to keep existing transcript"
                             />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Slides (Image URLs)</Label>
+                            <div className="space-y-2">
+                                {editSlides.map((slide, index) => (
+                                    <div key={index} className="flex gap-2">
+                                        <Input
+                                            placeholder="Image URL"
+                                            value={slide.imageUrl}
+                                            onChange={(e) => {
+                                                const newSlides = [...editSlides];
+                                                newSlides[index].imageUrl = e.target.value;
+                                                setEditSlides(newSlides);
+                                            }}
+                                        />
+                                        <Input
+                                            type="number"
+                                            placeholder="Time (s)"
+                                            className="w-24"
+                                            value={slide.timestampSeconds}
+                                            onChange={(e) => {
+                                                const newSlides = [...editSlides];
+                                                newSlides[index].timestampSeconds = parseInt(e.target.value) || 0;
+                                                setEditSlides(newSlides);
+                                            }}
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="destructive"
+                                            size="icon"
+                                            onClick={() => {
+                                                const newSlides = editSlides.filter((_, i) => i !== index);
+                                                setEditSlides(newSlides);
+                                            }}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setEditSlides([...editSlides, { imageUrl: "", timestampSeconds: 0 }])}
+                                >
+                                    <Plus className="h-4 w-4 mr-2" /> Add Slide
+                                </Button>
+                                <div className="relative inline-block">
+                                    <Input
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        className="hidden"
+                                        id="edit-batch-upload"
+                                        onChange={(e) => handleBatchUpload(e, true)}
+                                        disabled={isUploading}
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="secondary"
+                                        onClick={() => document.getElementById('edit-batch-upload')?.click()}
+                                        disabled={isUploading}
+                                    >
+                                        {isUploading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Upload className="h-4 w-4 mr-2" />}
+                                        Batch Upload
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <DialogFooter>
