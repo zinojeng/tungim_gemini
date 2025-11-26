@@ -24,6 +24,7 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
     const [activeTab, setActiveTab] = useState("summary")
     const [activeSlideId, setActiveSlideId] = useState<string | null>(null)
     const [selectedImage, setSelectedImage] = useState<string | null>(null)
+    const [hoveredSlide, setHoveredSlide] = useState<{ url: string, top: number } | null>(null)
     const observerRefs = useRef<{ [key: string]: IntersectionObserverEntry }>({})
 
     // Scroll to specific slide
@@ -131,6 +132,8 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                                                     activeSlideId === `slide-${index}` && activeTab === "slides" ? "bg-accent text-accent-foreground ring-1 ring-primary/20" : "bg-card text-muted-foreground border-transparent hover:border-border"
                                                 )}
                                                 onClick={() => scrollToSlide(`slide-${index}`)}
+                                                onMouseEnter={(e) => slide.imageUrl && setHoveredSlide({ url: slide.imageUrl, top: e.currentTarget.getBoundingClientRect().top })}
+                                                onMouseLeave={() => setHoveredSlide(null)}
                                             >
                                                 <div className="w-full relative">
                                                     {slide.imageUrl ? (
@@ -281,6 +284,17 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                     </div>
                 </div>
             </main>
+
+            {/* Hover Zoom Overlay */}
+            {hoveredSlide && (
+                <div
+                    className="fixed left-80 z-50 w-96 bg-background border shadow-xl rounded-lg overflow-hidden pointer-events-none"
+                    style={{ top: Math.max(10, Math.min(hoveredSlide.top - 40, window.innerHeight - 250)) }}
+                >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={hoveredSlide.url} alt="Slide Preview" className="w-full h-auto" />
+                </div>
+            )}
 
             {/* Lightbox Dialog */}
             <Dialog open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
