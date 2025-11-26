@@ -43,3 +43,8 @@ export const summaries = pgTable('summaries', {
     fullMarkdownContent: text('full_markdown_content'),
     tags: text('tags').array(),
 });
+
+export const siteSettings = pgTable('site_settings', {
+    key: text('key').primaryKey(),
+    value: text('value'),
+});
