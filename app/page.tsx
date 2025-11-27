@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Lecture } from "@/types"
 import Link from "next/link"
 import { db } from '@/lib/db'
-import { siteSettings } from '@/db/schema'
+import { siteSettings, lectures } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 
 // Force dynamic rendering
