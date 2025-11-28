@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
         for (const file of files) {
             const buffer = Buffer.from(await file.arrayBuffer());
-            const fileName = `${Date.now()} -${file.name.replace(/\s+/g, "-")} `;
+            const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
 
             // Upload to S3
             await s3Client.send(
@@ -56,9 +56,16 @@ export async function POST(request: Request) {
 
             // Construct Public URL
             // If S3_PUBLIC_URL is set, use it. Otherwise, construct from endpoint/bucket (common for some providers)
-            const publicUrl = process.env.S3_PUBLIC_URL
-                ? `${process.env.S3_PUBLIC_URL}/${fileName}`
-                : `${process.env.S3_ENDPOINT}/${bucketName}/${fileName}`;
+            let publicUrl = "";
+            if (process.env.S3_PUBLIC_URL) {
+                const baseUrl = process.env.S3_PUBLIC_URL.replace(/\/$/, "");
+                publicUrl = `${baseUrl}/${fileName}`;
+            } else {
+                const endpoint = process.env.S3_ENDPOINT?.replace(/\/$/, "") || "";
+                publicUrl = `${endpoint}/${bucketName}/${fileName}`;
+            }
+
+            console.log("Uploaded file to:", publicUrl);
 
             uploadedUrls.push(publicUrl);
         }
