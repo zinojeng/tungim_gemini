@@ -8,8 +8,12 @@ const connectionString = process.env.DATABASE_URL ||
         ? 'postgres://dummy:dummy@localhost:5432/dummy'
         : 'postgres://postgres:postgres@localhost:5432/medinote');
 
+// Detect if it's an internal Zeabur connection (no SSL needed)
+const isInternalConnection = connectionString.includes('service-') ||
+    connectionString.includes('.zeabur.internal');
+
 const client = postgres(connectionString, {
-    ssl: { rejectUnauthorized: false },
+    ssl: isInternalConnection ? false : { rejectUnauthorized: false },
     prepare: false,
 });
 export const db = drizzle(client, { schema });
