@@ -18,6 +18,8 @@ export async function POST(request: Request) {
             url,
             title,
             category,
+            subcategory, // Add subcategory
+            tags, // Add tags
             provider,
             publishDate,
             coverImage, // Add coverImage
@@ -41,6 +43,8 @@ export async function POST(request: Request) {
             sourceUrl: url ? url : null, // Ensure empty string becomes null
             provider: provider || 'Manual Import',
             category: category || 'Uncategorized',
+            subcategory: subcategory || null, // Add subcategory
+            tags: tags || [], // Add tags
             coverImage: coverImage || null, // Add coverImage
             status: 'completed', // Manual import is immediately completed
             publishDate: publishDate ? new Date(publishDate) : new Date(),

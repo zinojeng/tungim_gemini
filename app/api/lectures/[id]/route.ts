@@ -40,13 +40,15 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await request.json();
-        const { title, category, provider, transcript, summary, coverImage, slides: newSlides } = body;
+        const { title, category, subcategory, tags, provider, transcript, summary, coverImage, slides: newSlides } = body;
 
         // Update lecture
         await db.update(lectures)
             .set({
                 title,
                 category,
+                subcategory,
+                tags,
                 provider,
                 coverImage,
             })
