@@ -15,6 +15,8 @@ export const lectures = pgTable('lectures', {
     audioFileUrl: text('audio_file_url'),
     provider: text('provider'),
     category: text('category'), // Added category field
+    subcategory: text('subcategory'), // Added subcategory field
+    tags: text('tags').array(), // Added tags field
     publishDate: timestamp('publish_date'),
     coverImage: text('cover_image'), // Custom cover image URL
     status: text('status').default('processing'),
