@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, jsonb, integer } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, timestamp, jsonb, integer, sql } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
     id: uuid('id').primaryKey().defaultRandom(),
@@ -7,7 +7,7 @@ export const users = pgTable('users', {
 });
 
 export const lectures = pgTable('lectures', {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
     title: text('title').notNull(),
     sourceUrl: text('source_url'),
     videoFileUrl: text('video_file_url'),
