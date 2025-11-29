@@ -48,6 +48,8 @@ export default function AdminPage() {
 
     // Form States
     const [category, setCategory] = useState("Internal Medicine")
+    const [subcategory, setSubcategory] = useState("") // Added subcategory state
+    const [tags, setTags] = useState("") // Added tags state (comma separated)
     const [customCategory, setCustomCategory] = useState("")
     const [isCustomCategory, setIsCustomCategory] = useState(false)
     const [url, setUrl] = useState("")
@@ -62,6 +64,8 @@ export default function AdminPage() {
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [editTitle, setEditTitle] = useState("")
     const [editCategory, setEditCategory] = useState("")
+    const [editSubcategory, setEditSubcategory] = useState("") // Added edit subcategory state
+    const [editTags, setEditTags] = useState("") // Added edit tags state
     const [editCustomCategory, setEditCustomCategory] = useState("")
     const [isEditCustomCategory, setIsEditCustomCategory] = useState(false)
     const [editProvider, setEditProvider] = useState("")
@@ -242,6 +246,9 @@ export default function AdminPage() {
                     setIsEditCustomCategory(false)
                     setEditCustomCategory("")
                 }
+
+                setEditSubcategory(lecture.subcategory || "") // Set subcategory
+                setEditTags(lecture.tags ? lecture.tags.join(", ") : "") // Set tags (join array)
 
                 setEditProvider(lecture.provider || '')
                 setEditCoverImage(data.coverImage || '')
@@ -424,6 +431,8 @@ export default function AdminPage() {
                     url,
                     title,
                     category: finalCategory,
+                    subcategory, // Add subcategory
+                    tags: tags.split(",").map(t => t.trim()).filter(t => t), // Process tags
                     coverImage,
                     transcript,
                     summary,
@@ -447,6 +456,8 @@ export default function AdminPage() {
             setCategory("Internal Medicine")
             setIsCustomCategory(false)
             setCustomCategory("")
+            setSubcategory("") // Reset subcategory
+            setTags("") // Reset tags
             fetchLectures()
         } catch (error: any) {
             console.error(error)
@@ -468,6 +479,8 @@ export default function AdminPage() {
                 body: JSON.stringify({
                     title: editTitle,
                     category: finalCategory,
+                    subcategory: editSubcategory, // Add subcategory
+                    tags: editTags.split(",").map(t => t.trim()).filter(t => t), // Process tags
                     provider: editProvider,
                     coverImage: editCoverImage,
                     transcript: editTranscript,
@@ -582,6 +595,27 @@ export default function AdminPage() {
                                                     className="flex-1"
                                                 />
                                             )}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="subcategory">Subcategory</Label>
+                                            <Input
+                                                id="subcategory"
+                                                placeholder="e.g., SGLT2i, GLP-1"
+                                                value={subcategory}
+                                                onChange={(e) => setSubcategory(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="tags">Tags (comma separated)</Label>
+                                            <Input
+                                                id="tags"
+                                                placeholder="e.g., ADA, EASD, 2025"
+                                                value={tags}
+                                                onChange={(e) => setTags(e.target.value)}
+                                            />
                                         </div>
                                     </div>
 
