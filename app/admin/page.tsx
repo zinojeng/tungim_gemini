@@ -20,17 +20,9 @@ import { gfm } from "turndown-plugin-gfm"
 
 const CATEGORIES = [
     "Internal Medicine",
-    "Cardiology",
+    "Diabetes",
     "Endocrinology",
-    "Nephrology",
-    "Gastroenterology",
-    "Infectious Disease",
-    "Pulmonology",
-    "Neurology",
-    "Oncology",
-    "Hematology",
-    "Rheumatology",
-    "General"
+    "Other"
 ]
 
 export default function AdminPage() {
