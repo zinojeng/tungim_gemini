@@ -197,7 +197,7 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                             )}
                             <h1 className="text-3xl font-bold mb-2">{lecture.title}</h1>
                             <p className="text-muted-foreground">
-                                {lecture.provider || 'Unknown'} • {lecture.publishDate ? new Date(lecture.publishDate).toISOString().split('T')[0] : 'Unknown Date'}
+                                {lecture.publishDate ? new Date(lecture.publishDate).toISOString().split('T')[0] : 'Unknown Date'}
                             </p>
                         </div>
 
