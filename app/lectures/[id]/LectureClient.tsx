@@ -183,6 +183,15 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                 <div className="flex-1 overflow-y-auto p-6 pb-24" id="main-scroll-area">
                     <div className="max-w-3xl mx-auto space-y-8">
                         <div>
+                            {lecture.coverImage && (
+                                <div className="mb-6 rounded-lg overflow-hidden shadow-md aspect-video relative">
+                                    <img
+                                        src={lecture.coverImage}
+                                        alt={lecture.title}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                            )}
                             {lecture.category && (
                                 <Badge className="mb-2">{lecture.category}</Badge>
                             )}
