@@ -31,37 +31,38 @@ export function LectureCard({ lecture }: LectureCardProps) {
                     )}
 
                     {lecture.category && (
-                        <div className="absolute top-3 right-3 flex gap-2">
-                            {lecture.subcategory && (
-                                <Badge variant="secondary" className="bg-background/80 hover:bg-background backdrop-blur-md shadow-sm">
-                                    {lecture.subcategory}
-                                </Badge>
-                            )}
-                            <Badge className="bg-background/90 text-foreground hover:bg-background backdrop-blur-md shadow-sm">
+                        <div className="absolute top-3 right-3">
+                            <Badge className="bg-white/90 text-teal-800 hover:bg-white backdrop-blur-md shadow-sm font-bold">
                                 {lecture.category}
                             </Badge>
                         </div>
                     )}
                 </div>
                 <CardHeader className="p-4 pb-2">
-                    <CardTitle className="line-clamp-2 text-lg leading-tight group-hover:text-primary transition-colors">
+                    <div className="flex justify-between items-start gap-2 mb-2">
+                        {lecture.subcategory && (
+                            <Badge variant="outline" className="border-teal-200 text-teal-700 bg-teal-50">
+                                {lecture.subcategory}
+                            </Badge>
+                        )}
+                        <div className="flex items-center text-xs text-muted-foreground ml-auto">
+                            <Calendar className="mr-1 h-3 w-3" />
+                            {lecture.publishDate ? new Date(lecture.publishDate).toLocaleDateString('zh-TW', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit'
+                            }) : 'Unknown'}
+                        </div>
+                    </div>
+                    <CardTitle className="line-clamp-2 text-lg leading-tight group-hover:text-teal-600 transition-colors">
                         {lecture.title}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
-                    <div className="flex items-center text-sm text-muted-foreground mb-3">
-                        <Calendar className="mr-1.5 h-3.5 w-3.5" />
-                        {lecture.publishDate ? new Date(lecture.publishDate).toLocaleDateString('zh-TW', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit'
-                        }) : 'Unknown Date'}
-                    </div>
-
                     {lecture.tags && lecture.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 mt-2">
                             {lecture.tags.map((tag, i) => (
-                                <Badge key={i} variant="outline" className="text-xs font-normal px-2 py-0 h-5 border-primary/20 text-primary/80">
+                                <Badge key={i} variant="secondary" className="text-xs font-normal px-2 py-0 h-5 bg-orange-50 text-orange-700 hover:bg-orange-100">
                                     {tag}
                                 </Badge>
                             ))}

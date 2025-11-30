@@ -57,7 +57,7 @@ export default async function Home() {
             <img
               src="/nanobanana.png"
               alt="Dr. Nanobanana"
-              className="object-contain w-full h-full drop-shadow-2xl hover:scale-105 transition-transform duration-300"
+              className="object-contain w-full h-full drop-shadow-2xl hover:scale-105 transition-transform duration-300 animate-float"
             />
           </div>
         </div>
