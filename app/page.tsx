@@ -1,4 +1,5 @@
 import { LectureCard } from "@/components/LectureCard"
+import { LectureList } from "@/components/LectureList"
 import { Button } from "@/components/ui/button"
 import { Lecture } from "@/types"
 import Link from "next/link"
@@ -70,17 +71,7 @@ export default async function Home() {
             <Link href="/lectures">View all</Link>
           </Button>
         </div>
-        {lectureList.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <p>No lectures found. Upload your first lecture from the Admin page!</p>
-          </div>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {lectureList.map((lecture) => (
-              <LectureCard key={lecture.id} lecture={lecture} />
-            ))}
-          </div>
-        )}
+        <LectureList initialLectures={lectureList} />
       </section>
     </div>
   )
