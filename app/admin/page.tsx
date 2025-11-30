@@ -647,6 +647,9 @@ export default function AdminPage() {
                                                     <SelectItem value="plush">🧸 絨毛玩具 - 可愛風格</SelectItem>
                                                     <SelectItem value="crochet">🧶 手工鉤織 - 娃娃風格</SelectItem>
                                                     <SelectItem value="character">😊 角色吉祥物 - 友善風格</SelectItem>
+                                                    <SelectItem value="running_doctor">🏃‍♀️ 數位醫療效率 (Nanobanana)</SelectItem>
+                                                    <SelectItem value="medical_tribute">👨‍⚕️ 醫護致敬海報 (Nanobanana)</SelectItem>
+                                                    <SelectItem value="remote_laptop">💻 遠端互動與學習 (Nanobanana)</SelectItem>
                                                     <SelectItem value="custom">✏️ 自訂 Prompt</SelectItem>
                                                 </SelectContent>
                                             </Select>
@@ -1050,6 +1053,9 @@ export default function AdminPage() {
                                     <SelectItem value="plush">🧸 絨毛玩具 - 可愛風格</SelectItem>
                                     <SelectItem value="crochet">🧶 手工鉤織 - 娃娃風格</SelectItem>
                                     <SelectItem value="character">😊 角色吉祥物 - 友善風格</SelectItem>
+                                    <SelectItem value="running_doctor">🏃‍♀️ 數位醫療效率 (Nanobanana)</SelectItem>
+                                    <SelectItem value="medical_tribute">👨‍⚕️ 醫護致敬海報 (Nanobanana)</SelectItem>
+                                    <SelectItem value="remote_laptop">💻 遠端互動與學習 (Nanobanana)</SelectItem>
                                     <SelectItem value="custom">✏️ 自訂 Prompt</SelectItem>
                                 </SelectContent>
                             </Select>
