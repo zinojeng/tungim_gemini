@@ -1018,6 +1018,26 @@ export default function AdminPage() {
                                 )}
                             </div>
                         </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="edit-subcategory">Subcategory</Label>
+                                <Input
+                                    id="edit-subcategory"
+                                    placeholder="e.g., SGLT2i, GLP-1"
+                                    value={editSubcategory}
+                                    onChange={(e) => setEditSubcategory(e.target.value)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="edit-tags">Tags (comma separated)</Label>
+                                <Input
+                                    id="edit-tags"
+                                    placeholder="e.g., ADA, EASD, 2025"
+                                    value={editTags}
+                                    onChange={(e) => setEditTags(e.target.value)}
+                                />
+                            </div>
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="edit-promptTemplate">AI Cover Style</Label>
                             <Select value={editPromptTemplate} onValueChange={setEditPromptTemplate}>
