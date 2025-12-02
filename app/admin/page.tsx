@@ -50,6 +50,7 @@ export default function AdminPage() {
     const [transcript, setTranscript] = useState("")
     const [summary, setSummary] = useState("")
     const [slides, setSlides] = useState<{ imageUrl: string, timestampSeconds: number }[]>([])
+    const [isPublished, setIsPublished] = useState(true)
 
     // Edit States
     const [editingLecture, setEditingLecture] = useState<Lecture | null>(null)
@@ -65,6 +66,7 @@ export default function AdminPage() {
     const [editTranscript, setEditTranscript] = useState("")
     const [editSummary, setEditSummary] = useState("")
     const [editSlides, setEditSlides] = useState<{ imageUrl: string, timestampSeconds: number }[]>([])
+    const [editIsPublished, setEditIsPublished] = useState(true)
 
     // AI Generation State
     const [isGenerating, setIsGenerating] = useState(false)
@@ -246,7 +248,9 @@ export default function AdminPage() {
                 setEditCoverImage(data.coverImage || '')
                 setEditTranscript(data.transcript || '')
                 setEditSummary(data.summary || '')
+                setEditSummary(data.summary || '')
                 setEditSlides(data.slides || [])
+                setEditIsPublished(lecture.isPublished ?? true)
                 setEditDialogOpen(true)
             }
         } catch (error) {
@@ -426,10 +430,10 @@ export default function AdminPage() {
                     subcategory, // Add subcategory
                     tags: tags.split(",").map(t => t.trim()).filter(t => t), // Process tags
                     coverImage,
-                    transcript,
                     summary,
                     provider: 'Manual Import',
-                    slides: slides
+                    slides: slides,
+                    isPublished
                 })
             })
 
@@ -450,6 +454,7 @@ export default function AdminPage() {
             setCustomCategory("")
             setSubcategory("") // Reset subcategory
             setTags("") // Reset tags
+            setIsPublished(true) // Reset published status
             fetchLectures()
         } catch (error: any) {
             console.error(error)
@@ -473,11 +478,10 @@ export default function AdminPage() {
                     category: finalCategory,
                     subcategory: editSubcategory, // Add subcategory
                     tags: editTags.split(",").map(t => t.trim()).filter(t => t), // Process tags
-                    provider: editProvider,
-                    coverImage: editCoverImage,
                     transcript: editTranscript,
                     summary: editSummary,
-                    slides: editSlides
+                    slides: editSlides,
+                    isPublished: editIsPublished
                 })
             })
 
@@ -523,13 +527,12 @@ export default function AdminPage() {
             </div>
 
             <Tabs defaultValue="create" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="create">
                         <Plus className="h-4 w-4 mr-2" />
                         Create Lecture
                     </TabsTrigger>
                     <TabsTrigger value="manage">
-                        <Pencil className="h-4 w-4 mr-2" />
                         <Pencil className="h-4 w-4 mr-2" />
                         Manage Lectures
                     </TabsTrigger>
@@ -609,6 +612,22 @@ export default function AdminPage() {
                                                 onChange={(e) => setTags(e.target.value)}
                                             />
                                         </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label>Status</Label>
+                                        <Select
+                                            value={isPublished ? "published" : "draft"}
+                                            onValueChange={(val) => setIsPublished(val === "published")}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="published">Published</SelectItem>
+                                                <SelectItem value="draft">Draft (Hidden)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
 
                                     <TabsContent value="youtube" className="space-y-4">
@@ -852,6 +871,7 @@ export default function AdminPage() {
                                             <TableHead>Title</TableHead>
                                             <TableHead>Category</TableHead>
                                             <TableHead>Provider</TableHead>
+                                            <TableHead>Published</TableHead>
                                             <TableHead>Status</TableHead>
                                             <TableHead className="text-right">Actions</TableHead>
                                         </TableRow>
@@ -864,6 +884,11 @@ export default function AdminPage() {
                                                     <Badge variant="secondary">{lecture.category || 'N/A'}</Badge>
                                                 </TableCell>
                                                 <TableCell>{lecture.provider || 'N/A'}</TableCell>
+                                                <TableCell>
+                                                    <Badge variant={lecture.isPublished ? 'default' : 'secondary'}>
+                                                        {lecture.isPublished ? 'Published' : 'Draft'}
+                                                    </Badge>
+                                                </TableCell>
                                                 <TableCell>
                                                     <Badge variant={lecture.status === 'completed' ? 'default' : 'outline'}>
                                                         {lecture.status}
@@ -1218,6 +1243,21 @@ export default function AdminPage() {
                                     </Button>
                                 </div>
                             </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Status</Label>
+                            <Select
+                                value={editIsPublished ? "published" : "draft"}
+                                onValueChange={(val) => setEditIsPublished(val === "published")}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="published">Published</SelectItem>
+                                    <SelectItem value="draft">Draft (Hidden)</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                     <DialogFooter>

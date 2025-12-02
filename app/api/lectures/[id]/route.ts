@@ -40,7 +40,7 @@ export async function PUT(
     try {
         const { id } = await params;
         const body = await request.json();
-        const { title, category, subcategory, tags, provider, transcript, summary, coverImage, slides: newSlides } = body;
+        const { title, category, subcategory, tags, provider, transcript, summary, coverImage, isPublished, slides: newSlides } = body;
 
         // Update lecture
         await db.update(lectures)
@@ -51,6 +51,7 @@ export async function PUT(
                 tags,
                 provider,
                 coverImage,
+                isPublished,
             })
             .where(eq(lectures.id, id));
 

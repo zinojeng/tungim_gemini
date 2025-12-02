@@ -3,13 +3,15 @@ import { Lecture } from "@/types"
 import { db } from '@/lib/db'
 import { lectures } from '@/db/schema'
 
+import { eq } from 'drizzle-orm'
+
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 async function getLectures(): Promise<Lecture[]> {
     try {
-        const allLectures = await db.select().from(lectures)
+        const allLectures = await db.select().from(lectures).where(eq(lectures.isPublished, true))
         return allLectures as Lecture[]
     } catch (error) {
         console.error('Error fetching lectures:', error)

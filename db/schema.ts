@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, timestamp, jsonb, integer } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, timestamp, jsonb, integer, boolean } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 
 export const users = pgTable('users', {
@@ -20,6 +20,7 @@ export const lectures = pgTable('lectures', {
     publishDate: timestamp('publish_date'),
     coverImage: text('cover_image'), // Custom cover image URL
     status: text('status').default('processing'),
+    isPublished: boolean('is_published').default(true),
 });
 
 export const transcripts = pgTable('transcripts', {

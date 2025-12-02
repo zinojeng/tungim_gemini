@@ -21,6 +21,7 @@ export interface Lecture {
     coverImage: string | null;
     publishDate: Date | null;
     status: string | null;
+    isPublished: boolean | null;
 }
 
 export interface Transcript {

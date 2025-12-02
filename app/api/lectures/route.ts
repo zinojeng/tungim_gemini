@@ -23,6 +23,7 @@ export async function POST(request: Request) {
             provider,
             publishDate,
             coverImage, // Add coverImage
+            isPublished, // Add isPublished
             // Manual import fields
             transcript,
             summary,
@@ -47,6 +48,7 @@ export async function POST(request: Request) {
             tags: tags || [], // Add tags
             coverImage: coverImage || null, // Add coverImage
             status: 'completed', // Manual import is immediately completed
+            isPublished: isPublished !== undefined ? isPublished : true, // Default to true
             publishDate: publishDate ? new Date(publishDate) : new Date(),
         }).returning();
 
