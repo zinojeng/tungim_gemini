@@ -23,9 +23,6 @@ interface LectureClientProps {
 export function LectureClient({ lecture, transcript, summary, slides }: LectureClientProps) {
     const [activeTab, setActiveTab] = useState("summary")
     const [activeSlideId, setActiveSlideId] = useState<string | null>(null)
-    const [selectedImage, setSelectedImage] = useState<string | null>(null)
-    const [hoveredSlide, setHoveredSlide] = useState<{ url: string, top: number } | null>(null)
-    const observerRefs = useRef<{ [key: string]: IntersectionObserverEntry }>({})
 
     // Scroll to specific slide
     const scrollToSlide = (slideId: string) => {
@@ -40,38 +37,7 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
         }, 100)
     }
 
-    // Intersection Observer for Scroll Sync
-    useEffect(() => {
-        if (activeTab !== "slides" || !slides || slides.length === 0) return
 
-        const callback = (entries: IntersectionObserverEntry[]) => {
-            entries.forEach((entry) => {
-                observerRefs.current[entry.target.id] = entry
-            })
-
-            // Find the most visible slide
-            const visibleSlides = Object.values(observerRefs.current).filter(entry => entry.isIntersecting)
-
-            if (visibleSlides.length > 0) {
-                // Sort by intersection ratio (most visible first)
-                visibleSlides.sort((a, b) => b.intersectionRatio - a.intersectionRatio)
-                setActiveSlideId(visibleSlides[0].target.id)
-            }
-        }
-
-        const observer = new IntersectionObserver(callback, {
-            root: null,
-            rootMargin: "-20% 0px -20% 0px", // Trigger when element is in the middle 60% of viewport
-            threshold: [0, 0.5, 1]
-        })
-
-        slides.forEach((_, index) => {
-            const element = document.getElementById(`slide-${index}`)
-            if (element) observer.observe(element)
-        })
-
-        return () => observer.disconnect()
-    }, [activeTab, slides])
 
     return (
         <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden">
@@ -132,8 +98,6 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                                                     activeSlideId === `slide-${index}` && activeTab === "slides" ? "bg-accent text-accent-foreground ring-1 ring-primary/20" : "bg-card text-muted-foreground border-transparent hover:border-border"
                                                 )}
                                                 onClick={() => scrollToSlide(`slide-${index}`)}
-                                                onMouseEnter={(e) => slide.imageUrl && setHoveredSlide({ url: slide.imageUrl, top: e.currentTarget.getBoundingClientRect().top })}
-                                                onMouseLeave={() => setHoveredSlide(null)}
                                             >
                                                 <div className="w-full relative">
                                                     {slide.imageUrl ? (
@@ -259,8 +223,7 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                                             <div
                                                 key={slide.id}
                                                 id={`slide-${index}`}
-                                                className="border rounded-lg overflow-hidden bg-card scroll-mt-24 group cursor-pointer transition-all hover:ring-2 hover:ring-primary/50"
-                                                onClick={() => slide.imageUrl && setSelectedImage(slide.imageUrl)}
+                                                className="border rounded-lg overflow-hidden bg-card scroll-mt-24"
                                             >
                                                 <div className="aspect-video relative bg-black/5">
                                                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -270,11 +233,6 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                                                         className="object-contain w-full h-full"
                                                         loading="lazy"
                                                     />
-                                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center">
-                                                        <span className="opacity-0 group-hover:opacity-100 bg-black/50 text-white px-3 py-1 rounded-full text-sm font-medium transition-opacity">
-                                                            View Full Size
-                                                        </span>
-                                                    </div>
                                                 </div>
                                                 <div className="p-3 flex justify-between items-center border-t bg-muted/5">
                                                     <span className="font-medium text-sm">Slide {index + 1}</span>
@@ -294,41 +252,7 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                 </div>
             </main>
 
-            {/* Hover Zoom Overlay */}
-            {hoveredSlide && (
-                <div
-                    className="fixed left-80 z-50 bg-background border shadow-xl rounded-lg overflow-hidden pointer-events-none"
-                    style={{
-                        top: Math.max(10, Math.min(hoveredSlide.top - 100, window.innerHeight - 500)),
-                        maxWidth: '600px',
-                        width: 'auto'
-                    }}
-                >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                        src={hoveredSlide.url}
-                        alt="Slide Preview"
-                        className="w-auto h-auto max-w-[600px] max-h-[60vh] object-contain"
-                    />
-                </div>
-            )}
 
-            {/* Lightbox Dialog */}
-            <Dialog open={!!selectedImage} onOpenChange={(open) => !open && setSelectedImage(null)}>
-                <DialogContent className="max-w-5xl w-full p-0 overflow-hidden bg-transparent border-none shadow-none">
-                    <DialogTitle className="sr-only">Slide View</DialogTitle>
-                    <div className="relative w-full h-[80vh] flex items-center justify-center" onClick={() => setSelectedImage(null)}>
-                        {selectedImage && (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                                src={selectedImage}
-                                alt="Full size slide"
-                                className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-                            />
-                        )}
-                    </div>
-                </DialogContent>
-            </Dialog>
         </div>
     )
 }
