@@ -12,7 +12,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { useState, useEffect } from "react"
-import { Trash2, Plus, Pencil, Lock, Wand2, Loader2, Upload, Settings } from "lucide-react"
+import { Trash2, Plus, Pencil, Lock, Wand2, Loader2, Upload, Settings, Download } from "lucide-react"
 import { Lecture } from "@/types"
 import mammoth from "mammoth"
 import TurndownService from "turndown"
@@ -83,6 +83,26 @@ export default function AdminPage() {
     const [heroDescription, setHeroDescription] = useState("")
     const [aboutContent, setAboutContent] = useState("")
     const [isSavingSettings, setIsSavingSettings] = useState(false)
+
+    const handleExport = async () => {
+        try {
+            const response = await fetch('/api/admin/export')
+            if (!response.ok) throw new Error('Export failed')
+
+            const blob = await response.blob()
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `imwebsite-backup-${new Date().toISOString().split('T')[0]}.json`
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+        } catch (error) {
+            console.error('Export error:', error)
+            alert('Failed to export data')
+        }
+    }
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean) => {
         const file = e.target.files?.[0]
@@ -155,6 +175,41 @@ export default function AdminPage() {
         } catch (error: any) {
             console.error("Batch upload error:", error)
             alert(`Failed to upload images: ${error.message}`)
+        } finally {
+            setIsUploading(false)
+            e.target.value = ""
+        }
+    }
+
+    // Content Image Upload Handler
+    const handleContentImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setIsUploading(true)
+        const formData = new FormData()
+        formData.append("files", file)
+
+        try {
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+
+            if (!res.ok) throw new Error('Upload failed')
+
+            const data = await res.json()
+            const imageUrl = data.urls[0]
+            const markdownImage = `\n![Image](${imageUrl})\n`
+
+            if (isEdit) {
+                setEditSummary((prev) => prev + markdownImage)
+            } else {
+                setSummary((prev) => prev + markdownImage)
+            }
+        } catch (error) {
+            console.error("Content image upload error:", error)
+            alert("Failed to upload image")
         } finally {
             setIsUploading(false)
             e.target.value = ""
@@ -517,14 +572,20 @@ export default function AdminPage() {
         }
     }
 
+
+
     return (
-        <div className="container py-10 max-w-6xl">
+        <div className="container py-10">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-                <Button variant="outline" onClick={handleLogout}>
-                    Logout
+                <Button variant="outline" onClick={handleExport}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Export Data
                 </Button>
             </div>
+            <Button variant="outline" onClick={handleLogout}>
+                Logout
+            </Button>
 
             <Tabs defaultValue="create" className="space-y-6">
                 <TabsList className="grid w-full grid-cols-3">
@@ -738,6 +799,24 @@ export default function AdminPage() {
                                                             <Upload className="h-4 w-4 mr-2" />
                                                         )}
                                                         Import .docx
+                                                    </Button>
+                                                    <Input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        className="hidden"
+                                                        id="content-image-upload"
+                                                        onChange={(e) => handleContentImageUpload(e, false)}
+                                                        disabled={isUploading}
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => document.getElementById('content-image-upload')?.click()}
+                                                        disabled={isUploading}
+                                                    >
+                                                        <Upload className="h-4 w-4 mr-2" />
+                                                        Insert Image
                                                     </Button>
                                                 </div>
                                             </div>
@@ -1156,6 +1235,24 @@ export default function AdminPage() {
                                             <Upload className="h-4 w-4 mr-2" />
                                         )}
                                         Import .docx
+                                    </Button>
+                                    <Input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        id="edit-content-image-upload"
+                                        onChange={(e) => handleContentImageUpload(e, true)}
+                                        disabled={isUploading}
+                                    />
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => document.getElementById('edit-content-image-upload')?.click()}
+                                        disabled={isUploading}
+                                    >
+                                        <Upload className="h-4 w-4 mr-2" />
+                                        Insert Image
                                     </Button>
                                 </div>
                             </div>
