@@ -216,6 +216,40 @@ export default function AdminPage() {
         }
     }
 
+    // Cover Image Upload Handler
+    const handleCoverImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setIsUploading(true)
+        const formData = new FormData()
+        formData.append("files", file)
+
+        try {
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+
+            if (!res.ok) throw new Error('Upload failed')
+
+            const data = await res.json()
+            const imageUrl = data.urls[0]
+
+            if (isEdit) {
+                setEditCoverImage(imageUrl)
+            } else {
+                setCoverImage(imageUrl)
+            }
+        } catch (error) {
+            console.error("Cover image upload error:", error)
+            alert("Failed to upload cover image")
+        } finally {
+            setIsUploading(false)
+            e.target.value = ""
+        }
+    }
+
     // Fetch lectures
     const fetchLectures = async () => {
         setIsLoadingLectures(true)
@@ -391,6 +425,7 @@ export default function AdminPage() {
 
         setIsGenerating(true);
         try {
+            // 1. Generate Image (returns base64 data URI)
             const res = await fetch('/api/generate-cover', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -410,11 +445,36 @@ export default function AdminPage() {
             }
 
             const data = await res.json();
-            if (isEdit) {
-                setEditCoverImage(data.url);
-            } else {
-                setCoverImage(data.url);
+            const base64DataUri = data.url; // This is currently a data URI: "data:image/png;base64,..."
+
+            // 2. Convert Base64 Data URI to Blob
+            const fetchResponse = await fetch(base64DataUri);
+            const blob = await fetchResponse.blob();
+            const file = new File([blob], "generated-cover.png", { type: "image/png" });
+
+            // 3. Upload to S3
+            const formData = new FormData();
+            formData.append("files", file);
+
+            const uploadRes = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!uploadRes.ok) {
+                throw new Error("Failed to upload generated image to storage");
             }
+
+            const uploadData = await uploadRes.json();
+            const publicUrl = uploadData.urls[0];
+
+            // 4. Save URL
+            if (isEdit) {
+                setEditCoverImage(publicUrl);
+            } else {
+                setCoverImage(publicUrl);
+            }
+
         } catch (error: any) {
             console.error("Generation error:", error);
             alert("Error generating image: " + error.message);
@@ -753,6 +813,28 @@ export default function AdminPage() {
                                                     onChange={(e) => setCoverImage(e.target.value)}
                                                     className="flex-1"
                                                 />
+                                                <Input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    className="hidden"
+                                                    id="cover-image-upload"
+                                                    onChange={(e) => handleCoverImageUpload(e, false)}
+                                                    disabled={isUploading}
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="icon"
+                                                    onClick={() => document.getElementById('cover-image-upload')?.click()}
+                                                    disabled={isUploading}
+                                                    title="Upload Image"
+                                                >
+                                                    {isUploading ? (
+                                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                                    ) : (
+                                                        <Upload className="h-4 w-4" />
+                                                    )}
+                                                </Button>
                                                 <Button
                                                     type="button"
                                                     variant="secondary"
@@ -1173,15 +1255,36 @@ export default function AdminPage() {
                             )}
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="edit-coverImage">Cover Image URL</Label>
+                            <Label htmlFor="editCoverImage">Cover Image URL</Label>
                             <div className="flex gap-2">
                                 <Input
-                                    id="edit-coverImage"
+                                    id="editCoverImage"
                                     value={editCoverImage}
                                     onChange={(e) => setEditCoverImage(e.target.value)}
-                                    placeholder="https://example.com/image.jpg"
                                     className="flex-1"
                                 />
+                                <Input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    id="edit-cover-image-upload"
+                                    onChange={(e) => handleCoverImageUpload(e, true)}
+                                    disabled={isUploading}
+                                />
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => document.getElementById('edit-cover-image-upload')?.click()}
+                                    disabled={isUploading}
+                                    title="Upload Image"
+                                >
+                                    {isUploading ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Upload className="h-4 w-4" />
+                                    )}
+                                </Button>
                                 <Button
                                     type="button"
                                     variant="secondary"
@@ -1193,7 +1296,7 @@ export default function AdminPage() {
                                     ) : (
                                         <Wand2 className="h-4 w-4 mr-2" />
                                     )}
-                                    Generate
+                                    Generate AI Cover
                                 </Button>
                             </div>
                             {editCoverImage && (
