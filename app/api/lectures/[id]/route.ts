@@ -23,6 +23,7 @@ export async function GET(
         return NextResponse.json({
             ...lecture,
             transcript: transcriptData?.content || '',
+            segments: transcriptData?.segments || [], // Return segments
             summary: summaryData?.fullMarkdownContent || '', // Use fullMarkdownContent as the main summary content
             coverImage: lecture.coverImage || '',
             slides: slidesData || [],
