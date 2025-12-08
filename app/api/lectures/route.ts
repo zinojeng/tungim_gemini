@@ -24,6 +24,7 @@ export async function POST(request: Request) {
             provider,
             publishDate,
             coverImage, // Add coverImage
+            pdfUrl, // Add pdfUrl
             isPublished, // Add isPublished
             // Manual import fields
             transcript,
@@ -48,6 +49,7 @@ export async function POST(request: Request) {
             subcategory: subcategory || null, // Add subcategory
             tags: tags || [], // Add tags
             coverImage: coverImage || null, // Add coverImage
+            pdfUrl: pdfUrl || null, // Add pdfUrl
             status: 'completed', // Manual import is immediately completed
             isPublished: isPublished !== undefined ? isPublished : true, // Default to true
             publishDate: publishDate ? new Date(publishDate) : new Date(),

@@ -50,11 +50,7 @@ export default async function ADAPage() {
     const adaLectures = await getADALectures()
 
     // Default content if DB is empty
-    const displayContent = content || `
-# 2026 ADA 糖尿病治療指引
-
-目前尚未有內容。請至後台編輯。
-`
+    const displayContent = content || ""
 
     return (
         <div className="container py-10 max-w-4xl">
@@ -68,18 +64,15 @@ export default async function ADAPage() {
             </div>
 
             <div className="space-y-6">
-                <h2 className="text-2xl font-bold tracking-tight">相關講座</h2>
-                {adaLectures.length === 0 ? (
-                    <div className="text-center py-12 text-muted-foreground bg-muted/30 rounded-lg">
-                        <p>目前尚未有相關講座。</p>
-                    </div>
-                ) : (
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        {adaLectures.map((lecture) => (
-                            <LectureCard key={lecture.id} lecture={lecture} />
-                        ))}
-                    </div>
-                )}
+                <div className="space-y-6">
+                    {adaLectures.length > 0 && (
+                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            {adaLectures.map((lecture) => (
+                                <LectureCard key={lecture.id} lecture={lecture} />
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     )

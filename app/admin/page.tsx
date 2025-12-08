@@ -47,6 +47,7 @@ export default function AdminPage() {
     const [isCustomCategory, setIsCustomCategory] = useState(false)
     const [url, setUrl] = useState("")
     const [coverImage, setCoverImage] = useState("")
+    const [pdfUrl, setPdfUrl] = useState("") // Added PDF state
     const [title, setTitle] = useState("")
     const [transcript, setTranscript] = useState("")
     const [summary, setSummary] = useState("")
@@ -64,6 +65,7 @@ export default function AdminPage() {
     const [isEditCustomCategory, setIsEditCustomCategory] = useState(false)
     const [editProvider, setEditProvider] = useState("")
     const [editCoverImage, setEditCoverImage] = useState("")
+    const [editPdfUrl, setEditPdfUrl] = useState("") // Added edit PDF state
     const [editTranscript, setEditTranscript] = useState("")
     const [editSummary, setEditSummary] = useState("")
     const [editSlides, setEditSlides] = useState<{ imageUrl: string, timestampSeconds: number }[]>([])
@@ -252,6 +254,40 @@ export default function AdminPage() {
         }
     }
 
+    // PDF Upload Handler
+    const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        setIsUploading(true)
+        const formData = new FormData()
+        formData.append("files", file)
+
+        try {
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+
+            if (!res.ok) throw new Error('Upload failed')
+
+            const data = await res.json()
+            const pdfUrl = data.urls[0]
+
+            if (isEdit) {
+                setEditPdfUrl(pdfUrl)
+            } else {
+                setPdfUrl(pdfUrl)
+            }
+        } catch (error) {
+            console.error("PDF upload error:", error)
+            alert("Failed to upload PDF")
+        } finally {
+            setIsUploading(false)
+            e.target.value = ""
+        }
+    }
+
     // Fetch lectures
     const fetchLectures = async () => {
         setIsLoadingLectures(true)
@@ -339,6 +375,7 @@ export default function AdminPage() {
 
                 setEditProvider(lecture.provider || '')
                 setEditCoverImage(data.coverImage || '')
+                setEditPdfUrl(data.pdfUrl || '') // Set PDF URL
                 setEditTranscript(data.transcript || '')
                 setEditSummary(data.summary || '')
                 setEditSummary(data.summary || '')
@@ -549,6 +586,7 @@ export default function AdminPage() {
                     subcategory, // Add subcategory
                     tags: tags.split(",").map(t => t.trim()).filter(t => t), // Process tags
                     coverImage,
+                    pdfUrl, // Added pdfUrl
                     summary,
                     provider: 'Manual Import',
                     slides: slides,
@@ -566,7 +604,10 @@ export default function AdminPage() {
             setTitle("")
             setTranscript("")
             setSummary("")
+            setTranscript("")
+            setSummary("")
             setCoverImage("")
+            setPdfUrl("") // Reset PDF URL
             setSlides([])
             setCategory("Internal Medicine")
             setIsCustomCategory(false)
@@ -594,12 +635,13 @@ export default function AdminPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     title: editTitle,
+                    slides: editSlides,
                     category: finalCategory,
-                    subcategory: editSubcategory, // Add subcategory
-                    tags: editTags.split(",").map(t => t.trim()).filter(t => t), // Process tags
+                    subcategory: editSubcategory,
+                    tags: editTags.split(",").map(t => t.trim()).filter(t => t),
                     transcript: editTranscript,
                     summary: editSummary,
-                    slides: editSlides,
+                    pdfUrl: editPdfUrl,
                     isPublished: editIsPublished
                 })
             })
@@ -736,6 +778,41 @@ export default function AdminPage() {
                                                 value={tags}
                                                 onChange={(e) => setTags(e.target.value)}
                                             />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="pdfUrl">PDF URL (Optional)</Label>
+                                        <div className="flex gap-2">
+                                            <Input
+                                                id="pdfUrl"
+                                                value={pdfUrl}
+                                                onChange={(e) => setPdfUrl(e.target.value)}
+                                                className="flex-1"
+                                                placeholder="https://..."
+                                            />
+                                            <Input
+                                                type="file"
+                                                accept="application/pdf"
+                                                className="hidden"
+                                                id="pdf-upload"
+                                                onChange={(e) => handlePdfUpload(e, false)}
+                                                disabled={isUploading}
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="icon"
+                                                onClick={() => document.getElementById('pdf-upload')?.click()}
+                                                disabled={isUploading}
+                                                title="Upload PDF"
+                                            >
+                                                {isUploading ? (
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                ) : (
+                                                    <Upload className="h-4 w-4" />
+                                                )}
+                                            </Button>
                                         </div>
                                     </div>
 
@@ -1331,6 +1408,39 @@ export default function AdminPage() {
                                 value={editProvider}
                                 onChange={(e) => setEditProvider(e.target.value)}
                             />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="edit-pdfUrl">PDF URL</Label>
+                            <div className="flex gap-2">
+                                <Input
+                                    id="edit-pdfUrl"
+                                    value={editPdfUrl}
+                                    onChange={(e) => setEditPdfUrl(e.target.value)}
+                                    className="flex-1"
+                                />
+                                <Input
+                                    type="file"
+                                    accept="application/pdf"
+                                    className="hidden"
+                                    id="edit-pdf-upload"
+                                    onChange={(e) => handlePdfUpload(e, true)}
+                                    disabled={isUploading}
+                                />
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={() => document.getElementById('edit-pdf-upload')?.click()}
+                                    disabled={isUploading}
+                                    title="Upload PDF"
+                                >
+                                    {isUploading ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Upload className="h-4 w-4" />
+                                    )}
+                                </Button>
+                            </div>
                         </div>
                         <div className="space-y-2">
                             <div className="flex justify-between items-center">

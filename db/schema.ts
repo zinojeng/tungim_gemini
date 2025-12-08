@@ -19,6 +19,7 @@ export const lectures = pgTable('lectures', {
     tags: text('tags').array(), // Added tags field
     publishDate: timestamp('publish_date'),
     coverImage: text('cover_image'), // Custom cover image URL
+    pdfUrl: text('pdf_url'), // PDF file URL
     status: text('status').default('processing'),
     isPublished: boolean('is_published').default(true),
 });

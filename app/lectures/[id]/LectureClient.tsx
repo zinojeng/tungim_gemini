@@ -39,6 +39,13 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
 
 
 
+    // Initialize active tab based on content availability
+    useEffect(() => {
+        if (activeTab === 'summary' && !summary && lecture.pdfUrl) {
+            setActiveTab('pdf')
+        }
+    }, [summary, lecture.pdfUrl])
+
     return (
         <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden">
             {/* Sidebar / Outline */}
@@ -70,6 +77,18 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                                     onClick={() => setActiveTab("transcript")}
                                 >
                                     Transcript
+                                </Button>
+                            )}
+                            {lecture.pdfUrl && (
+                                <Button
+                                    variant="ghost"
+                                    className={cn(
+                                        "w-full justify-start h-auto whitespace-normal text-left",
+                                        activeTab === "pdf" && "bg-accent"
+                                    )}
+                                    onClick={() => setActiveTab("pdf")}
+                                >
+                                    PDF Document
                                 </Button>
                             )}
                             {slides && slides.length > 0 && (
@@ -169,6 +188,7 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                             <TabsList>
                                 <TabsTrigger value="summary">Summary</TabsTrigger>
                                 {transcript && <TabsTrigger value="transcript">Transcript</TabsTrigger>}
+                                {lecture.pdfUrl && <TabsTrigger value="pdf">PDF</TabsTrigger>}
                                 {slides && slides.length > 0 && <TabsTrigger value="slides">Slides</TabsTrigger>}
                             </TabsList>
 
@@ -205,6 +225,31 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                                     </div>
                                 )}
                             </TabsContent>
+
+
+
+                            {lecture.pdfUrl && (
+                                <TabsContent value="pdf" className="mt-6">
+                                    <div className="w-full aspect-[3/4] md:aspect-[4/3] rounded-lg overflow-hidden border bg-muted">
+                                        <object
+                                            data={lecture.pdfUrl}
+                                            type="application/pdf"
+                                            className="w-full h-full"
+                                        >
+                                            <div className="flex flex-col items-center justify-center h-full space-y-4">
+                                                <p className="text-muted-foreground">
+                                                    Unable to display PDF directly.
+                                                </p>
+                                                <Button asChild>
+                                                    <a href={lecture.pdfUrl} target="_blank" rel="noopener noreferrer">
+                                                        Download PDF
+                                                    </a>
+                                                </Button>
+                                            </div>
+                                        </object>
+                                    </div>
+                                </TabsContent>
+                            )}
 
                             {transcript && (
                                 <TabsContent value="transcript" className="mt-6">
