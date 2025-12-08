@@ -1,9 +1,11 @@
 import { db } from '@/lib/db'
-import { siteSettings } from '@/db/schema'
-import { eq } from 'drizzle-orm'
+import { siteSettings, lectures } from '@/db/schema'
+import { eq, desc, and } from 'drizzle-orm'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
+import { LectureCard } from "@/components/LectureCard"
+import { Lecture } from "@/types"
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -23,8 +25,29 @@ async function getADAContent() {
     }
 }
 
+async function getADALectures(): Promise<Lecture[]> {
+    try {
+        const adaLectures = await db
+            .select()
+            .from(lectures)
+            .where(
+                and(
+                    eq(lectures.isPublished, true),
+                    eq(lectures.category, '2026 ADA')
+                )
+            )
+            .orderBy(desc(lectures.publishDate))
+
+        return adaLectures as Lecture[]
+    } catch (error) {
+        console.error('Error fetching ADA lectures:', error)
+        return []
+    }
+}
+
 export default async function ADAPage() {
     const content = await getADAContent()
+    const adaLectures = await getADALectures()
 
     // Default content if DB is empty
     const displayContent = content || `
@@ -35,13 +58,28 @@ export default async function ADAPage() {
 
     return (
         <div className="container py-10 max-w-4xl">
-            <div className="prose dark:prose-invert max-w-none">
+            <div className="prose dark:prose-invert max-w-none mb-12">
                 <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeRaw]}
                 >
                     {displayContent}
                 </ReactMarkdown>
+            </div>
+
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold tracking-tight">相關講座</h2>
+                {adaLectures.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground bg-muted/30 rounded-lg">
+                        <p>目前尚未有相關講座。</p>
+                    </div>
+                ) : (
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {adaLectures.map((lecture) => (
+                            <LectureCard key={lecture.id} lecture={lecture} />
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     )

@@ -22,6 +22,7 @@ const CATEGORIES = [
     "Internal Medicine",
     "Diabetes",
     "Endocrinology",
+    "2026 ADA",
     "Other"
 ]
 
