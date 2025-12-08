@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils"
 
 interface LectureClientProps {
     lecture: any
-    transcript: { content: string, segments?: any[] }
+    transcript: any
     summary: any
     slides: any[]
 }
@@ -45,55 +45,6 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
             setActiveTab('pdf')
         }
     }, [summary, lecture.pdfUrl])
-
-    // Scroll Sync Logic
-    useEffect(() => {
-        if (activeTab !== "transcript" || !transcript?.segments) return
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const start = parseFloat(entry.target.getAttribute("data-start") || "0")
-
-                        // Find matching slide
-                        // We want the slide with the largest timestamp that is <= segment start time
-                        let matchingSlideId = null
-                        if (slides && slides.length > 0) {
-                            for (let i = 0; i < slides.length; i++) {
-                                const slide = slides[i]
-                                const slideTime = slide.timestampSeconds || 0
-                                if (slideTime <= start) {
-                                    matchingSlideId = `slide-${i}`
-                                } else {
-                                    break // Slides should be sorted by time
-                                }
-                            }
-                        }
-
-                        if (matchingSlideId) {
-                            setActiveSlideId(matchingSlideId)
-                            // Optional: Scroll sidebar to slide
-                            const slideElement = document.getElementById(matchingSlideId)
-                            if (slideElement) {
-                                slideElement.scrollIntoView({ behavior: "smooth", block: "nearest" })
-                            }
-                        }
-                    }
-                })
-            },
-            {
-                root: document.getElementById("main-scroll-area"),
-                threshold: 0.5, // Trigger when 50% visible
-                rootMargin: "-10% 0px -50% 0px" // Adjust for better trigger zone
-            }
-        )
-
-        const segments = document.querySelectorAll(".transcript-segment")
-        segments.forEach((el) => observer.observe(el))
-
-        return () => observer.disconnect()
-    }, [activeTab, transcript, slides])
 
     return (
         <div className="flex h-[calc(100vh-3.5rem)] overflow-hidden">
@@ -303,29 +254,9 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                             {transcript && (
                                 <TabsContent value="transcript" className="mt-6">
                                     <article className="prose prose-slate dark:prose-invert max-w-none">
-                                        {transcript.segments && transcript.segments.length > 0 ? (
-                                            <div className="space-y-4">
-                                                {transcript.segments.map((segment: any, index: number) => (
-                                                    <div
-                                                        key={index}
-                                                        className="transcript-segment p-2 rounded hover:bg-muted/50 transition-colors"
-                                                        data-start={segment.start}
-                                                        id={`segment-${index}`}
-                                                    >
-                                                        <span className="text-xs text-muted-foreground font-mono mb-1 block">
-                                                            {new Date(segment.start * 1000).toISOString().substr(14, 5)}
-                                                        </span>
-                                                        <p className="m-0 leading-relaxed text-base">
-                                                            {segment.text}
-                                                        </p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <div className="whitespace-pre-wrap leading-relaxed text-base">
-                                                {transcript.content || 'No transcript available.'}
-                                            </div>
-                                        )}
+                                        <div className="whitespace-pre-wrap leading-relaxed text-base">
+                                            {transcript.content || 'No transcript available.'}
+                                        </div>
                                     </article>
                                 </TabsContent>
                             )}
