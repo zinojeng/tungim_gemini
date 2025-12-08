@@ -21,6 +21,9 @@ export function Navbar() {
                         <Link href="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
                             About
                         </Link>
+                        <Link href="/ada-2026" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                            2026 ADA 糖尿病治療指引
+                        </Link>
                     </nav>
                 </div>
                 <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">

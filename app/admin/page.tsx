@@ -82,6 +82,7 @@ export default function AdminPage() {
     const [heroTitle, setHeroTitle] = useState("")
     const [heroDescription, setHeroDescription] = useState("")
     const [aboutContent, setAboutContent] = useState("")
+    const [ada2026Content, setAda2026Content] = useState("") // Added ADA content state
     const [isSavingSettings, setIsSavingSettings] = useState(false)
 
     const handleExport = async () => {
@@ -275,6 +276,7 @@ export default function AdminPage() {
                 setHeroTitle(data.hero_title || "")
                 setHeroDescription(data.hero_description || "")
                 setAboutContent(data.about_content || "")
+                setAda2026Content(data.ada_2026_content || "")
             }
         } catch (error) {
             console.error('Error fetching settings:', error)
@@ -292,7 +294,8 @@ export default function AdminPage() {
                 body: JSON.stringify({
                     hero_title: heroTitle,
                     hero_description: heroDescription,
-                    about_content: aboutContent
+                    about_content: aboutContent,
+                    ada_2026_content: ada2026Content
                 })
             })
 
@@ -1130,15 +1133,30 @@ export default function AdminPage() {
                                     <div className="space-y-2">
                                         <Label htmlFor="aboutContent">About Content (Markdown)</Label>
                                         <Textarea
-                                            id="aboutContent"
+                                            id="about"
+                                            rows={10}
                                             value={aboutContent}
                                             onChange={(e) => setAboutContent(e.target.value)}
-                                            placeholder="# About Us..."
-                                            className="min-h-[300px] font-mono"
+                                            placeholder="Enter markdown content for About page..."
                                         />
+                                        <p className="text-sm text-muted-foreground">
+                                            Supports Markdown syntax.
+                                        </p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="ada2026">2026 ADA Content (Markdown)</Label>
+                                        <Textarea
+                                            id="ada2026"
+                                            rows={10}
+                                            value={ada2026Content}
+                                            onChange={(e) => setAda2026Content(e.target.value)}
+                                            placeholder="Enter markdown content for 2026 ADA page..."
+                                        />
+                                        <p className="text-sm text-muted-foreground">
+                                            Supports Markdown syntax.
+                                        </p>
                                     </div>
                                 </div>
-
                                 <Button type="submit" disabled={isSavingSettings}>
                                     {isSavingSettings ? (
                                         <>
@@ -1146,7 +1164,7 @@ export default function AdminPage() {
                                             Saving...
                                         </>
                                     ) : (
-                                        'Save Settings'
+                                        "Save Settings"
                                     )}
                                 </Button>
                             </form>

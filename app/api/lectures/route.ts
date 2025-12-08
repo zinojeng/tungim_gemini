@@ -1,10 +1,11 @@
 import { db } from '@/lib/db';
 import { lectures, transcripts, summaries } from '@/db/schema';
 import { NextResponse } from 'next/server';
+import { desc } from 'drizzle-orm';
 
 export async function GET() {
     try {
-        const allLectures = await db.select().from(lectures);
+        const allLectures = await db.select().from(lectures).orderBy(desc(lectures.publishDate));
         return NextResponse.json(allLectures);
     } catch (error) {
         return NextResponse.json({ error: 'Failed to fetch lectures' }, { status: 500 });
