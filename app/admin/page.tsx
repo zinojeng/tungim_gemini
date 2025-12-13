@@ -206,11 +206,34 @@ export default function AdminPage() {
             const imageUrl = data.urls[0]
             const markdownImage = `\n![Image](${imageUrl})\n`
 
-            if (isEdit) {
-                setEditSummary((prev) => prev + markdownImage)
+            const textareaId = isEdit ? 'edit-summary' : 'summary';
+            const textarea = document.getElementById(textareaId) as HTMLTextAreaElement;
+
+            if (textarea) {
+                const start = textarea.selectionStart;
+                const end = textarea.selectionEnd;
+                const currentContent = isEdit ? editSummary : summary;
+
+                const newContent = currentContent.substring(0, start) + markdownImage + currentContent.substring(end);
+
+                if (isEdit) {
+                    setEditSummary(newContent);
+                } else {
+                    setSummary(newContent);
+                }
+
+                // Restore cursor position after update (optional but nice)
+                // We need to wait for react to re-render, but for now just setting state is enough.
+                // If we wanted to be perfect we'd use a useEffect or requestAnimationFrame but that might be overkill for this simple fix.
             } else {
-                setSummary((prev) => prev + markdownImage)
+                // Fallback to append if textarea not found
+                if (isEdit) {
+                    setEditSummary((prev) => prev + markdownImage)
+                } else {
+                    setSummary((prev) => prev + markdownImage)
+                }
             }
+
         } catch (error) {
             console.error("Content image upload error:", error)
             alert("Failed to upload image")
