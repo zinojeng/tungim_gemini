@@ -896,6 +896,7 @@ export default function AdminPage() {
                                                     <SelectItem value="remote_laptop">💻 遠端互動與學習 (Nanobanana)</SelectItem>
                                                     <SelectItem value="healthy_lifestyle">🥗 健康生活指引 (Nanobanana)</SelectItem>
                                                     <SelectItem value="evolution_comparison">🚀 舊制轉型與進化 (Nanobanana)</SelectItem>
+                                                    <SelectItem value="corporate_minimalist">🏢 企業簡約風格 (Nanobanana)</SelectItem>
                                                     <SelectItem value="custom">✏️ 自訂 Prompt</SelectItem>
                                                 </SelectContent>
                                             </Select>
@@ -1365,6 +1366,7 @@ export default function AdminPage() {
                                     <SelectItem value="remote_laptop">💻 遠端互動與學習 (Nanobanana)</SelectItem>
                                     <SelectItem value="healthy_lifestyle">🥗 健康生活指引 (Nanobanana)</SelectItem>
                                     <SelectItem value="evolution_comparison">🚀 舊制轉型與進化 (Nanobanana)</SelectItem>
+                                    <SelectItem value="corporate_minimalist">🏢 企業簡約風格 (Nanobanana)</SelectItem>
                                     <SelectItem value="custom">✏️ 自訂 Prompt</SelectItem>
                                 </SelectContent>
                             </Select>
