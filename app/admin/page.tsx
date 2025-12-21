@@ -23,6 +23,7 @@ const CATEGORIES = [
     "Diabetes",
     "Endocrinology",
     "2026 ADA",
+    "Diabetes AI",
     "Other"
 ]
 
@@ -86,6 +87,7 @@ export default function AdminPage() {
     const [heroDescription, setHeroDescription] = useState("")
     const [aboutContent, setAboutContent] = useState("")
     const [ada2026Content, setAda2026Content] = useState("") // Added ADA content state
+    const [diabetesAiContent, setDiabetesAiContent] = useState("") // Added Diabetes AI content state
     const [isSavingSettings, setIsSavingSettings] = useState(false)
 
     const handleExport = async () => {
@@ -337,6 +339,7 @@ export default function AdminPage() {
                 setHeroDescription(data.hero_description || "")
                 setAboutContent(data.about_content || "")
                 setAda2026Content(data.ada_2026_content || "")
+                setDiabetesAiContent(data.diabetes_ai_content || "")
             }
         } catch (error) {
             console.error('Error fetching settings:', error)
@@ -355,7 +358,8 @@ export default function AdminPage() {
                     hero_title: heroTitle,
                     hero_description: heroDescription,
                     about_content: aboutContent,
-                    ada_2026_content: ada2026Content
+                    ada_2026_content: ada2026Content,
+                    diabetes_ai_content: diabetesAiContent
                 })
             })
 
@@ -1255,6 +1259,19 @@ export default function AdminPage() {
                                             value={ada2026Content}
                                             onChange={(e) => setAda2026Content(e.target.value)}
                                             placeholder="Enter markdown content for 2026 ADA page..."
+                                        />
+                                        <p className="text-sm text-muted-foreground">
+                                            Supports Markdown syntax.
+                                        </p>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="diabetesAi">Diabetes AI Content (Markdown)</Label>
+                                        <Textarea
+                                            id="diabetesAi"
+                                            rows={10}
+                                            value={diabetesAiContent}
+                                            onChange={(e) => setDiabetesAiContent(e.target.value)}
+                                            placeholder="Enter markdown content for Diabetes AI page..."
                                         />
                                         <p className="text-sm text-muted-foreground">
                                             Supports Markdown syntax.

@@ -18,11 +18,14 @@ export function Navbar() {
                         <Link href="/lectures" className="transition-colors hover:text-foreground/80 text-foreground/60">
                             Lectures
                         </Link>
-                        <Link href="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                            About
-                        </Link>
                         <Link href="/ada-2026" className="transition-colors hover:text-foreground/80 text-foreground/60">
                             2026 ADA 糖尿病治療指引
+                        </Link>
+                        <Link href="/diabetes-ai" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                            糖尿病 AI
+                        </Link>
+                        <Link href="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                            About
                         </Link>
                     </nav>
                 </div>
