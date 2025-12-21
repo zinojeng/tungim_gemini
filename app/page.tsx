@@ -5,7 +5,7 @@ import { Lecture } from "@/types"
 import Link from "next/link"
 import { db } from '@/lib/db'
 import { siteSettings, lectures } from '@/db/schema'
-import { eq } from 'drizzle-orm'
+import { eq, desc } from 'drizzle-orm'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -13,7 +13,7 @@ export const revalidate = 0
 
 async function getData() {
   try {
-    const allLectures = await db.select().from(lectures)
+    const allLectures = await db.select().from(lectures).orderBy(desc(lectures.publishDate))
     const settings = await db.select().from(siteSettings)
 
     const settingsMap = settings.reduce((acc, curr) => {
