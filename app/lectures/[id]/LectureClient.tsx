@@ -11,6 +11,11 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import { cn } from "@/lib/utils"
 
 interface LectureClientProps {
@@ -110,48 +115,82 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                                     {/* Sub-list for individual slides */}
                                     <div className="pl-4 mt-2 border-l ml-2 flex flex-col gap-2">
                                         {slides.map((slide, index) => (
-                                            <div
-                                                key={slide.id}
-                                                className={cn(
-                                                    "w-full text-left cursor-pointer rounded-md border transition-all hover:bg-accent hover:text-accent-foreground overflow-hidden group",
-                                                    activeSlideId === `slide-${index}` && activeTab === "slides" ? "bg-accent text-accent-foreground ring-1 ring-primary/20" : "bg-card text-muted-foreground border-transparent hover:border-border"
-                                                )}
-                                                onClick={() => scrollToSlide(`slide-${index}`)}
-                                            >
-                                                <div className="w-full relative">
+                                            <HoverCard key={slide.id} openDelay={100} closeDelay={100}>
+                                                <HoverCardTrigger asChild>
+                                                    <div
+                                                        className={cn(
+                                                            "w-full text-left cursor-pointer rounded-md border transition-all hover:bg-accent hover:text-accent-foreground overflow-hidden group",
+                                                            activeSlideId === `slide-${index}` && activeTab === "slides" ? "bg-accent text-accent-foreground ring-1 ring-primary/20" : "bg-card text-muted-foreground border-transparent hover:border-border"
+                                                        )}
+                                                        onClick={() => scrollToSlide(`slide-${index}`)}
+                                                    >
+                                                        <div className="w-full relative">
+                                                            {slide.imageUrl ? (
+                                                                // eslint-disable-next-line @next/next/no-img-element
+                                                                <img
+                                                                    src={slide.imageUrl}
+                                                                    alt={`Slide ${index + 1}`}
+                                                                    className="w-full h-auto object-contain block"
+                                                                    onError={(e) => {
+                                                                        e.currentTarget.style.display = 'none'
+                                                                        const parent = e.currentTarget.parentElement
+                                                                        if (parent) {
+                                                                            parent.classList.add('h-20', 'bg-muted', 'flex', 'items-center', 'justify-center')
+                                                                            const span = document.createElement('span')
+                                                                            span.className = 'text-xs text-muted-foreground'
+                                                                            span.innerText = 'No Image'
+                                                                            parent.appendChild(span)
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            ) : (
+                                                                <div className="w-full h-20 bg-muted flex items-center justify-center">
+                                                                    <span className="text-xs text-muted-foreground">No Image</span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="p-2 flex justify-between items-center text-xs border-t bg-muted/20">
+                                                            <span className="font-medium truncate">Slide {index + 1}</span>
+                                                            {slide.timestampSeconds !== null && slide.timestampSeconds > 0 && (
+                                                                <span className="text-[10px] opacity-70 font-mono">
+                                                                    {new Date(slide.timestampSeconds * 1000).toISOString().substr(14, 5)}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </HoverCardTrigger>
+                                                <HoverCardContent
+                                                    side="right"
+                                                    align="start"
+                                                    className="w-[480px] p-0 overflow-hidden bg-background border-border shadow-2xl z-50 rounded-lg"
+                                                    sideOffset={10}
+                                                >
                                                     {slide.imageUrl ? (
-                                                        // eslint-disable-next-line @next/next/no-img-element
-                                                        <img
-                                                            src={slide.imageUrl}
-                                                            alt={`Slide ${index + 1}`}
-                                                            className="w-full h-auto object-contain block"
-                                                            onError={(e) => {
-                                                                e.currentTarget.style.display = 'none'
-                                                                const parent = e.currentTarget.parentElement
-                                                                if (parent) {
-                                                                    parent.classList.add('h-20', 'bg-muted', 'flex', 'items-center', 'justify-center')
-                                                                    const span = document.createElement('span')
-                                                                    span.className = 'text-xs text-muted-foreground'
-                                                                    span.innerText = 'No Image'
-                                                                    parent.appendChild(span)
-                                                                }
-                                                            }}
-                                                        />
+                                                        <div className="w-full bg-black/5">
+                                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                            <img
+                                                                src={slide.imageUrl}
+                                                                alt={`Slide ${index + 1} Preview`}
+                                                                className="w-full h-auto object-contain"
+                                                            />
+                                                            <div className="p-3 bg-background border-t">
+                                                                <div className="flex justify-between items-center">
+                                                                    <span className="font-semibold">Slide {index + 1}</span>
+                                                                    {slide.timestampSeconds !== null && slide.timestampSeconds > 0 && (
+                                                                        <span className="text-xs text-muted-foreground font-mono bg-muted px-2 py-1 rounded">
+                                                                            {new Date(slide.timestampSeconds * 1000).toISOString().substr(11, 8)}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     ) : (
-                                                        <div className="w-full h-20 bg-muted flex items-center justify-center">
-                                                            <span className="text-xs text-muted-foreground">No Image</span>
+                                                        <div className="p-6 text-center text-muted-foreground">
+                                                            No preview available
                                                         </div>
                                                     )}
-                                                </div>
-                                                <div className="p-2 flex justify-between items-center text-xs border-t bg-muted/20">
-                                                    <span className="font-medium truncate">Slide {index + 1}</span>
-                                                    {slide.timestampSeconds !== null && slide.timestampSeconds > 0 && (
-                                                        <span className="text-[10px] opacity-70 font-mono">
-                                                            {new Date(slide.timestampSeconds * 1000).toISOString().substr(14, 5)}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
+                                                </HoverCardContent>
+                                            </HoverCard>
                                         ))}
                                     </div>
                                 </>
