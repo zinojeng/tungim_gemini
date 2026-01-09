@@ -898,6 +898,9 @@ export default function AdminPage() {
                                                     <SelectItem value="running_doctor">🏃‍♀️ 數位醫療效率 (Nanobanana)</SelectItem>
                                                     <SelectItem value="medical_tribute">👨‍⚕️ 醫護致敬海報 (Nanobanana)</SelectItem>
                                                     <SelectItem value="remote_laptop">💻 遠端互動與學習 (Nanobanana)</SelectItem>
+                                                    <SelectItem value="eco_growth">🌿 自然與成長 (Nanobanana)</SelectItem>
+                                                    <SelectItem value="tech_innovation">🧬 創新與未來 (Nanobanana)</SelectItem>
+                                                    <SelectItem value="care_community">🤝 關懷與社群 (Nanobanana)</SelectItem>
                                                     <SelectItem value="healthy_lifestyle">🥗 健康生活指引 (Nanobanana)</SelectItem>
                                                     <SelectItem value="evolution_comparison">🚀 舊制轉型與進化 (Nanobanana)</SelectItem>
                                                     <SelectItem value="corporate_minimalist">🏢 企業簡約風格 (Nanobanana)</SelectItem>
@@ -1381,6 +1384,9 @@ export default function AdminPage() {
                                     <SelectItem value="running_doctor">🏃‍♀️ 數位醫療效率 (Nanobanana)</SelectItem>
                                     <SelectItem value="medical_tribute">👨‍⚕️ 醫護致敬海報 (Nanobanana)</SelectItem>
                                     <SelectItem value="remote_laptop">💻 遠端互動與學習 (Nanobanana)</SelectItem>
+                                    <SelectItem value="eco_growth">🌿 自然與成長 (Nanobanana)</SelectItem>
+                                    <SelectItem value="tech_innovation">🧬 創新與未來 (Nanobanana)</SelectItem>
+                                    <SelectItem value="care_community">🤝 關懷與社群 (Nanobanana)</SelectItem>
                                     <SelectItem value="healthy_lifestyle">🥗 健康生活指引 (Nanobanana)</SelectItem>
                                     <SelectItem value="evolution_comparison">🚀 舊制轉型與進化 (Nanobanana)</SelectItem>
                                     <SelectItem value="corporate_minimalist">🏢 企業簡約風格 (Nanobanana)</SelectItem>
