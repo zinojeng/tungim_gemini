@@ -28,9 +28,9 @@ export default async function AboutPage() {
 
     // Default content if DB is empty
     const displayContent = content || `
-# 關於 MediNote AI
+# 關於 MedNote AI
 
-**MediNote AI** 是一個專為忙碌的內科醫師與醫療專業人員設計的知識萃取平台。我們利用 AI 技術，將醫療演講影音自動轉換為結構化筆記、投影片重點分析與逐字稿，讓您能在 5 分鐘內掌握 1 小時演講的精華。
+**MedNote AI** 是一個專為忙碌的內科醫師與醫療專業人員設計的知識萃取平台。我們利用 AI 技術，將醫療演講影音自動轉換為結構化筆記、投影片重點分析與逐字稿，讓您能在 5 分鐘內掌握 1 小時演講的精華。
 
 ## 核心價值
 

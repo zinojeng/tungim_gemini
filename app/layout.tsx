@@ -9,7 +9,7 @@ import { Footer } from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "MediNote AI",
+  title: "MedNote AI",
   description: "AI-powered medical lecture notes",
 };
 
