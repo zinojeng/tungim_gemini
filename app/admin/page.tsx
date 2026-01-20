@@ -896,14 +896,14 @@ export default function AdminPage() {
                                                     <SelectItem value="crochet">🧶 手工鉤織 - 娃娃風格</SelectItem>
                                                     <SelectItem value="character">😊 角色吉祥物 - 友善風格</SelectItem>
                                                     <SelectItem value="running_doctor">🏃‍♀️ 數位醫療效率 (Nanobanana)</SelectItem>
-                                                    <SelectItem value="medical_tribute">👨‍⚕️ 醫護致敬海報 (Nanobanana)</SelectItem>
-                                                    <SelectItem value="remote_laptop">💻 遠端互動與學習 (Nanobanana)</SelectItem>
+                                                    <SelectItem value="corporate_minimalist">🏢 企業簡約風格 (Nanobanana)</SelectItem>
+                                                    <SelectItem value="remote_laptop">💻 遠端互動與學習 (原型)</SelectItem>
+                                                    <SelectItem value="remote_laptop_v1">💻 遠端互動與學習 (專注藍) - V1</SelectItem>
+                                                    <SelectItem value="remote_laptop_v2">💻 遠端互動與學習 (創意暖) - V2</SelectItem>
+                                                    <SelectItem value="remote_laptop_v3">💻 遠端互動與學習 (自然綠) - V3</SelectItem>
+                                                    <SelectItem value="editorial_cutout">✂️ 剪紙插畫風格 (Editorial Cutout)</SelectItem>
                                                     <SelectItem value="eco_growth">🌿 自然與成長 (Nanobanana)</SelectItem>
                                                     <SelectItem value="tech_innovation">🧬 創新與未來 (Nanobanana)</SelectItem>
-                                                    <SelectItem value="care_community">🤝 關懷與社群 (Nanobanana)</SelectItem>
-                                                    <SelectItem value="healthy_lifestyle">🥗 健康生活指引 (Nanobanana)</SelectItem>
-                                                    <SelectItem value="evolution_comparison">🚀 舊制轉型與進化 (Nanobanana)</SelectItem>
-                                                    <SelectItem value="corporate_minimalist">🏢 企業簡約風格 (Nanobanana)</SelectItem>
                                                     <SelectItem value="custom">✏️ 自訂 Prompt</SelectItem>
                                                 </SelectContent>
                                             </Select>
@@ -1382,14 +1382,14 @@ export default function AdminPage() {
                                     <SelectItem value="crochet">🧶 手工鉤織 - 娃娃風格</SelectItem>
                                     <SelectItem value="character">😊 角色吉祥物 - 友善風格</SelectItem>
                                     <SelectItem value="running_doctor">🏃‍♀️ 數位醫療效率 (Nanobanana)</SelectItem>
-                                    <SelectItem value="medical_tribute">👨‍⚕️ 醫護致敬海報 (Nanobanana)</SelectItem>
-                                    <SelectItem value="remote_laptop">💻 遠端互動與學習 (Nanobanana)</SelectItem>
+                                    <SelectItem value="corporate_minimalist">🏢 企業簡約風格 (Nanobanana)</SelectItem>
+                                    <SelectItem value="remote_laptop">💻 遠端互動與學習 (原型)</SelectItem>
+                                    <SelectItem value="remote_laptop_v1">💻 遠端互動與學習 (專注藍) - V1</SelectItem>
+                                    <SelectItem value="remote_laptop_v2">💻 遠端互動與學習 (創意暖) - V2</SelectItem>
+                                    <SelectItem value="remote_laptop_v3">💻 遠端互動與學習 (自然綠) - V3</SelectItem>
+                                    <SelectItem value="editorial_cutout">✂️ 剪紙插畫風格 (Editorial Cutout)</SelectItem>
                                     <SelectItem value="eco_growth">🌿 自然與成長 (Nanobanana)</SelectItem>
                                     <SelectItem value="tech_innovation">🧬 創新與未來 (Nanobanana)</SelectItem>
-                                    <SelectItem value="care_community">🤝 關懷與社群 (Nanobanana)</SelectItem>
-                                    <SelectItem value="healthy_lifestyle">🥗 健康生活指引 (Nanobanana)</SelectItem>
-                                    <SelectItem value="evolution_comparison">🚀 舊制轉型與進化 (Nanobanana)</SelectItem>
-                                    <SelectItem value="corporate_minimalist">🏢 企業簡約風格 (Nanobanana)</SelectItem>
                                     <SelectItem value="custom">✏️ 自訂 Prompt</SelectItem>
                                 </SelectContent>
                             </Select>
