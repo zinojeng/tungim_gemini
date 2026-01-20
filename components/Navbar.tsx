@@ -1,10 +1,27 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Search } from "lucide-react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 export function Navbar() {
+    const router = useRouter()
+    const [searchQuery, setSearchQuery] = useState("")
+
+    const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            if (searchQuery.trim()) {
+                router.push(`/lectures?search=${encodeURIComponent(searchQuery.trim())}`)
+            } else {
+                router.push('/lectures')
+            }
+        }
+    }
+
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-14 items-center">
@@ -33,7 +50,13 @@ export function Navbar() {
                     <div className="w-full flex-1 md:w-auto md:flex-none">
                         <div className="relative">
                             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Search lectures..." className="pl-8 w-full md:w-[300px]" />
+                            <Input
+                                placeholder="Search lectures..."
+                                className="pl-8 w-full md:w-[300px]"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={handleSearch}
+                            />
                         </div>
                     </div>
                     <nav className="flex items-center gap-2">
