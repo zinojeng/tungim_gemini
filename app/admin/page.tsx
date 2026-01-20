@@ -666,6 +666,7 @@ export default function AdminPage() {
                     category: finalCategory,
                     subcategory: editSubcategory,
                     tags: editTags.split(",").map(t => t.trim()).filter(t => t),
+                    coverImage: editCoverImage,
                     transcript: editTranscript,
                     summary: editSummary,
                     pdfUrl: editPdfUrl,
