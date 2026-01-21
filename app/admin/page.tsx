@@ -144,10 +144,10 @@ export default function AdminPage() {
 
         setIsUploading(true)
 
-        // Helper to extract time from filename (HH:MM:SS or HH-MM-SS or HH.MM.SS or HH MM SS)
+        // Helper to extract time from filename (HH:MM:SS or HH-MM-SS or HH.MM.SS)
         const extractTime = (filename: string): number | null => {
-            // Updated regex to include space as separator and be slightly more flexible
-            const timeRegex = /(?:^|\D)(\d{1,2})[:.\-_ ](\d{2})(?:[:.\-_ ](\d{2}))?(?:\D|$)/;
+            // Regex to exclude space as separator to avoid matching "Slide 1 10..." as "1:10"
+            const timeRegex = /(?:^|\D)(\d{1,2})[:.\-_](\d{2})(?:[:.\-_](\d{2}))?(?:\D|$)/;
             const match = filename.match(timeRegex);
             if (match) {
                 const hours = parseInt(match[1], 10);
