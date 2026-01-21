@@ -143,10 +143,40 @@ export default function AdminPage() {
         if (!files || files.length === 0) return
 
         setIsUploading(true)
-        const formData = new FormData()
-        for (let i = 0; i < files.length; i++) {
-            formData.append("files", files[i])
+
+        // Helper to extract time from filename (HH:MM:SS or HH-MM-SS or HH.MM.SS)
+        const extractTime = (filename: string): number | null => {
+            const timeRegex = /(?:^|\D)(\d{1,2})[:.\-_](\d{2})(?:[:.\-_](\d{2}))?(?:\D|$)/;
+            const match = filename.match(timeRegex);
+            if (match) {
+                const hours = parseInt(match[1], 10);
+                const minutes = parseInt(match[2], 10);
+                const seconds = match[3] ? parseInt(match[3], 10) : 0;
+                if (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60 && seconds >= 0 && seconds < 60) {
+                    return hours * 3600 + minutes * 60 + seconds;
+                }
+            }
+            return null;
         }
+
+        // Convert FileList to Array and Sort
+        const fileArray = Array.from(files).sort((a, b) => {
+            const timeA = extractTime(a.name);
+            const timeB = extractTime(b.name);
+
+            // If both have time, sort by time first
+            if (timeA !== null && timeB !== null) {
+                if (timeA !== timeB) return timeA - timeB;
+            }
+
+            // Fallback to natural sort order for filenames
+            return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        const formData = new FormData()
+        fileArray.forEach(file => {
+            formData.append("files", file)
+        })
 
         try {
             const res = await fetch('/api/upload', {
