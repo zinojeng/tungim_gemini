@@ -144,14 +144,17 @@ export default function AdminPage() {
 
         setIsUploading(true)
 
-        // Helper to extract time from filename (HH:MM:SS or HH-MM-SS or HH.MM.SS)
+        // Helper to extract time from filename (HH:MM:SS or HH-MM-SS or HH.MM.SS or HH MM SS)
         const extractTime = (filename: string): number | null => {
-            const timeRegex = /(?:^|\D)(\d{1,2})[:.\-_](\d{2})(?:[:.\-_](\d{2}))?(?:\D|$)/;
+            // Updated regex to include space as separator and be slightly more flexible
+            const timeRegex = /(?:^|\D)(\d{1,2})[:.\-_ ](\d{2})(?:[:.\-_ ](\d{2}))?(?:\D|$)/;
             const match = filename.match(timeRegex);
             if (match) {
                 const hours = parseInt(match[1], 10);
                 const minutes = parseInt(match[2], 10);
                 const seconds = match[3] ? parseInt(match[3], 10) : 0;
+
+                // Validate time components
                 if (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60 && seconds >= 0 && seconds < 60) {
                     return hours * 3600 + minutes * 60 + seconds;
                 }
@@ -164,12 +167,12 @@ export default function AdminPage() {
             const timeA = extractTime(a.name);
             const timeB = extractTime(b.name);
 
-            // If both have time, sort by time first
+            // If both have time, sort by time first (Ascending: Smallest time first)
             if (timeA !== null && timeB !== null) {
                 if (timeA !== timeB) return timeA - timeB;
             }
 
-            // Fallback to natural sort order for filenames
+            // Fallback to natural sort order for filenames (Ascending: A before Z)
             return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
         });
 
