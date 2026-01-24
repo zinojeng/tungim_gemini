@@ -5,7 +5,6 @@ import { Lecture } from "@/types"
 import { LectureCard } from "@/components/LectureCard"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Search, X } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -24,16 +23,6 @@ const CATEGORIES = [
 export function LectureList({ initialLectures }: LectureListProps) {
     const [searchQuery, setSearchQuery] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("All")
-    const [selectedTag, setSelectedTag] = useState<string | null>(null)
-
-    // Extract all unique tags
-    const allTags = useMemo(() => {
-        const tags = new Set<string>()
-        initialLectures.forEach(lecture => {
-            lecture.tags?.forEach(tag => tags.add(tag))
-        })
-        return Array.from(tags).sort()
-    }, [initialLectures])
 
     // Filter lectures
     const filteredLectures = useMemo(() => {
@@ -49,12 +38,9 @@ export function LectureList({ initialLectures }: LectureListProps) {
             // Category filter
             const matchesCategory = selectedCategory === "All" || lecture.category === selectedCategory
 
-            // Tag filter
-            const matchesTag = selectedTag === null || lecture.tags?.includes(selectedTag)
-
-            return matchesSearch && matchesCategory && matchesTag
+            return matchesSearch && matchesCategory
         })
-    }, [initialLectures, searchQuery, selectedCategory, selectedTag])
+    }, [initialLectures, searchQuery, selectedCategory])
 
     return (
         <div className="space-y-8">
@@ -88,36 +74,6 @@ export function LectureList({ initialLectures }: LectureListProps) {
                         ))}
                     </TabsList>
                 </Tabs>
-
-                {/* Tag Cloud */}
-                {allTags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 items-center pt-2">
-                        <span className="text-sm text-muted-foreground mr-2">Filter by Tag:</span>
-                        {allTags.map(tag => (
-                            <Badge
-                                key={tag}
-                                variant={selectedTag === tag ? "default" : "outline"}
-                                className={`cursor-pointer transition-colors ${selectedTag === tag
-                                        ? "bg-teal-600 hover:bg-teal-700 border-transparent text-white"
-                                        : "hover:border-teal-300 hover:text-teal-600 bg-background"
-                                    }`}
-                                onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-                            >
-                                {tag}
-                            </Badge>
-                        ))}
-                        {selectedTag && (
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setSelectedTag(null)}
-                                className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
-                            >
-                                Clear Tag
-                            </Button>
-                        )}
-                    </div>
-                )}
             </div>
 
             {/* Results Grid */}
@@ -129,7 +85,6 @@ export function LectureList({ initialLectures }: LectureListProps) {
                         onClick={() => {
                             setSearchQuery("")
                             setSelectedCategory("All")
-                            setSelectedTag(null)
                         }}
                     >
                         Clear all filters
