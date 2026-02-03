@@ -17,6 +17,21 @@ async function getLectureData(id: string) {
         const [summary] = await db.select().from(summaries).where(eq(summaries.lectureId, id))
         const slidesData = await db.select().from(slides).where(eq(slides.lectureId, id))
 
+        // Sort slides by filename, ignoring the timestamp prefix added by Zeabur
+        slidesData.sort((a, b) => {
+            const getCleanName = (url: string | null) => {
+                if (!url) return '';
+                const filename = url.split('/').pop() || '';
+                // Remove timestamp prefix (e.g., "1770133550887-")
+                return filename.replace(/^\d+-/, '');
+            }
+
+            const nameA = getCleanName(a.imageUrl);
+            const nameB = getCleanName(b.imageUrl);
+
+            return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
         return { lecture, transcript, summary, slides: slidesData }
     } catch (error) {
         console.error('Error fetching lecture data:', error)
