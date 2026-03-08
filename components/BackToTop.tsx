@@ -1,31 +1,31 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { ArrowUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function BackToTop() {
     const [visible, setVisible] = useState(false)
-
-    const getScrollTarget = useCallback(() => {
-        return document.getElementById("main-scroll-area") || null
-    }, [])
+    const pathname = usePathname()
 
     useEffect(() => {
+        setVisible(false)
+
+        const el = document.getElementById("main-scroll-area")
+        const target = el || window
+
         const onScroll = () => {
-            const el = getScrollTarget()
             const scrollY = el ? el.scrollTop : window.scrollY
             setVisible(scrollY > 300)
         }
 
-        const el = getScrollTarget()
-        const target = el || window
         target.addEventListener("scroll", onScroll, { passive: true })
         return () => target.removeEventListener("scroll", onScroll)
-    }, [getScrollTarget])
+    }, [pathname])
 
     const scrollToTop = () => {
-        const el = getScrollTarget()
+        const el = document.getElementById("main-scroll-area")
         if (el) {
             el.scrollTo({ top: 0, behavior: "smooth" })
         } else {
