@@ -1,19 +1,37 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { ArrowUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export function BackToTop() {
     const [visible, setVisible] = useState(false)
 
-    useEffect(() => {
-        const onScroll = () => setVisible(window.scrollY > 300)
-        window.addEventListener("scroll", onScroll, { passive: true })
-        return () => window.removeEventListener("scroll", onScroll)
+    const getScrollTarget = useCallback(() => {
+        return document.getElementById("main-scroll-area") || null
     }, [])
 
-    const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" })
+    useEffect(() => {
+        const onScroll = () => {
+            const el = getScrollTarget()
+            const scrollY = el ? el.scrollTop : window.scrollY
+            setVisible(scrollY > 300)
+        }
+
+        const el = getScrollTarget()
+        const target = el || window
+        target.addEventListener("scroll", onScroll, { passive: true })
+        return () => target.removeEventListener("scroll", onScroll)
+    }, [getScrollTarget])
+
+    const scrollToTop = () => {
+        const el = getScrollTarget()
+        if (el) {
+            el.scrollTo({ top: 0, behavior: "smooth" })
+        } else {
+            window.scrollTo({ top: 0, behavior: "smooth" })
+        }
+    }
 
     return (
         <button
