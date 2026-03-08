@@ -64,15 +64,29 @@ export default async function ADAPage() {
             </div>
 
             <div className="space-y-6">
-                <div className="space-y-6">
-                    {adaLectures.length > 0 && (
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            {adaLectures.map((lecture) => (
-                                <LectureCard key={lecture.id} lecture={lecture} />
-                            ))}
-                        </div>
-                    )}
-                </div>
+                {adaLectures.length > 0 && (() => {
+                    const recentLectures = adaLectures.slice(0, 5)
+                    const olderLectures = adaLectures.slice(5)
+                    return (
+                        <>
+                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                {recentLectures.map((lecture) => (
+                                    <LectureCard key={lecture.id} lecture={lecture} />
+                                ))}
+                            </div>
+                            {olderLectures.length > 0 && (
+                                <>
+                                    <hr className="my-8 border-border" />
+                                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                        {olderLectures.map((lecture) => (
+                                            <LectureCard key={lecture.id} lecture={lecture} />
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </>
+                    )
+                })()}
             </div>
         </div>
     )

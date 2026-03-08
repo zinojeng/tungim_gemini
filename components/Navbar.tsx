@@ -36,7 +36,7 @@ export function Navbar() {
                             Lectures
                         </Link>
                         <Link href="/ada-2026" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                            2026 ADA 糖尿病治療指引
+                            2026 ADA
                         </Link>
                         <Link href="/diabetes-ai" className="transition-colors hover:text-foreground/80 text-foreground/60">
                             糖尿病 AI
