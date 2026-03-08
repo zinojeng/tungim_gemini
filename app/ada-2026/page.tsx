@@ -6,6 +6,34 @@ import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import { LectureCard } from "@/components/LectureCard"
 import { Lecture } from "@/types"
+import type { Metadata } from 'next'
+
+const SITE_URL = 'https://mednote.zeabur.app'
+
+export const metadata: Metadata = {
+    title: '2026 ADA Standards of Care — 糖尿病治療指引 | MedNote AI',
+    description: '2026 ADA 糖尿病照護標準完整解析，涵蓋血糖控制、藥物治療、併發症管理及特殊族群照護等章節。',
+    openGraph: {
+        title: '2026 ADA Standards of Care — 糖尿病治療指引',
+        description: '2026 ADA 糖尿病照護標準完整解析，涵蓋血糖控制、藥物治療、併發症管理及特殊族群照護等章節。',
+        url: `${SITE_URL}/ada-2026`,
+        siteName: 'MedNote AI',
+        images: [{
+            url: `${SITE_URL}/og-ada-2026.png`,
+            width: 2752,
+            height: 1536,
+            alt: '2026 ADA 糖尿病治療指引',
+        }],
+        locale: 'zh_TW',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: '2026 ADA Standards of Care — 糖尿病治療指引',
+        description: '2026 ADA 糖尿病照護標準完整解析，涵蓋血糖控制、藥物治療、併發症管理及特殊族群照護等章節。',
+        images: [`${SITE_URL}/og-ada-2026.png`],
+    },
+}
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
