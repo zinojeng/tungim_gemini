@@ -249,7 +249,7 @@ export function LectureClient({ lecture, transcript, summary, slides }: LectureC
                                             <div>
                                                 <div>
                                                     <ReactMarkdown
-                                                        rehypePlugins={[rehypeRaw, rehypeKatex]}
+                                                        rehypePlugins={[rehypeRaw, [rehypeKatex, { strict: false }]]}
                                                         remarkPlugins={[remarkGfm, remarkMath]}
                                                     >
                                                         {summary.fullMarkdownContent}
