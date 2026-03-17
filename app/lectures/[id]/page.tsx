@@ -1,3 +1,4 @@
+import type { Metadata, ResolvingMetadata } from 'next'
 import { db } from '@/lib/db'
 import { lectures, transcripts, summaries, slides } from '@/db/schema'
 import { eq } from 'drizzle-orm'
@@ -36,6 +37,53 @@ async function getLectureData(id: string) {
     } catch (error) {
         console.error('Error fetching lecture data:', error)
         return null
+    }
+}
+
+export async function generateMetadata(
+    { params }: { params: Promise<{ id: string }> },
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+    const { id } = await params
+    const data = await getLectureData(id)
+
+    if (!data || !data.lecture) {
+        return {
+            title: 'Lecture Not Found',
+        }
+    }
+
+    const { lecture, summary, slides } = data
+
+    const title = lecture.title || 'Lecture'
+    const description = summary?.executiveSummary || 'AI-powered medical lecture notes.'
+    
+    // Determine the best image for og:image.
+    // 1. lecture.coverImage (if available)
+    // 2. slides[0].imageUrl (if available)
+    // Absolute URLs should be used. The Image URLs in DB are expected to be absolute (from cloud storage).
+    const imageUrl = lecture.coverImage || (slides && slides.length > 0 ? slides[0].imageUrl : null)
+    
+    const previousImages = (await parent).openGraph?.images || []
+    const images = imageUrl ? [imageUrl, ...previousImages] : previousImages
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            images,
+            type: 'article',
+            publishedTime: lecture.publishDate ? new Date(lecture.publishDate).toISOString() : undefined,
+            authors: lecture.provider ? [lecture.provider] : undefined,
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: imageUrl ? [imageUrl] : undefined,
+        }
     }
 }
 
