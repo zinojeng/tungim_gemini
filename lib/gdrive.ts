@@ -3,21 +3,25 @@ import { db } from '@/lib/db'
 import { lectures, transcripts, summaries, slides, siteSettings } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 
-// --- Google Drive Client ---
+// --- Google Drive Client (OAuth 2.0) ---
 
 export function getGDriveClient(): drive_v3.Drive {
-    const keyJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY
-    if (!keyJson) {
-        throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY is not set')
+    const clientId = process.env.GOOGLE_CLIENT_ID
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET
+    const refreshToken = process.env.GOOGLE_REFRESH_TOKEN
+
+    if (!clientId || !clientSecret || !refreshToken) {
+        throw new Error(
+            'Google Drive OAuth not configured. Required env vars: ' +
+            'GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN. ' +
+            'Visit /api/admin/gdrive/auth to get your refresh token.'
+        )
     }
 
-    const key = JSON.parse(keyJson)
-    const auth = new google.auth.GoogleAuth({
-        credentials: key,
-        scopes: ['https://www.googleapis.com/auth/drive.file'],
-    })
+    const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, 'urn:ietf:wg:oauth:2.0:oob')
+    oauth2Client.setCredentials({ refresh_token: refreshToken })
 
-    return google.drive({ version: 'v3', auth })
+    return google.drive({ version: 'v3', auth: oauth2Client })
 }
 
 export function getRootFolderId(): string {
@@ -31,6 +35,38 @@ export function getRootFolderId(): string {
     return folderId
 }
 
+// --- OAuth Helper ---
+
+export function getAuthUrl(): string {
+    const clientId = process.env.GOOGLE_CLIENT_ID
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET
+
+    if (!clientId || !clientSecret) {
+        throw new Error('GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are required')
+    }
+
+    const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, 'urn:ietf:wg:oauth:2.0:oob')
+
+    return oauth2Client.generateAuthUrl({
+        access_type: 'offline',
+        prompt: 'consent',
+        scope: ['https://www.googleapis.com/auth/drive.file'],
+    })
+}
+
+export async function exchangeCodeForTokens(code: string) {
+    const clientId = process.env.GOOGLE_CLIENT_ID
+    const clientSecret = process.env.GOOGLE_CLIENT_SECRET
+
+    if (!clientId || !clientSecret) {
+        throw new Error('GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are required')
+    }
+
+    const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, 'urn:ietf:wg:oauth:2.0:oob')
+    const { tokens } = await oauth2Client.getToken(code)
+    return tokens
+}
+
 // --- Folder Operations ---
 
 export async function findOrCreateFolder(
@@ -38,20 +74,16 @@ export async function findOrCreateFolder(
     name: string,
     parentId: string
 ): Promise<string> {
-    // Search for existing folder
     const res = await drive.files.list({
         q: `name='${name.replace(/'/g, "\\'")}' and '${parentId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`,
         fields: 'files(id, name)',
         spaces: 'drive',
-        supportsAllDrives: true,
-        includeItemsFromAllDrives: true,
     })
 
     if (res.data.files && res.data.files.length > 0) {
         return res.data.files[0].id!
     }
 
-    // Create new folder
     const folder = await drive.files.create({
         requestBody: {
             name,
@@ -59,7 +91,6 @@ export async function findOrCreateFolder(
             parents: [parentId],
         },
         fields: 'id',
-        supportsAllDrives: true,
     })
 
     return folder.data.id!
@@ -74,7 +105,6 @@ export async function uploadFileToDrive(
     mimeType: string,
     folderId: string
 ): Promise<string> {
-    // Check if file already exists
     const res = await drive.files.list({
         q: `name='${fileName.replace(/'/g, "\\'")}' and '${folderId}' in parents and trashed=false`,
         fields: 'files(id, name)',
@@ -84,7 +114,6 @@ export async function uploadFileToDrive(
     const body = typeof content === 'string' ? Buffer.from(content, 'utf-8') : content
 
     if (res.data.files && res.data.files.length > 0) {
-        // Update existing file
         const fileId = res.data.files[0].id!
         await drive.files.update({
             fileId,
@@ -96,7 +125,6 @@ export async function uploadFileToDrive(
         return fileId
     }
 
-    // Create new file
     const file = await drive.files.create({
         requestBody: {
             name: fileName,
@@ -149,7 +177,7 @@ export async function downloadAndUploadImage(
 export function slugify(title: string): string {
     return title
         .toLowerCase()
-        .replace(/[^\w\s\u4e00-\u9fff\u3400-\u4dbf-]/g, '') // keep CJK, letters, numbers, hyphens
+        .replace(/[^\w\s\u4e00-\u9fff\u3400-\u4dbf-]/g, '')
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
         .replace(/^-|-$/g, '')
@@ -243,7 +271,6 @@ export async function uploadLectureToDrive(
     const errors: string[] = []
     let filesUploaded = 0
 
-    // Fetch data
     const [lectureRows, transcriptRows, summaryRows, slideRows] = await Promise.all([
         db.select().from(lectures).where(eq(lectures.id, lectureId)),
         db.select().from(transcripts).where(eq(transcripts.lectureId, lectureId)),
@@ -262,7 +289,6 @@ export async function uploadLectureToDrive(
 
     const slug = slugify(lecture.title)
 
-    // Create folder structure: lectures/{slug}/
     const lecturesFolderId = await findOrCreateFolder(drive, 'lectures', rootFolderId)
     const lectureFolderId = await findOrCreateFolder(drive, slug, lecturesFolderId)
 
@@ -379,7 +405,6 @@ export async function checkGDriveStatus(): Promise<{
         const res = await drive.files.get({
             fileId: folderId,
             fields: 'id, name',
-            supportsAllDrives: true,
         })
 
         return {
@@ -388,12 +413,6 @@ export async function checkGDriveStatus(): Promise<{
         }
     } catch (error: any) {
         const msg = error.message || String(error)
-        if (msg.includes('File not found')) {
-            return {
-                connected: false,
-                error: `Folder not found. Check that GOOGLE_DRIVE_FOLDER_ID is correct and the Service Account email has been shared as Editor on the folder.`,
-            }
-        }
         return {
             connected: false,
             error: msg,
