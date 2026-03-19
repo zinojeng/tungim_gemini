@@ -3,15 +3,22 @@ import { getAuthUrl, exchangeCodeForTokens } from '@/lib/gdrive'
 
 export const dynamic = 'force-dynamic'
 
-// GET: Show auth URL or exchange code
+function getRedirectUri(request: Request): string {
+    const url = new URL(request.url)
+    // Use the canonical origin for the redirect URI
+    return `${url.origin}/api/admin/gdrive/auth`
+}
+
+// GET: Show auth URL or handle OAuth callback
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const code = searchParams.get('code')
+    const redirectUri = getRedirectUri(request)
 
-    // Step 2: Exchange authorization code for tokens
+    // Step 2: Google redirected back with the authorization code
     if (code) {
         try {
-            const tokens = await exchangeCodeForTokens(code)
+            const tokens = await exchangeCodeForTokens(code, redirectUri)
             return new NextResponse(
                 `<!DOCTYPE html>
 <html><head><title>Google Drive Auth - Success</title>
@@ -40,9 +47,9 @@ code{background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:14px}
         }
     }
 
-    // Step 1: Show auth URL
+    // Step 1: Show auth link (clicking it redirects to Google, which redirects back here with ?code=)
     try {
-        const authUrl = getAuthUrl()
+        const authUrl = getAuthUrl(redirectUri)
         return new NextResponse(
             `<!DOCTYPE html>
 <html><head><title>Google Drive Auth Setup</title>
@@ -50,23 +57,18 @@ code{background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:14px}
 code{background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:14px}
 .step{background:#f8fafc;border:1px solid #e2e8f0;padding:16px;border-radius:8px;margin:16px 0}
 a{color:#2563eb}
-input,button{padding:8px 16px;font-size:14px;border-radius:6px}
-input{border:1px solid #d1d5db;width:100%}
-button{background:#2563eb;color:white;border:none;cursor:pointer;margin-top:8px}</style>
+.note{background:#eff6ff;border:1px solid #bfdbfe;padding:12px;border-radius:8px;margin:12px 0;font-size:14px}</style>
 </head><body>
 <h1>Google Drive OAuth Setup</h1>
 <div class="step">
-<h3>Step 1: Authorize</h3>
-<p>Click the link below and authorize with your Google account:</p>
-<p><a href="${authUrl}" target="_blank">Authorize Google Drive Access</a></p>
+<h3>Step 1: Configure Google Cloud Console</h3>
+<p>Make sure this <strong>exact</strong> redirect URI is added in your Google Cloud Console → Credentials → OAuth 2.0 Client → Authorized redirect URIs:</p>
+<div class="note"><code>${redirectUri}</code></div>
 </div>
 <div class="step">
-<h3>Step 2: Paste the code</h3>
-<p>After authorizing, Google will show you a code. Paste it below:</p>
-<form method="GET">
-<input type="text" name="code" placeholder="Paste authorization code here..." required />
-<button type="submit">Exchange for Token</button>
-</form>
+<h3>Step 2: Authorize</h3>
+<p>Click the link below to authorize with your Google account. You will be redirected back here automatically.</p>
+<p><a href="${authUrl}">Authorize Google Drive Access</a></p>
 </div>
 </body></html>`,
             { headers: { 'Content-Type': 'text/html' } }

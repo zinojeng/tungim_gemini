@@ -18,7 +18,7 @@ export function getGDriveClient(): drive_v3.Drive {
         )
     }
 
-    const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, 'urn:ietf:wg:oauth:2.0:oob')
+    const oauth2Client = new google.auth.OAuth2(clientId, clientSecret)
     oauth2Client.setCredentials({ refresh_token: refreshToken })
 
     return google.drive({ version: 'v3', auth: oauth2Client })
@@ -37,7 +37,7 @@ export function getRootFolderId(): string {
 
 // --- OAuth Helper ---
 
-export function getAuthUrl(): string {
+export function getAuthUrl(redirectUri: string): string {
     const clientId = process.env.GOOGLE_CLIENT_ID
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET
 
@@ -45,7 +45,7 @@ export function getAuthUrl(): string {
         throw new Error('GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are required')
     }
 
-    const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, 'urn:ietf:wg:oauth:2.0:oob')
+    const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUri)
 
     return oauth2Client.generateAuthUrl({
         access_type: 'offline',
@@ -54,7 +54,7 @@ export function getAuthUrl(): string {
     })
 }
 
-export async function exchangeCodeForTokens(code: string) {
+export async function exchangeCodeForTokens(code: string, redirectUri: string) {
     const clientId = process.env.GOOGLE_CLIENT_ID
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET
 
@@ -62,7 +62,7 @@ export async function exchangeCodeForTokens(code: string) {
         throw new Error('GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are required')
     }
 
-    const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, 'urn:ietf:wg:oauth:2.0:oob')
+    const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUri)
     const { tokens } = await oauth2Client.getToken(code)
     return tokens
 }
