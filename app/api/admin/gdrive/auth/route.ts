@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server'
+import { headers } from 'next/headers'
 import { getAuthUrl, exchangeCodeForTokens } from '@/lib/gdrive'
 
 export const dynamic = 'force-dynamic'
 
 function getRedirectUri(request: Request): string {
-    const url = new URL(request.url)
-    // Use the canonical origin for the redirect URI
-    return `${url.origin}/api/admin/gdrive/auth`
+    const headersList = Object.fromEntries(new Headers(request.headers))
+    const host = headersList['x-forwarded-host'] || headersList['host'] || new URL(request.url).host
+    const proto = headersList['x-forwarded-proto'] || 'https'
+    return `${proto}://${host}/api/admin/gdrive/auth`
 }
 
 // GET: Show auth URL or handle OAuth callback
