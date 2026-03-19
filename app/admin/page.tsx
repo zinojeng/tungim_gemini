@@ -12,7 +12,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { useState, useEffect } from "react"
-import { Trash2, Plus, Pencil, Lock, Wand2, Loader2, Upload, Settings, Download } from "lucide-react"
+import { Trash2, Plus, Pencil, Lock, Wand2, Loader2, Upload, Settings, Download, Cloud, CloudUpload, CheckCircle2, XCircle } from "lucide-react"
 import { Lecture } from "@/types"
 import mammoth from "mammoth"
 import TurndownService from "turndown"
@@ -82,6 +82,12 @@ export default function AdminPage() {
     // File Upload State
     const [isUploading, setIsUploading] = useState(false)
 
+    // Google Drive State
+    const [isGDriveUploading, setIsGDriveUploading] = useState(false)
+    const [isGDriveBatchUploading, setIsGDriveBatchUploading] = useState(false)
+    const [gdriveResult, setGdriveResult] = useState<{ success: boolean; message: string } | null>(null)
+    const [gdriveBatchResult, setGdriveBatchResult] = useState<{ total: number; success: number; failed: number } | null>(null)
+
     // Site Settings State
     const [heroTitle, setHeroTitle] = useState("")
     const [heroDescription, setHeroDescription] = useState("")
@@ -107,6 +113,59 @@ export default function AdminPage() {
         } catch (error) {
             console.error('Export error:', error)
             alert('Failed to export data')
+        }
+    }
+
+    // Google Drive: Upload single lecture
+    const handleGDriveUploadSingle = async (lectureId: string) => {
+        setIsGDriveUploading(true)
+        setGdriveResult(null)
+        try {
+            const res = await fetch('/api/admin/gdrive/upload-single', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lectureId }),
+            })
+            const data = await res.json()
+            if (data.error) {
+                setGdriveResult({ success: false, message: data.error })
+            } else {
+                setGdriveResult({
+                    success: data.success,
+                    message: data.success
+                        ? `Uploaded ${data.filesUploaded} files to Google Drive`
+                        : `Uploaded ${data.filesUploaded} files with ${data.errors?.length || 0} errors: ${data.errors?.join(', ')}`
+                })
+            }
+        } catch (error: any) {
+            setGdriveResult({ success: false, message: error.message || 'Upload failed' })
+        } finally {
+            setIsGDriveUploading(false)
+        }
+    }
+
+    // Google Drive: Upload all lectures
+    const handleGDriveUploadAll = async () => {
+        setIsGDriveBatchUploading(true)
+        setGdriveBatchResult(null)
+        try {
+            const res = await fetch('/api/admin/gdrive/upload-all', {
+                method: 'POST',
+            })
+            const data = await res.json()
+            if (data.error) {
+                alert(`Google Drive batch upload failed: ${data.error}`)
+            } else {
+                setGdriveBatchResult({
+                    total: data.total,
+                    success: data.success,
+                    failed: data.failed,
+                })
+            }
+        } catch (error: any) {
+            alert(`Google Drive batch upload failed: ${error.message}`)
+        } finally {
+            setIsGDriveBatchUploading(false)
         }
     }
 
@@ -441,6 +500,7 @@ export default function AdminPage() {
                 setEditSummary(data.summary || '')
                 setEditSlides(data.slides || [])
                 setEditIsPublished(lecture.isPublished ?? true)
+                setGdriveResult(null) // Reset Google Drive status
                 setEditDialogOpen(true)
             }
         } catch (error) {
@@ -1161,10 +1221,34 @@ export default function AdminPage() {
                 <TabsContent value="manage">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Manage Lectures</CardTitle>
-                            <CardDescription>
-                                View, edit, and delete existing lectures
-                            </CardDescription>
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <CardTitle>Manage Lectures</CardTitle>
+                                    <CardDescription>
+                                        View, edit, and delete existing lectures
+                                    </CardDescription>
+                                </div>
+                                <div className="flex flex-col items-end gap-2">
+                                    <Button
+                                        variant="outline"
+                                        onClick={handleGDriveUploadAll}
+                                        disabled={isGDriveBatchUploading}
+                                    >
+                                        {isGDriveBatchUploading ? (
+                                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                        ) : (
+                                            <CloudUpload className="h-4 w-4 mr-2" />
+                                        )}
+                                        {isGDriveBatchUploading ? 'Uploading...' : 'Upload All to Google Drive'}
+                                    </Button>
+                                    {gdriveBatchResult && (
+                                        <div className={`text-xs px-3 py-1.5 rounded-md ${gdriveBatchResult.failed === 0 ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'}`}>
+                                            {gdriveBatchResult.success}/{gdriveBatchResult.total} succeeded
+                                            {gdriveBatchResult.failed > 0 && `, ${gdriveBatchResult.failed} failed`}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </CardHeader>
                         <CardContent>
                             {isLoadingLectures ? (
@@ -1675,13 +1759,36 @@ export default function AdminPage() {
                             </Select>
                         </div>
                     </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
-                            Cancel
-                        </Button>
-                        <Button onClick={handleEdit}>
-                            Save Changes
-                        </Button>
+                    <DialogFooter className="flex-col sm:flex-row gap-2">
+                        <div className="flex items-center gap-2 mr-auto">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => editingLecture && handleGDriveUploadSingle(editingLecture.id)}
+                                disabled={isGDriveUploading || !editingLecture}
+                            >
+                                {isGDriveUploading ? (
+                                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                ) : (
+                                    <Cloud className="h-4 w-4 mr-2" />
+                                )}
+                                {isGDriveUploading ? 'Uploading...' : 'Upload to Google Drive'}
+                            </Button>
+                            {gdriveResult && (
+                                <span className={`text-xs flex items-center gap-1 ${gdriveResult.success ? 'text-green-600' : 'text-red-600'}`}>
+                                    {gdriveResult.success ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                                    {gdriveResult.message}
+                                </span>
+                            )}
+                        </div>
+                        <div className="flex gap-2">
+                            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+                                Cancel
+                            </Button>
+                            <Button onClick={handleEdit}>
+                                Save Changes
+                            </Button>
+                        </div>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
