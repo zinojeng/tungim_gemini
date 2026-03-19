@@ -21,9 +21,12 @@ export function getGDriveClient(): drive_v3.Drive {
 }
 
 export function getRootFolderId(): string {
-    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID?.trim()
     if (!folderId) {
-        throw new Error('GOOGLE_DRIVE_FOLDER_ID is not set')
+        throw new Error(
+            'GOOGLE_DRIVE_FOLDER_ID is not set. ' +
+            'Get it from your Google Drive folder URL: https://drive.google.com/drive/folders/<FOLDER_ID>'
+        )
     }
     return folderId
 }
@@ -40,6 +43,8 @@ export async function findOrCreateFolder(
         q: `name='${name.replace(/'/g, "\\'")}' and '${parentId}' in parents and mimeType='application/vnd.google-apps.folder' and trashed=false`,
         fields: 'files(id, name)',
         spaces: 'drive',
+        supportsAllDrives: true,
+        includeItemsFromAllDrives: true,
     })
 
     if (res.data.files && res.data.files.length > 0) {
@@ -54,6 +59,7 @@ export async function findOrCreateFolder(
             parents: [parentId],
         },
         fields: 'id',
+        supportsAllDrives: true,
     })
 
     return folder.data.id!
@@ -373,6 +379,7 @@ export async function checkGDriveStatus(): Promise<{
         const res = await drive.files.get({
             fileId: folderId,
             fields: 'id, name',
+            supportsAllDrives: true,
         })
 
         return {
@@ -380,9 +387,16 @@ export async function checkGDriveStatus(): Promise<{
             folderName: res.data.name || undefined,
         }
     } catch (error: any) {
+        const msg = error.message || String(error)
+        if (msg.includes('File not found')) {
+            return {
+                connected: false,
+                error: `Folder not found. Check that GOOGLE_DRIVE_FOLDER_ID is correct and the Service Account email has been shared as Editor on the folder.`,
+            }
+        }
         return {
             connected: false,
-            error: error.message,
+            error: msg,
         }
     }
 }
