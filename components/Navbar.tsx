@@ -41,6 +41,9 @@ export function Navbar() {
                         <Link href="/diabetes-ai" className="transition-colors hover:text-foreground/80 text-foreground/60">
                             糖尿病 AI
                         </Link>
+                        <Link href="/aoce-2026" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                            AOCE2026
+                        </Link>
                         <Link href="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
                             About
                         </Link>
