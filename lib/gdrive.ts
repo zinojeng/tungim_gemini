@@ -3,6 +3,26 @@ import { db } from '@/lib/db'
 import { lectures, transcripts, summaries, slides, siteSettings } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 
+// --- Error Formatting ---
+
+export function formatGDriveError(error: any): string {
+    const raw = error?.response?.data?.error || error?.message || String(error)
+    const text = typeof raw === 'string' ? raw : JSON.stringify(raw)
+
+    if (text.includes('invalid_grant')) {
+        return (
+            'Google Drive 授權已失效（invalid_grant）。' +
+            'Refresh token 可能已過期或被撤銷。' +
+            '請前往 /api/admin/gdrive/auth 重新授權，' +
+            '取得新的 GOOGLE_REFRESH_TOKEN 並更新環境變數後重新部署。' +
+            '若 OAuth consent screen 處於 Testing 模式，token 每 7 天會失效一次，' +
+            '建議在 Google Cloud Console 將應用發佈為 In Production 以避免重複發生。'
+        )
+    }
+
+    return typeof error?.message === 'string' ? error.message : text
+}
+
 // --- Google Drive Client (OAuth 2.0) ---
 
 export function getGDriveClient(): drive_v3.Drive {
@@ -412,10 +432,9 @@ export async function checkGDriveStatus(): Promise<{
             folderName: res.data.name || undefined,
         }
     } catch (error: any) {
-        const msg = error.message || String(error)
         return {
             connected: false,
-            error: msg,
+            error: formatGDriveError(error),
         }
     }
 }

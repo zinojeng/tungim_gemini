@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { uploadAllLecturesToDrive } from '@/lib/gdrive'
+import { uploadAllLecturesToDrive, formatGDriveError } from '@/lib/gdrive'
 
 export const maxDuration = 300 // 5 minutes for batch upload
 
@@ -11,7 +11,7 @@ export async function POST() {
     } catch (error: any) {
         console.error('Google Drive batch upload error:', error)
         return NextResponse.json(
-            { error: error.message || 'Batch upload to Google Drive failed' },
+            { error: formatGDriveError(error) },
             { status: 500 }
         )
     }

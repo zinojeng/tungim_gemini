@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { uploadLectureToDrive } from '@/lib/gdrive'
+import { uploadLectureToDrive, formatGDriveError } from '@/lib/gdrive'
 
 export async function POST(request: Request) {
     try {
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     } catch (error: any) {
         console.error('Google Drive upload error:', error)
         return NextResponse.json(
-            { error: error.message || 'Upload to Google Drive failed' },
+            { error: formatGDriveError(error) },
             { status: 500 }
         )
     }
