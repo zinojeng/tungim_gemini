@@ -315,7 +315,7 @@ export async function uploadLectureToDrive(
     // Upload Markdown
     try {
         const markdown = buildMarkdown(lecture, transcript, summary)
-        await uploadFileToDrive(drive, 'article.md', markdown, 'text/markdown', lectureFolderId)
+        await uploadFileToDrive(drive, `${slug}.md`, markdown, 'text/markdown', lectureFolderId)
         filesUploaded++
     } catch (error: any) {
         errors.push(`Markdown: ${error.message}`)
