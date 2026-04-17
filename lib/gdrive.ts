@@ -1,4 +1,5 @@
 import { google, drive_v3 } from 'googleapis'
+import { createHash } from 'crypto'
 import { db } from '@/lib/db'
 import { lectures, transcripts, summaries, slides, siteSettings } from '@/db/schema'
 import { eq } from 'drizzle-orm'
@@ -192,6 +193,40 @@ export async function downloadAndUploadImage(
     }
 }
 
+// --- Rewrite inline images in markdown ---
+
+export async function processInlineImages(
+    drive: drive_v3.Drive,
+    markdown: string,
+    imagesFolderId: string
+): Promise<{ rewritten: string; uploaded: number; errors: string[] }> {
+    const errors: string[] = []
+    const urlToLocal = new Map<string, string>()
+
+    const imageRegex = /!\[[^\]]*\]\((https?:\/\/[^)\s]+)\)/g
+    const matches = [...markdown.matchAll(imageRegex)]
+    const uniqueUrls = [...new Set(matches.map(m => m[1]))]
+
+    for (const url of uniqueUrls) {
+        const hash = createHash('sha1').update(url).digest('hex').slice(0, 8)
+        const ext = getExtFromUrl(url)
+        const fileName = `inline-${hash}.${ext}`
+        const result = await downloadAndUploadImage(drive, url, fileName, imagesFolderId)
+        if (result.success) {
+            urlToLocal.set(url, `./images/${fileName}`)
+        } else {
+            errors.push(`Inline image ${url}: ${result.error}`)
+        }
+    }
+
+    let rewritten = markdown
+    for (const [originalUrl, localPath] of urlToLocal) {
+        rewritten = rewritten.split(originalUrl).join(localPath)
+    }
+
+    return { rewritten, uploaded: urlToLocal.size, errors }
+}
+
 // --- Slug Generation ---
 
 export function slugify(title: string): string {
@@ -312,20 +347,18 @@ export async function uploadLectureToDrive(
     const lecturesFolderId = await findOrCreateFolder(drive, 'lectures', rootFolderId)
     const lectureFolderId = await findOrCreateFolder(drive, slug, lecturesFolderId)
 
-    // Upload Markdown
-    try {
-        const markdown = buildMarkdown(lecture, transcript, summary)
-        await uploadFileToDrive(drive, `${slug}.md`, markdown, 'text/markdown', lectureFolderId)
-        filesUploaded++
-    } catch (error: any) {
-        errors.push(`Markdown: ${error.message}`)
+    let cachedImagesFolderId: string | null = null
+    const getImagesFolder = async () => {
+        if (!cachedImagesFolderId) {
+            cachedImagesFolderId = await findOrCreateFolder(drive, 'images', lectureFolderId)
+        }
+        return cachedImagesFolderId
     }
 
     // Upload cover image
     if (lecture.coverImage) {
-        const imagesFolderId = await findOrCreateFolder(drive, 'images', lectureFolderId)
         const ext = getExtFromUrl(lecture.coverImage)
-        const result = await downloadAndUploadImage(drive, lecture.coverImage, `cover.${ext}`, imagesFolderId)
+        const result = await downloadAndUploadImage(drive, lecture.coverImage, `cover.${ext}`, await getImagesFolder())
         if (result.success) {
             filesUploaded++
         } else {
@@ -335,7 +368,7 @@ export async function uploadLectureToDrive(
 
     // Upload slides
     if (lectureSlides.length > 0) {
-        const imagesFolderId = await findOrCreateFolder(drive, 'images', lectureFolderId)
+        const imagesFolderId = await getImagesFolder()
         for (let i = 0; i < lectureSlides.length; i++) {
             const slide = lectureSlides[i]
             if (slide.imageUrl) {
@@ -349,6 +382,21 @@ export async function uploadLectureToDrive(
                 }
             }
         }
+    }
+
+    // Upload Markdown (after processing inline images so references are local)
+    try {
+        let markdown = buildMarkdown(lecture, transcript, summary)
+        if (/!\[[^\]]*\]\(https?:\/\//.test(markdown)) {
+            const inline = await processInlineImages(drive, markdown, await getImagesFolder())
+            markdown = inline.rewritten
+            filesUploaded += inline.uploaded
+            errors.push(...inline.errors)
+        }
+        await uploadFileToDrive(drive, `${slug}.md`, markdown, 'text/markdown', lectureFolderId)
+        filesUploaded++
+    } catch (error: any) {
+        errors.push(`Markdown: ${error.message}`)
     }
 
     // Upload PDF
