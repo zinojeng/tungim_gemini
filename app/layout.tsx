@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { BackToTop } from "@/components/BackToTop";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 // Latin sans — UI body text.
 const inter = Inter({
@@ -94,12 +95,14 @@ export default function RootLayout({
           notoSerifTC.variable
         )}
       >
-        <div className="relative flex min-h-screen flex-col">
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <BackToTop />
-        </div>
+        <ThemeProvider>
+          <div className="relative flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <BackToTop />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
