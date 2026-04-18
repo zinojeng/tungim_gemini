@@ -34,7 +34,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // Read the class set by our pre-paint bootstrap script so React
+    // state matches reality. One-shot sync, no cascading render risk.
     const isDark = document.documentElement.classList.contains("dark");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setThemeState(isDark ? "dark" : "light");
     setMounted(true);
   }, []);

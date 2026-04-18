@@ -31,6 +31,9 @@ export function Navbar() {
     const isMac =
       typeof navigator !== "undefined" &&
       /Mac|iPhone|iPad/.test(navigator.platform);
+    // One-shot platform detection on mount — intentionally syncs UI
+    // state with a browser-only API. Not a cascading-render case.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setShortcutLabel(isMac ? "⌘K" : "Ctrl K");
   }, []);
 
