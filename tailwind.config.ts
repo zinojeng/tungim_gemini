@@ -52,6 +52,43 @@ const config = {
                     DEFAULT: "hsl(var(--card))",
                     foreground: "hsl(var(--card-foreground))",
                 },
+                // Editorial palette — MedNote v2 (like NEJM, but quieter).
+                // Values flip between light/dark via CSS variables in globals.css.
+                paper: "hsl(var(--paper))",
+                ink: "hsl(var(--ink))",
+                "ink-muted": "hsl(var(--ink-muted))",
+                hair: "hsl(var(--hair))",
+                chip: "hsl(var(--chip))",
+                editorial: "hsl(var(--editorial))",
+                signal: "hsl(var(--signal))",
+            },
+            fontFamily: {
+                // Latin fonts first; Noto TC provides Chinese coverage via fallback.
+                sans: [
+                    "var(--font-sans)",
+                    "var(--font-sans-tc)",
+                    "ui-sans-serif",
+                    "system-ui",
+                    "sans-serif",
+                ],
+                serif: [
+                    "var(--font-serif)",
+                    "var(--font-serif-tc)",
+                    "ui-serif",
+                    "Georgia",
+                    "serif",
+                ],
+                mono: [
+                    "var(--font-mono)",
+                    "ui-monospace",
+                    "SFMono-Regular",
+                    "Menlo",
+                    "monospace",
+                ],
+            },
+            letterSpacing: {
+                tightish: "-0.015em",
+                tighter2: "-0.025em",
             },
             borderRadius: {
                 lg: "var(--radius)",

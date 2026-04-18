@@ -4,77 +4,117 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* ---------- shadcn surfaces (kept for backward compatibility) ---------- */
+    --background: 43 30% 95%;
+    /* #F7F5F0 — now matches paper */
+    --foreground: 210 15% 8%;
+    /* #101418 — now matches ink */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 43 30% 95%;
+    --card-foreground: 210 15% 8%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 43 30% 95%;
+    --popover-foreground: 210 15% 8%;
 
-    --primary: 180 100% 25%;
-    /* Teal #008080 */
-    --primary-foreground: 210 40% 98%;
+    --primary: 174 76% 24%;
+    /* #0F6E63 — clinical teal (was Nanobanana teal) */
+    --primary-foreground: 43 30% 95%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 39 27% 91%;
+    /* #EEEAE1 — chip */
+    --secondary-foreground: 210 15% 8%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 39 27% 91%;
+    --muted-foreground: 213 11% 40%;
+    /* #5B6470 */
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 39 27% 91%;
+    --accent-foreground: 210 15% 8%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 72% 42%;
+    --destructive-foreground: 43 30% 95%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 39 26% 87%;
+    /* #E4E0D8 — hair */
+    --input: 39 26% 87%;
+    --ring: 174 76% 24%;
 
-    --radius: 0.5rem;
+    --radius: 0.25rem;
+    /* Quieter corners — editorial, not card-shadcn. */
 
-    /* Nanobanana Colors */
-    --nano-teal: 180 100% 25%;
-    /* #008080 */
-    --nano-mint: 140 100% 80%;
-    /* #98FF98 */
-    --nano-orange: 39 100% 50%;
-    /* #FFA500 */
-    --nano-purple: 300 100% 25%;
-    /* #800080 */
+    /* ---------- Editorial palette (MedNote v2) ----------
+     * Keep these names stable; they are referenced directly
+     * in tailwind.config.ts as `paper`, `ink`, `hair`, etc.
+     */
+    --paper: 43 30% 95%;
+    /* #F7F5F0 */
+    --ink: 210 15% 8%;
+    /* #101418 */
+    --ink-muted: 213 11% 40%;
+    /* #5B6470 */
+    --hair: 39 26% 87%;
+    /* #E4E0D8 */
+    --chip: 39 27% 91%;
+    /* #EEEAE1 */
+    --editorial: 174 76% 24%;
+    /* #0F6E63 — single clinical accent */
+    --signal: 23 75% 41%;
+    /* #B8551A — warm editorial tag */
+
+    /* ---------- Legacy Nanobanana tokens (kept so any lingering refs
+     * don't break; wired to new palette so they don't look off-brand) */
+    --nano-teal: 174 76% 24%;
+    --nano-mint: 174 76% 24%;
+    --nano-orange: 23 75% 41%;
+    --nano-purple: 210 15% 8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* ---------- shadcn surfaces ---------- */
+    --background: 200 12% 7%;
+    /* #0E1113 */
+    --foreground: 43 30% 88%;
+    /* #E9E4D9 */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 200 12% 7%;
+    --card-foreground: 43 30% 88%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 200 12% 7%;
+    --popover-foreground: 43 30% 88%;
 
-    --primary: 180 70% 40%;
-    /* Teal for dark mode */
-    --primary-foreground: 210 40% 98%;
+    --primary: 172 55% 46%;
+    /* #34B5A3 — dark-mode editorial */
+    --primary-foreground: 200 12% 7%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 13% 10%;
+    --secondary-foreground: 43 30% 88%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 210 13% 10%;
+    --muted-foreground: 213 9% 60%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 210 13% 10%;
+    --accent-foreground: 43 30% 88%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 43 30% 88%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 210 13% 14%;
+    --input: 210 13% 14%;
+    --ring: 172 55% 46%;
+
+    /* ---------- Editorial palette (dark) ---------- */
+    --paper: 200 12% 7%;
+    --ink: 43 30% 88%;
+    --ink-muted: 213 9% 60%;
+    --hair: 210 13% 14%;
+    --chip: 210 13% 10%;
+    --editorial: 172 55% 46%;
+    --signal: 27 74% 63%;
+
+    --nano-teal: 172 55% 46%;
+    --nano-mint: 172 55% 46%;
+    --nano-orange: 27 74% 63%;
+    --nano-purple: 43 30% 88%;
   }
 }
 
@@ -96,6 +136,18 @@
       transform: translateY(0px);
     }
   }
+
+  /* Editorial helpers. Used by Navbar / kicker labels / section eyebrows. */
+  .kicker {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.72rem;
+  }
+
+  .hairline {
+    border-color: hsl(var(--hair));
+  }
 }
 
 @layer base {
@@ -103,7 +155,19 @@
     @apply border-border;
   }
 
+  html {
+    color-scheme: light dark;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-paper text-ink font-sans antialiased;
+  }
+
+  /* Serif display on the article shell only — never on random UI chrome. */
+  .prose-editorial h1,
+  .prose-editorial h2,
+  .prose-editorial h3 {
+    font-family: var(--font-serif), "Noto Serif TC", Georgia, serif;
+    letter-spacing: -0.025em;
   }
 }
