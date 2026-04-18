@@ -18,7 +18,7 @@ export function EditorialHero({
   const headline = title || "臨床演講的\n安靜筆記。";
   const sub =
     subtitle ||
-    "不做摘要、不挑重點。把整場演講完整寫下來，讓你隨時慢慢讀回去。";
+    "一場演講是短的，留下的思考是長的。這份筆記，寫給那個日後想慢慢讀回去的你 — 現場，只需要安靜地聽。";
 
   return (
     <section className="border-b border-hair">

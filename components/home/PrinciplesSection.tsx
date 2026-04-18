@@ -7,8 +7,8 @@ interface Principle {
 const PRINCIPLES: Principle[] = [
   {
     num: "I",
-    title: "逐字呈現，不做摘要。",
-    body: "演講現場的完整內容：口述、投影片、問答。AI 只整理結構，文字仍是講者的原話。",
+    title: "完整優先於簡化。",
+    body: "逐字稿、投影片、摘要、重點整理，全部收在同一篇。不是片段，是完整的演講。",
   },
   {
     num: "II",
