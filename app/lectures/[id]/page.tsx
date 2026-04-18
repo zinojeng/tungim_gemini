@@ -13,6 +13,7 @@ async function getLectureData(id: string) {
     try {
         const [lecture] = await db.select().from(lectures).where(eq(lectures.id, id))
         if (!lecture) return null
+        if (lecture.isPublished === false) return null
 
         const [transcript] = await db.select().from(transcripts).where(eq(transcripts.lectureId, id))
         const [summary] = await db.select().from(summaries).where(eq(summaries.lectureId, id))
