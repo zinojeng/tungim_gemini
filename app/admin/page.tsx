@@ -88,6 +88,8 @@ export default function AdminPage() {
     const [isGDriveBatchUploading, setIsGDriveBatchUploading] = useState(false)
     const [gdriveResult, setGdriveResult] = useState<{ success: boolean; message: string } | null>(null)
     const [gdriveBatchResult, setGdriveBatchResult] = useState<{ total: number; success: number; failed: number } | null>(null)
+    const [isGDriveRestoring, setIsGDriveRestoring] = useState(false)
+    const [gdriveRestoreResult, setGdriveRestoreResult] = useState<{ lecturesRestored: number; filesRehosted: number; rehostErrors: string[] } | null>(null)
 
     // Site Settings State
     const [heroTitle, setHeroTitle] = useState("")
@@ -167,6 +169,30 @@ export default function AdminPage() {
             alert(`Google Drive batch upload failed: ${error.message}`)
         } finally {
             setIsGDriveBatchUploading(false)
+        }
+    }
+
+    // Google Drive: Restore from Drive
+    const handleGDriveRestore = async () => {
+        setIsGDriveRestoring(true)
+        setGdriveRestoreResult(null)
+        try {
+            const res = await fetch('/api/admin/gdrive/restore', { method: 'POST' })
+            const data = await res.json()
+            if (data.error) {
+                alert(`Google Drive restore failed: ${data.error}`)
+            } else {
+                setGdriveRestoreResult({
+                    lecturesRestored: data.lecturesRestored,
+                    filesRehosted: data.filesRehosted,
+                    rehostErrors: data.rehostErrors || [],
+                })
+                await fetchLectures()
+            }
+        } catch (error: any) {
+            alert(`Google Drive restore failed: ${error.message}`)
+        } finally {
+            setIsGDriveRestoring(false)
         }
     }
 
@@ -1230,22 +1256,61 @@ export default function AdminPage() {
                                     </CardDescription>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
-                                    <Button
-                                        variant="outline"
-                                        onClick={handleGDriveUploadAll}
-                                        disabled={isGDriveBatchUploading}
-                                    >
-                                        {isGDriveBatchUploading ? (
-                                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                                        ) : (
-                                            <CloudUpload className="h-4 w-4 mr-2" />
-                                        )}
-                                        {isGDriveBatchUploading ? 'Uploading...' : 'Upload All to Google Drive'}
-                                    </Button>
+                                    <div className="flex gap-2">
+                                        <Button
+                                            variant="outline"
+                                            onClick={handleGDriveUploadAll}
+                                            disabled={isGDriveBatchUploading || isGDriveRestoring}
+                                        >
+                                            {isGDriveBatchUploading ? (
+                                                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                            ) : (
+                                                <CloudUpload className="h-4 w-4 mr-2" />
+                                            )}
+                                            {isGDriveBatchUploading ? 'Uploading...' : 'Upload All to Google Drive'}
+                                        </Button>
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    disabled={isGDriveBatchUploading || isGDriveRestoring}
+                                                >
+                                                    {isGDriveRestoring ? (
+                                                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                                    ) : (
+                                                        <Download className="h-4 w-4 mr-2" />
+                                                    )}
+                                                    {isGDriveRestoring ? 'Restoring...' : 'Restore from Google Drive'}
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>從 Google Drive 還原？</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        這會 <b>清空現有資料庫</b> 並從 Drive 的 <code>database.json</code> 完整還原。
+                                                        所有圖檔會重新上傳到 S3，文章內插圖的位置和連結都會還原。
+                                                        此操作無法復原 — 確定要繼續嗎？
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>取消</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={handleGDriveRestore}>
+                                                        確認還原
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    </div>
                                     {gdriveBatchResult && (
                                         <div className={`text-xs px-3 py-1.5 rounded-md ${gdriveBatchResult.failed === 0 ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'}`}>
                                             {gdriveBatchResult.success}/{gdriveBatchResult.total} succeeded
                                             {gdriveBatchResult.failed > 0 && `, ${gdriveBatchResult.failed} failed`}
+                                        </div>
+                                    )}
+                                    {gdriveRestoreResult && (
+                                        <div className={`text-xs px-3 py-1.5 rounded-md ${gdriveRestoreResult.rehostErrors.length === 0 ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'}`}>
+                                            Restored {gdriveRestoreResult.lecturesRestored} lectures, {gdriveRestoreResult.filesRehosted} files re-uploaded
+                                            {gdriveRestoreResult.rehostErrors.length > 0 && `, ${gdriveRestoreResult.rehostErrors.length} file errors`}
                                         </div>
                                     )}
                                 </div>

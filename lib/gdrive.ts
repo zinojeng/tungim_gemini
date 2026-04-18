@@ -195,13 +195,20 @@ export async function downloadAndUploadImage(
 
 // --- Rewrite inline images in markdown ---
 
+export interface InlineImageRecord {
+    originalUrl: string
+    fileId: string
+    driveName: string
+}
+
 export async function processInlineImages(
     drive: drive_v3.Drive,
     markdown: string,
     imagesFolderId: string
-): Promise<{ rewritten: string; uploaded: number; errors: string[] }> {
+): Promise<{ rewritten: string; uploaded: number; errors: string[]; records: InlineImageRecord[] }> {
     const errors: string[] = []
     const urlToLocal = new Map<string, string>()
+    const records: InlineImageRecord[] = []
 
     const imageRegex = /!\[[^\]]*\]\((https?:\/\/[^)\s]+)\)/g
     const matches = [...markdown.matchAll(imageRegex)]
@@ -212,8 +219,9 @@ export async function processInlineImages(
         const ext = getExtFromUrl(url)
         const fileName = `inline-${hash}.${ext}`
         const result = await downloadAndUploadImage(drive, url, fileName, imagesFolderId)
-        if (result.success) {
+        if (result.success && result.fileId) {
             urlToLocal.set(url, `./images/${fileName}`)
+            records.push({ originalUrl: url, fileId: result.fileId, driveName: fileName })
         } else {
             errors.push(`Inline image ${url}: ${result.error}`)
         }
@@ -224,7 +232,7 @@ export async function processInlineImages(
         rewritten = rewritten.split(originalUrl).join(localPath)
     }
 
-    return { rewritten, uploaded: urlToLocal.size, errors }
+    return { rewritten, uploaded: urlToLocal.size, errors, records }
 }
 
 // --- Slug Generation ---
@@ -259,24 +267,36 @@ export function buildMarkdown(
     transcript: any,
     summary: any
 ): string {
+    const publishDateStr = lecture.publishDate ? new Date(lecture.publishDate).toISOString().split('T')[0] : ''
+    const isPublished = lecture.isPublished ?? true
     const frontmatter: Record<string, any> = {
+        id: lecture.id || '',
         title: lecture.title,
         category: lecture.category || '',
         subcategory: lecture.subcategory || '',
         tags: lecture.tags || [],
-        publishDate: lecture.publishDate ? new Date(lecture.publishDate).toISOString().split('T')[0] : '',
+        date: publishDateStr,
+        publishDate: publishDateStr,
+        draft: !isPublished,
         sourceUrl: lecture.sourceUrl || '',
         coverImage: lecture.coverImage ? './images/cover.' + getExtFromUrl(lecture.coverImage) : '',
         pdfUrl: lecture.pdfUrl ? './attachments/lecture.pdf' : '',
         provider: lecture.provider || '',
-        isPublished: lecture.isPublished ?? true,
+        isPublished,
         backupDate: new Date().toISOString(),
     }
 
     let md = '---\n'
     for (const [key, value] of Object.entries(frontmatter)) {
         if (Array.isArray(value)) {
-            md += `${key}: ${JSON.stringify(value)}\n`
+            if (value.length === 0) {
+                md += `${key}: []\n`
+            } else {
+                md += `${key}:\n`
+                for (const item of value) {
+                    md += `  - ${JSON.stringify(String(item))}\n`
+                }
+            }
         } else if (typeof value === 'boolean') {
             md += `${key}: ${value}\n`
         } else {
@@ -310,12 +330,30 @@ export function buildMarkdown(
 
 // --- Upload Single Lecture ---
 
+export interface AttachmentRecord {
+    originalUrl: string
+    fileId: string
+    driveName: string
+}
+
+export interface SlideAttachmentRecord extends AttachmentRecord {
+    slideId: string
+}
+
+export interface LectureAttachments {
+    coverImage: AttachmentRecord | null
+    pdfUrl: AttachmentRecord | null
+    slides: SlideAttachmentRecord[]
+    inline: InlineImageRecord[]
+}
+
 export interface UploadResult {
     lectureId: string
     title: string
     success: boolean
     filesUploaded: number
     errors: string[]
+    attachments?: LectureAttachments
 }
 
 export async function uploadLectureToDrive(
@@ -355,12 +393,21 @@ export async function uploadLectureToDrive(
         return cachedImagesFolderId
     }
 
+    const attachments: LectureAttachments = {
+        coverImage: null,
+        pdfUrl: null,
+        slides: [],
+        inline: [],
+    }
+
     // Upload cover image
     if (lecture.coverImage) {
         const ext = getExtFromUrl(lecture.coverImage)
-        const result = await downloadAndUploadImage(drive, lecture.coverImage, `cover.${ext}`, await getImagesFolder())
-        if (result.success) {
+        const driveName = `cover.${ext}`
+        const result = await downloadAndUploadImage(drive, lecture.coverImage, driveName, await getImagesFolder())
+        if (result.success && result.fileId) {
             filesUploaded++
+            attachments.coverImage = { originalUrl: lecture.coverImage, fileId: result.fileId, driveName }
         } else {
             errors.push(`Cover image: ${result.error}`)
         }
@@ -375,8 +422,14 @@ export async function uploadLectureToDrive(
                 const ext = getExtFromUrl(slide.imageUrl)
                 const fileName = `slide-${String(i + 1).padStart(3, '0')}.${ext}`
                 const result = await downloadAndUploadImage(drive, slide.imageUrl, fileName, imagesFolderId)
-                if (result.success) {
+                if (result.success && result.fileId) {
                     filesUploaded++
+                    attachments.slides.push({
+                        slideId: slide.id,
+                        originalUrl: slide.imageUrl,
+                        fileId: result.fileId,
+                        driveName: fileName,
+                    })
                 } else {
                     errors.push(`Slide ${i + 1}: ${result.error}`)
                 }
@@ -392,6 +445,7 @@ export async function uploadLectureToDrive(
             markdown = inline.rewritten
             filesUploaded += inline.uploaded
             errors.push(...inline.errors)
+            attachments.inline = inline.records
         }
         await uploadFileToDrive(drive, `${slug}.md`, markdown, 'text/markdown', lectureFolderId)
         filesUploaded++
@@ -403,8 +457,9 @@ export async function uploadLectureToDrive(
     if (lecture.pdfUrl) {
         const attachmentsFolderId = await findOrCreateFolder(drive, 'attachments', lectureFolderId)
         const result = await downloadAndUploadImage(drive, lecture.pdfUrl, 'lecture.pdf', attachmentsFolderId)
-        if (result.success) {
+        if (result.success && result.fileId) {
             filesUploaded++
+            attachments.pdfUrl = { originalUrl: lecture.pdfUrl, fileId: result.fileId, driveName: 'lecture.pdf' }
         } else {
             errors.push(`PDF: ${result.error}`)
         }
@@ -416,6 +471,7 @@ export async function uploadLectureToDrive(
         success: errors.length === 0,
         filesUploaded,
         errors,
+        attachments,
     }
 }
 
@@ -451,12 +507,92 @@ export async function uploadAllLecturesToDrive(): Promise<{
         console.error('Failed to backup site settings:', error.message)
     }
 
+    // Canonical full-DB snapshot at root — includes per-lecture attachment map
+    // so restore can re-upload Drive images to S3 and rewrite DB URLs.
+    try {
+        const drive = getGDriveClient()
+        const rootFolderId = getRootFolderId()
+        const [allTranscripts, allSlides, allSummaries, allSettings] = await Promise.all([
+            db.select().from(transcripts),
+            db.select().from(slides),
+            db.select().from(summaries),
+            db.select().from(siteSettings),
+        ])
+        const attachmentsByLecture: Record<string, LectureAttachments> = {}
+        for (const r of results) {
+            if (r.attachments) attachmentsByLecture[r.lectureId] = r.attachments
+        }
+        const snapshot = {
+            timestamp: new Date().toISOString(),
+            version: 2,
+            tables: {
+                lectures: allLectures,
+                transcripts: allTranscripts,
+                slides: allSlides,
+                summaries: allSummaries,
+                site_settings: allSettings,
+            },
+            attachments: attachmentsByLecture,
+        }
+        await uploadFileToDrive(
+            drive,
+            'database.json',
+            JSON.stringify(snapshot, null, 2),
+            'application/json',
+            rootFolderId
+        )
+    } catch (error: any) {
+        console.error('Failed to write database.json snapshot:', error.message)
+    }
+
     return {
         total: allLectures.length,
         success: results.filter(r => r.success).length,
         failed: results.filter(r => !r.success).length,
         results,
     }
+}
+
+// --- Download helpers (for restore) ---
+
+export async function downloadFileFromDrive(
+    drive: drive_v3.Drive,
+    fileId: string
+): Promise<{ buffer: Buffer; mimeType: string }> {
+    const meta = await drive.files.get({ fileId, fields: 'mimeType' })
+    const res = await drive.files.get(
+        { fileId, alt: 'media' },
+        { responseType: 'arraybuffer' }
+    )
+    return {
+        buffer: Buffer.from(res.data as ArrayBuffer),
+        mimeType: meta.data.mimeType || 'application/octet-stream',
+    }
+}
+
+export async function findFileInFolder(
+    drive: drive_v3.Drive,
+    name: string,
+    parentId: string
+): Promise<string | null> {
+    const res = await drive.files.list({
+        q: `name='${name.replace(/'/g, "\\'")}' and '${parentId}' in parents and trashed=false`,
+        fields: 'files(id, name)',
+        spaces: 'drive',
+    })
+    return res.data.files?.[0]?.id || null
+}
+
+export async function downloadDatabaseSnapshot(
+    drive: drive_v3.Drive,
+    rootFolderId: string
+): Promise<any> {
+    const fileId = await findFileInFolder(drive, 'database.json', rootFolderId)
+    if (!fileId) {
+        throw new Error('database.json not found in Drive root. Run "Upload All to Google Drive" first.')
+    }
+    const { buffer } = await downloadFileFromDrive(drive, fileId)
+    return JSON.parse(buffer.toString('utf-8'))
 }
 
 // --- Check Connection Status ---
