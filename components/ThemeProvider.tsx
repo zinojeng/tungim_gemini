@@ -64,11 +64,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // If the user hasn't explicitly chosen, follow OS theme changes live.
   useEffect(() => {
-    if (\!mounted) return;
+    if (!mounted) return;
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = (e: MediaQueryListEvent) => {
       try {
-        if (\!localStorage.getItem(STORAGE_KEY)) {
+        if (!localStorage.getItem(STORAGE_KEY)) {
           setTheme(e.matches ? "dark" : "light");
         }
       } catch {
@@ -91,7 +91,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
 export function useTheme(): ThemeContextValue {
   const ctx = useContext(ThemeContext);
-  if (\!ctx) {
+  if (!ctx) {
     // Fallback — if a component is rendered outside the provider (e.g.
     // server component), return a no-op so nothing crashes.
     return {

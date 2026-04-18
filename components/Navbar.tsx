@@ -29,7 +29,7 @@ export function Navbar() {
   // Show ⌘K on mac, Ctrl K elsewhere. Done in effect to avoid SSR mismatch.
   useEffect(() => {
     const isMac =
-      typeof navigator \!== "undefined" &&
+      typeof navigator !== "undefined" &&
       /Mac|iPhone|iPad/.test(navigator.platform);
     setShortcutLabel(isMac ? "⌘K" : "Ctrl K");
   }, []);
@@ -39,7 +39,7 @@ export function Navbar() {
   const openCommandPalette = () => {
     const evt = new CustomEvent("mednote:open-command-palette");
     const dispatched = window.dispatchEvent(evt);
-    if (\!dispatched) router.push("/lectures");
+    if (!dispatched) router.push("/lectures");
   };
 
   return (

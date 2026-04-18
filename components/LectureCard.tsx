@@ -21,7 +21,7 @@ const POSTER_GRADIENTS = [
 ];
 
 function formatIssueDate(d?: string | Date | null): string {
-  if (\!d) return "未署日期";
+  if (!d) return "未署日期";
   const date = new Date(d);
   if (Number.isNaN(date.getTime())) return "未署日期";
   // 2026 · 04 · 19 — Journal-style. The mono font in tailwind takes it from here.

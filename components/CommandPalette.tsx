@@ -157,7 +157,7 @@ export function useCommandPalette() {
 
 // --- fuzzy match: substring-first, then char-in-order fallback -----------
 function matchesQuery(q: string, item: CommandItem): boolean {
-  if (\!q) return true;
+  if (!q) return true;
   const needle = q.toLowerCase().trim();
   const haystack = [
     item.title,
@@ -193,7 +193,7 @@ export function CommandPaletteProvider({
 
   const open = useCallback(() => setIsOpen(true), []);
   const close = useCallback(() => setIsOpen(false), []);
-  const toggle = useCallback(() => setIsOpen((v) => \!v), []);
+  const toggle = useCallback(() => setIsOpen((v) => !v), []);
   const registerDynamicItems = useCallback(
     (items: CommandItem[]) => setDynamicItems(items),
     []
@@ -224,7 +224,7 @@ export function CommandPaletteProvider({
 
   // Body scroll lock + focus input on open
   useEffect(() => {
-    if (\!isOpen) return;
+    if (!isOpen) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const t = setTimeout(() => inputRef.current?.focus(), 10);
@@ -236,7 +236,7 @@ export function CommandPaletteProvider({
 
   // Reset query & cursor when closed
   useEffect(() => {
-    if (\!isOpen) {
+    if (!isOpen) {
       setQuery("");
       setCursor(0);
     }

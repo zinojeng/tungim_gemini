@@ -6,7 +6,7 @@ interface FeaturedLectureProps {
 }
 
 function formatIssueDate(d?: string | Date | null): string {
-  if (\!d) return "尚未署日期";
+  if (!d) return "尚未署日期";
   const date = new Date(d);
   if (Number.isNaN(date.getTime())) return "尚未署日期";
   return (
@@ -26,7 +26,7 @@ function formatIssueDate(d?: string | Date | null): string {
  * is a fresh tree and the hero must not look broken on first boot.
  */
 export function FeaturedLecture({ lecture }: FeaturedLectureProps) {
-  if (\!lecture) {
+  if (!lecture) {
     return (
       <section className="border-b border-hair">
         <div className="mx-auto max-w-[1240px] px-6 py-14 md:px-10 md:py-20">
