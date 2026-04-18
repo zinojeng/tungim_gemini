@@ -50,9 +50,8 @@ async function getData() {
 export default async function Home() {
   const { lectures: lectureList, settings } = await getData();
 
-  // The first lecture takes the Featured slot; the next 9 fill the grid.
-  const featured = lectureList[0] ?? null;
-  const gridLectures = lectureList.slice(featured ? 1 : 0, featured ? 10 : 9);
+  // Hero is single-column now; grid surfaces the nine most recent notes.
+  const gridLectures = lectureList.slice(0, 9);
 
   // Feed the top ~20 published lectures into the ⌘K palette. Dynamic
   // registration happens in a tiny client component below; the server
@@ -75,11 +74,7 @@ export default async function Home() {
   return (
     <>
       <CommandPaletteLectureRegistrar items={lectureCommands} />
-      <EditorialHero
-        title={heroTitle}
-        subtitle={heroSubtitle}
-        latestLecture={featured}
-      />
+      <EditorialHero title={heroTitle} subtitle={heroSubtitle} />
 
       <DisciplineGrid />
 
