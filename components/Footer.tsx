@@ -51,7 +51,7 @@ export function Footer() {
               <span className="kicker text-ink-muted">AI · est. 2025</span>
             </Link>
             <p className="mt-4 max-w-sm text-[13.5px] leading-relaxed text-ink-muted">
-              臨床演講的安靜筆記。AI 起稿、醫師覆核、屬名署日期。像《新英格蘭醫學雜誌》的數位版，但更安靜。
+              臨床演講的安靜筆記。不做摘要、不做 highlight，把整場演講完整寫下來，讓你在任何時候都能慢慢讀回去。
             </p>
           </div>
 

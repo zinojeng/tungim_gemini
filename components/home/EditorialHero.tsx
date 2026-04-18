@@ -26,10 +26,10 @@ export function EditorialHero({
 }: EditorialHeroProps) {
   // Single source of headline truth. We accept DB overrides but default to the
   // editorial thesis so /admin doesn't need to seed anything for a fresh clone.
-  const headline = title || "臨床演講，\n安靜地讀。";
+  const headline = title || "臨床演講的\n安靜筆記。";
   const sub =
     subtitle ||
-    "AI 起稿、醫師覆核、屬名署日期的第二意見。面向內分泌、糖尿病、心腎代謝、肥胖醫學的繁體中文臨床筆記。";
+    "不做摘要、不做 highlight。把整場演講完整寫下來，讓你在任何時候都能慢慢讀回去。";
 
   const today = new Date();
   const issueDate =

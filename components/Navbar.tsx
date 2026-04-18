@@ -54,7 +54,7 @@ export function Navbar() {
             MedNote · Vol. 02 · 2026
           </span>
           <span className="kicker hidden text-ink-muted sm:inline">
-            AI 起稿 · 醫師覆核
+            臨床演講的安靜筆記
           </span>
         </div>
       </div>
