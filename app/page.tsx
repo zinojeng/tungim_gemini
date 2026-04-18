@@ -10,6 +10,10 @@ import { DisciplineGrid } from "@/components/home/DisciplineGrid";
 import { FeaturedLecture } from "@/components/home/FeaturedLecture";
 import { CollectionsSection } from "@/components/home/CollectionsSection";
 import { PrinciplesSection } from "@/components/home/PrinciplesSection";
+import {
+  CommandPaletteLectureRegistrar,
+  type CommandItem,
+} from "@/components/CommandPalette";
 
 // Force dynamic rendering — same as before the redesign. Lectures come from DB,
 // not build time.
@@ -51,12 +55,27 @@ export default async function Home() {
   const featured = lectureList[0] ?? null;
   const gridLectures = lectureList.slice(featured ? 1 : 0, featured ? 10 : 9);
 
+  // Feed the top ~20 published lectures into the ⌘K palette. Dynamic
+  // registration happens in a tiny client component below; the server
+  // just shapes the data.
+  const lectureCommands: CommandItem[] = lectureList.slice(0, 20).map((l) => ({
+    id: `lecture:${l.id}`,
+    title: l.title,
+    subtitle:
+      [l.category, l.subcategory].filter(Boolean).join(" · ") || undefined,
+    section: "演講",
+    kind: "navigate" as const,
+    href: `/lectures/${l.id}`,
+    keywords: l.tags ?? undefined,
+  }));
+
   // DB overrides still respected — /admin edits propagate.
   const heroTitle = settings["hero_title"] || null;
   const heroSubtitle = settings["hero_description"] || null;
 
   return (
     <>
+      <CommandPaletteLectureRegistrar items={lectureCommands} />
       <EditorialHero
         title={heroTitle}
         subtitle={heroSubtitle}
