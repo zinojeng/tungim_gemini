@@ -1,75 +1,104 @@
-import Link from "next/link"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Calendar } from "lucide-react"
-import { Lecture } from "@/types"
+import Link from "next/link";
+import { Lecture } from "@/types";
 
 interface LectureCardProps {
-    lecture: Lecture
+  lecture: Lecture;
+  /**
+   * Deterministic index; used for poster gradient when there is no cover image
+   * so two adjacent cards never get the same look. Home/collection lists pass
+   * the array index.
+   */
+  index?: number;
 }
 
-export function LectureCard({ lecture }: LectureCardProps) {
-    const coverImage = lecture.coverImage || null
+// Paper→editorial gradient family. No RGB random — we want the grid to feel
+// composed, not generative.
+const POSTER_GRADIENTS = [
+  "from-chip via-paper to-editorial/12",
+  "from-paper via-chip to-editorial/20",
+  "from-editorial/10 via-paper to-chip",
+  "from-paper via-editorial/8 to-chip",
+];
 
-    return (
-        <Link href={`/lectures/${lecture.id}`}>
-            <Card className="h-full overflow-hidden transition-all hover:shadow-lg hover:border-primary/50 group">
-                <div className="aspect-video w-full relative bg-muted">
-                    {coverImage ? (
-                        <>
-                            <img
-                                src={coverImage}
-                                alt={lecture.title}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
-                        </>
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center text-muted-foreground/50">
-                            <span className="text-sm">No Cover Image</span>
-                        </div>
-                    )}
+function formatIssueDate(d?: string | Date | null): string {
+  if (\!d) return "未署日期";
+  const date = new Date(d);
+  if (Number.isNaN(date.getTime())) return "未署日期";
+  // 2026 · 04 · 19 — Journal-style. The mono font in tailwind takes it from here.
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${y} · ${m} · ${day}`;
+}
 
-                    {lecture.category && (
-                        <div className="absolute top-3 right-3">
-                            <Badge className="bg-white/90 text-teal-800 hover:bg-white backdrop-blur-md shadow-sm font-bold">
-                                {lecture.category}
-                            </Badge>
-                        </div>
-                    )}
-                </div>
-                <CardHeader className="p-4 pb-2">
-                    <div className="flex justify-between items-start gap-2 mb-2">
-                        {lecture.subcategory && (
-                            <Badge variant="outline" className="border-teal-200 text-teal-700 bg-teal-50">
-                                {lecture.subcategory}
-                            </Badge>
-                        )}
-                        <div className="flex items-center text-xs text-muted-foreground ml-auto">
-                            <Calendar className="mr-1 h-3 w-3" />
-                            {lecture.publishDate ? new Date(lecture.publishDate).toLocaleDateString('zh-TW', {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit'
-                            }) : 'Unknown'}
-                        </div>
-                    </div>
-                    <CardTitle className="line-clamp-2 text-lg leading-tight group-hover:text-teal-600 transition-colors">
-                        {lecture.title}
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 pt-0">
-                    {lecture.tags && lecture.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mt-2">
-                            {lecture.tags.map((tag, i) => (
-                                <Badge key={i} variant="secondary" className="text-xs font-normal px-2 py-0 h-5 bg-orange-50 text-orange-700 hover:bg-orange-100">
-                                    {tag}
-                                </Badge>
-                            ))}
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-        </Link>
-    )
+export function LectureCard({ lecture, index = 0 }: LectureCardProps) {
+  const coverImage = lecture.coverImage || null;
+  const gradient = POSTER_GRADIENTS[index % POSTER_GRADIENTS.length];
+
+  return (
+    <Link
+      href={`/lectures/${lecture.id}`}
+      className="group block focus:outline-none"
+      aria-label={lecture.title}
+    >
+      <article className="flex h-full flex-col">
+        {/* Poster — 4:5 editorial ratio, hairline frame, no drop shadow. */}
+        <div
+          className={
+            "relative aspect-[4/5] w-full overflow-hidden border border-hair " +
+            "bg-gradient-to-br " +
+            gradient
+          }
+        >
+          {coverImage ? (
+            <img
+              src={coverImage}
+              alt=""
+              className="h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-90"
+              loading="lazy"
+            />
+          ) : (
+            // Typographic poster — keeps the grid quiet when covers are missing.
+            <div className="absolute inset-0 flex flex-col justify-between p-5">
+              <span className="kicker text-ink-muted">
+                {lecture.category || "MedNote"}
+              </span>
+              <span className="font-serif text-[40px] leading-none tracking-tighter2 text-ink/90">
+                {(lecture.title || "—").slice(0, 2)}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Metadata strip — above the title, like a journal article. */}
+        <div className="mt-4 flex items-center justify-between text-[11px] text-ink-muted">
+          <span className="kicker">
+            {lecture.category || "未分類"}
+            {lecture.subcategory ? ` · ${lecture.subcategory}` : ""}
+          </span>
+          <span className="font-mono tracking-tight">
+            {formatIssueDate(lecture.publishDate)}
+          </span>
+        </div>
+
+        {/* Title — serif, tight tracking. Underline-on-hover (no card lift). */}
+        <h3 className="mt-2 font-serif text-[22px] leading-[1.22] tracking-tighter2 text-ink transition-colors group-hover:text-editorial">
+          <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-[position:0_100%] bg-no-repeat transition-[background-size] duration-300 group-hover:bg-[length:100%_1px]">
+            {lecture.title}
+          </span>
+        </h3>
+
+        {/* Tags — mono, sparse, no pill background. */}
+        {lecture.tags && lecture.tags.length > 0 && (
+          <ul className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[11px] font-mono text-ink-muted">
+            {lecture.tags.slice(0, 4).map((tag, i) => (
+              <li key={i} className="before:mr-2 before:text-hair first:before:content-[''] before:content-['·']">
+                {tag}
+              </li>
+            ))}
+          </ul>
+        )}
+      </article>
+    </Link>
+  );
 }

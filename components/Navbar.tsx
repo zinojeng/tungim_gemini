@@ -1,78 +1,119 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Search } from "lucide-react"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle";
+
+interface NavItem {
+  href: string;
+  label: string;
+}
+
+// Mirror of the prototype's editorial menu — Disciplines / Collections / About,
+// but with the existing app routes wired in so deep links keep working.
+const NAV_ITEMS: NavItem[] = [
+  { href: "/lectures", label: "演講" },
+  { href: "/ada-2026", label: "ADA 2026" },
+  { href: "/diabetes-ai", label: "糖尿病 AI" },
+  { href: "/aoce-2026", label: "AOCE 2026" },
+  { href: "/about", label: "關於" },
+];
 
 export function Navbar() {
-    const router = useRouter()
-    const [searchQuery, setSearchQuery] = useState("")
+  const router = useRouter();
+  const pathname = usePathname();
+  const [shortcutLabel, setShortcutLabel] = useState("⌘K");
 
-    const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            if (searchQuery.trim()) {
-                router.push(`/lectures?search=${encodeURIComponent(searchQuery.trim())}`)
-            } else {
-                router.push('/lectures')
-            }
-        }
-    }
+  // Show ⌘K on mac, Ctrl K elsewhere. Done in effect to avoid SSR mismatch.
+  useEffect(() => {
+    const isMac =
+      typeof navigator \!== "undefined" &&
+      /Mac|iPhone|iPad/.test(navigator.platform);
+    setShortcutLabel(isMac ? "⌘K" : "Ctrl K");
+  }, []);
 
-    return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="container flex h-14 items-center">
-                <div className="mr-4 flex">
-                    <Link href="/" className="mr-6 flex items-center space-x-2">
-                        <span className="hidden font-bold sm:inline-block text-primary text-lg">
-                            MedNote AI
-                        </span>
-                    </Link>
-                    <nav className="flex items-center space-x-6 text-sm font-medium">
-                        <Link href="/lectures" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                            Lectures
-                        </Link>
-                        <Link href="/ada-2026" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                            2026 ADA
-                        </Link>
-                        <Link href="/diabetes-ai" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                            糖尿病 AI
-                        </Link>
-                        <Link href="/aoce-2026" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                            AOCE2026
-                        </Link>
-                        <Link href="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
-                            About
-                        </Link>
-                    </nav>
-                </div>
-                <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-                    <div className="w-full flex-1 md:w-auto md:flex-none">
-                        <div className="relative">
-                            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Search lectures..."
-                                className="pl-8 w-full md:w-[300px]"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={handleSearch}
-                            />
-                        </div>
-                    </div>
-                    <nav className="flex items-center gap-2">
+  // ⌘K opens the global command palette (registered by CommandPaletteProvider
+  // in a later commit). Falls back to /lectures if no listener is mounted.
+  const openCommandPalette = () => {
+    const evt = new CustomEvent("mednote:open-command-palette");
+    const dispatched = window.dispatchEvent(evt);
+    if (\!dispatched) router.push("/lectures");
+  };
 
-                        <Button variant="ghost" size="icon">
-                            <Avatar className="h-8 w-8">
-                                <AvatarImage src="/nanobanana.png" alt="User" />
-                                <AvatarFallback>MD</AvatarFallback>
-                            </Avatar>
-                        </Button>
-                    </nav>
-                </div>
-            </div>
-        </header>
-    )
+  return (
+    <header className="sticky top-0 z-40 w-full border-b border-hair bg-paper/85 backdrop-blur supports-[backdrop-filter]:bg-paper/70">
+      {/* Top utility strip — kicker, matches the editorial prototype. */}
+      <div className="border-b border-hair">
+        <div className="mx-auto flex h-7 max-w-[1240px] items-center justify-between px-6 md:px-10">
+          <span className="kicker text-ink-muted">
+            MedNote · Vol. 02 · 2026
+          </span>
+          <span className="kicker hidden text-ink-muted sm:inline">
+            AI 起稿 · 醫師覆核
+          </span>
+        </div>
+      </div>
+
+      {/* Main row — brand left, nav center, utility right. */}
+      <div className="mx-auto flex h-14 max-w-[1240px] items-center justify-between gap-6 px-6 md:px-10">
+        <Link href="/" className="group flex items-baseline gap-2">
+          <span className="font-serif text-xl tracking-tighter2 text-ink">
+            MedNote
+          </span>
+          <span className="kicker text-ink-muted group-hover:text-editorial">
+            AI · est. 2025
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-7 md:flex">
+          {NAV_ITEMS.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={
+                  "text-[13px] tracking-tightish transition-colors " +
+                  (active
+                    ? "text-ink underline underline-offset-[6px] decoration-editorial decoration-2"
+                    : "text-ink-muted hover:text-ink")
+                }
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            aria-label="開啟搜尋與命令面板"
+            className="hidden h-8 items-center gap-2 rounded-sm border border-hair px-2.5 text-[12px] text-ink-muted transition-colors hover:border-ink/30 hover:text-ink sm:inline-flex"
+          >
+            <Search className="h-3.5 w-3.5" strokeWidth={1.5} />
+            <span>搜尋</span>
+            <span className="ml-2 rounded-sm border border-hair px-1.5 py-0.5 font-mono text-[10px] tracking-wider text-ink-muted">
+              {shortcutLabel}
+            </span>
+          </button>
+
+          {/* Mobile: search-only icon button */}
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            aria-label="開啟搜尋"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-sm border border-hair text-ink-muted transition-colors hover:text-ink hover:border-ink/30 sm:hidden"
+          >
+            <Search className="h-4 w-4" strokeWidth={1.5} />
+          </button>
+
+          <ThemeToggle />
+        </div>
+      </div>
+    </header>
+  );
 }
