@@ -7,12 +7,12 @@ interface FooterSection {
 
 const SECTIONS: FooterSection[] = [
   {
-    title: "專題 · Sections",
+    title: "學科 · Disciplines",
     items: [
-      { label: "糖尿病 · Diabetes", href: "/lectures?category=diabetes" },
-      { label: "心腎代謝 · CKM", href: "/lectures?category=ckm" },
-      { label: "內分泌 · Endocrine", href: "/lectures?category=endocrine" },
-      { label: "肥胖醫學 · Obesity", href: "/lectures?category=obesity" },
+      { label: "糖尿病 · Diabetes", href: "/lectures?search=Diabetes" },
+      { label: "內分泌 · Endocrinology", href: "/lectures?search=Endocrinology" },
+      { label: "一般內科 · Internal Medicine", href: "/lectures?search=Internal+Medicine" },
+      { label: "其他主題 · Other", href: "/lectures?search=Other" },
     ],
   },
   {
@@ -51,7 +51,7 @@ export function Footer() {
               <span className="kicker text-ink-muted">AI · est. 2025</span>
             </Link>
             <p className="mt-4 max-w-sm text-[13.5px] leading-relaxed text-ink-muted">
-              臨床演講的安靜筆記。不做摘要、不做 highlight，把整場演講完整寫下來，讓你在任何時候都能慢慢讀回去。
+              臨床演講的安靜筆記。不做摘要、不挑重點，整場完整寫下來，讓你慢慢讀。
             </p>
           </div>
 

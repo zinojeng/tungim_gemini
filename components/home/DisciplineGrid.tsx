@@ -12,37 +12,40 @@ interface Discipline {
 // Hard-coded for now — these mirror the four editorial sections the journal
 // actually covers. Once the DB categories stabilise we can derive counts
 // dynamically; order stays fixed so the grid reads like a masthead.
+// Labels mirror the admin CATEGORIES list. URLs use ?search= because that is
+// what the /lectures page currently honours (ILIKE against title/category/
+// subcategory). Adjust both together if the listing page gains a real
+// ?category= filter.
 const DISCIPLINES: Discipline[] = [
   {
-    href: "/lectures?category=diabetes",
+    href: "/lectures?search=Diabetes",
     label: "糖尿病",
     labelEn: "Diabetes",
     blurb:
-      "Type 1 / Type 2 / GDM，GLP-1、SGLT2i、雙激動劑的臨床取捨；ADA Standards of Care 2026 對照表。",
+      "Type 1 / Type 2 / GDM；GLP-1、SGLT2i、雙激動劑的臨床取捨與長期資料。",
     num: "01",
   },
   {
-    href: "/lectures?category=ckm",
-    label: "心腎代謝",
-    labelEn: "Cardio-Renal-Metabolic",
+    href: "/lectures?search=Endocrinology",
+    label: "內分泌",
+    labelEn: "Endocrinology",
     blurb:
-      "HFpEF、CKD、MASLD/MASH 的連動照護；心衰與腎病的藥物選擇與雙器官保護。",
+      "甲狀腺、腎上腺、腦下垂體、骨鈣代謝；內分泌疾病的鑑別診斷與用藥實務。",
     num: "02",
   },
   {
-    href: "/lectures?category=endocrine",
-    label: "內分泌",
-    labelEn: "Endocrine",
+    href: "/lectures?search=Internal+Medicine",
+    label: "一般內科",
+    labelEn: "Internal Medicine",
     blurb:
-      "甲狀腺、腎上腺、腦下垂體、骨鈣代謝；罕見內分泌疾病的鑑別診斷實務。",
+      "心血管、腎、消化、風濕免疫、感染；跨次專科的一般內科臨床教學。",
     num: "03",
   },
   {
-    href: "/lectures?category=obesity",
-    label: "肥胖醫學",
-    labelEn: "Obesity Medicine",
-    blurb:
-      "tirzepatide、retatrutide 的長期資料；代謝性肥胖、減重手術、體重反彈管理。",
+    href: "/lectures?search=Other",
+    label: "其他主題",
+    labelEn: "Other Topics",
+    blurb: "跨科、工作坊、AI 臨床應用，以及尚未歸類的講題。",
     num: "04",
   },
 ];

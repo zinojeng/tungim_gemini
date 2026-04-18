@@ -18,7 +18,7 @@ export function EditorialHero({
   const headline = title || "臨床演講的\n安靜筆記。";
   const sub =
     subtitle ||
-    "不做摘要、不做 highlight。把整場演講完整寫下來，讓你在任何時候都能慢慢讀回去。";
+    "不做摘要、不挑重點。把整場演講完整寫下來，讓你隨時慢慢讀回去。";
 
   return (
     <section className="border-b border-hair">
