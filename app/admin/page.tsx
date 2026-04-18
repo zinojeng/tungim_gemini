@@ -87,7 +87,7 @@ export default function AdminPage() {
     const [isGDriveUploading, setIsGDriveUploading] = useState(false)
     const [isGDriveBatchUploading, setIsGDriveBatchUploading] = useState(false)
     const [gdriveResult, setGdriveResult] = useState<{ success: boolean; message: string } | null>(null)
-    const [gdriveBatchResult, setGdriveBatchResult] = useState<{ total: number; success: number; failed: number } | null>(null)
+    const [gdriveBatchResult, setGdriveBatchResult] = useState<{ total: number; success: number; failed: number; orphansTrashed: number } | null>(null)
     const [isGDriveRestoring, setIsGDriveRestoring] = useState(false)
     const [gdriveRestoreResult, setGdriveRestoreResult] = useState<{ lecturesRestored: number; filesRehosted: number; rehostErrors: string[] } | null>(null)
 
@@ -163,6 +163,7 @@ export default function AdminPage() {
                     total: data.total,
                     success: data.success,
                     failed: data.failed,
+                    orphansTrashed: data.orphansTrashed || 0,
                 })
             }
         } catch (error: any) {
@@ -1305,6 +1306,7 @@ export default function AdminPage() {
                                         <div className={`text-xs px-3 py-1.5 rounded-md ${gdriveBatchResult.failed === 0 ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'}`}>
                                             {gdriveBatchResult.success}/{gdriveBatchResult.total} succeeded
                                             {gdriveBatchResult.failed > 0 && `, ${gdriveBatchResult.failed} failed`}
+                                            {gdriveBatchResult.orphansTrashed > 0 && `, ${gdriveBatchResult.orphansTrashed} orphans cleaned`}
                                         </div>
                                     )}
                                     {gdriveRestoreResult && (

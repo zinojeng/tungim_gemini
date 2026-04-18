@@ -352,6 +352,7 @@ export interface UploadResult {
     title: string
     success: boolean
     filesUploaded: number
+    filesTrashed: number
     errors: string[]
     attachments?: LectureAttachments
 }
@@ -363,6 +364,7 @@ export async function uploadLectureToDrive(
     const rootFolderId = getRootFolderId()
     const errors: string[] = []
     let filesUploaded = 0
+    let filesTrashed = 0
 
     const [lectureRows, transcriptRows, summaryRows, slideRows] = await Promise.all([
         db.select().from(lectures).where(eq(lectures.id, lectureId)),
@@ -373,7 +375,7 @@ export async function uploadLectureToDrive(
 
     const lecture = lectureRows[0]
     if (!lecture) {
-        return { lectureId, title: 'Unknown', success: false, filesUploaded: 0, errors: ['Lecture not found'] }
+        return { lectureId, title: 'Unknown', success: false, filesUploaded: 0, filesTrashed: 0, errors: ['Lecture not found'] }
     }
 
     const transcript = transcriptRows[0] || null
@@ -465,11 +467,23 @@ export async function uploadLectureToDrive(
         }
     }
 
+    // Cleanup orphans within this lecture folder (old slides, stale inline hashes,
+    // wrong-extension covers, leftover PDF after pdfUrl was cleared). Trash-not-delete
+    // so Drive retains them for ~30 days.
+    try {
+        const cleanup = await cleanupLectureFolderOrphans(drive, lectureFolderId, attachments, !!lecture.pdfUrl)
+        filesTrashed = cleanup.trashed
+        errors.push(...cleanup.errors)
+    } catch (e: any) {
+        errors.push(`Cleanup: ${e.message}`)
+    }
+
     return {
         lectureId,
         title: lecture.title,
         success: errors.length === 0,
         filesUploaded,
+        filesTrashed,
         errors,
         attachments,
     }
@@ -481,6 +495,7 @@ export async function uploadAllLecturesToDrive(): Promise<{
     total: number
     success: number
     failed: number
+    orphansTrashed: number
     results: UploadResult[]
 }> {
     const allLectures = await db.select().from(lectures)
@@ -489,6 +504,21 @@ export async function uploadAllLecturesToDrive(): Promise<{
     for (const lecture of allLectures) {
         const result = await uploadLectureToDrive(lecture.id)
         results.push(result)
+    }
+
+    let orphansTrashed = results.reduce((sum, r) => sum + (r.filesTrashed || 0), 0)
+
+    // Batch-level cleanup: trash whole lecture folders whose slug is no longer in the DB
+    try {
+        const drive = getGDriveClient()
+        const rootFolderId = getRootFolderId()
+        const lecturesFolderId = await findOrCreateFolder(drive, 'lectures', rootFolderId)
+        const currentSlugs = new Set(allLectures.map(l => slugify(l.title)))
+        const cleanup = await cleanupOrphanLectureFolders(drive, lecturesFolderId, currentSlugs)
+        orphansTrashed += cleanup.trashed
+        if (cleanup.errors.length) console.error('Orphan folder cleanup errors:', cleanup.errors)
+    } catch (e: any) {
+        console.error('Failed to cleanup orphan lecture folders:', e.message)
     }
 
     // Also backup site settings
@@ -549,8 +579,128 @@ export async function uploadAllLecturesToDrive(): Promise<{
         total: allLectures.length,
         success: results.filter(r => r.success).length,
         failed: results.filter(r => !r.success).length,
+        orphansTrashed,
         results,
     }
+}
+
+// --- Cleanup helpers (trash orphaned files) ---
+
+export async function trashDriveFile(drive: drive_v3.Drive, fileId: string): Promise<void> {
+    await drive.files.update({ fileId, requestBody: { trashed: true } })
+}
+
+export interface DriveChild {
+    id: string
+    name: string
+    mimeType: string
+}
+
+export async function listFolderChildren(
+    drive: drive_v3.Drive,
+    folderId: string
+): Promise<DriveChild[]> {
+    const children: DriveChild[] = []
+    let pageToken: string | undefined = undefined
+    do {
+        const res: any = await drive.files.list({
+            q: `'${folderId}' in parents and trashed=false`,
+            fields: 'nextPageToken, files(id, name, mimeType)',
+            spaces: 'drive',
+            pageSize: 1000,
+            pageToken,
+        })
+        for (const f of res.data.files || []) {
+            if (f.id && f.name && f.mimeType) {
+                children.push({ id: f.id, name: f.name, mimeType: f.mimeType })
+            }
+        }
+        pageToken = res.data.nextPageToken || undefined
+    } while (pageToken)
+    return children
+}
+
+const FOLDER_MIME = 'application/vnd.google-apps.folder'
+
+function matchesManagedImageName(name: string): boolean {
+    return (
+        /^cover\./i.test(name) ||
+        /^slide-\d+\./i.test(name) ||
+        /^inline-[a-f0-9]{8}\./i.test(name)
+    )
+}
+
+export async function cleanupLectureFolderOrphans(
+    drive: drive_v3.Drive,
+    lectureFolderId: string,
+    attachments: LectureAttachments,
+    hasPdf: boolean
+): Promise<{ trashed: number; errors: string[] }> {
+    const errors: string[] = []
+    let trashed = 0
+
+    const keepInImages = new Set<string>()
+    if (attachments.coverImage) keepInImages.add(attachments.coverImage.driveName)
+    for (const s of attachments.slides) keepInImages.add(s.driveName)
+    for (const i of attachments.inline) keepInImages.add(i.driveName)
+
+    const children = await listFolderChildren(drive, lectureFolderId)
+
+    for (const child of children) {
+        if (child.mimeType !== FOLDER_MIME) continue
+        if (child.name === 'images') {
+            const imgChildren = await listFolderChildren(drive, child.id)
+            for (const f of imgChildren) {
+                if (f.mimeType === FOLDER_MIME) continue
+                if (!matchesManagedImageName(f.name)) continue
+                if (keepInImages.has(f.name)) continue
+                try {
+                    await trashDriveFile(drive, f.id)
+                    trashed++
+                } catch (e: any) {
+                    errors.push(`Trash images/${f.name}: ${e.message}`)
+                }
+            }
+        } else if (child.name === 'attachments') {
+            const attChildren = await listFolderChildren(drive, child.id)
+            for (const f of attChildren) {
+                if (f.mimeType === FOLDER_MIME) continue
+                if (f.name !== 'lecture.pdf') continue
+                if (hasPdf) continue
+                try {
+                    await trashDriveFile(drive, f.id)
+                    trashed++
+                } catch (e: any) {
+                    errors.push(`Trash attachments/${f.name}: ${e.message}`)
+                }
+            }
+        }
+    }
+
+    return { trashed, errors }
+}
+
+export async function cleanupOrphanLectureFolders(
+    drive: drive_v3.Drive,
+    lecturesFolderId: string,
+    currentSlugs: Set<string>
+): Promise<{ trashed: number; errors: string[] }> {
+    const errors: string[] = []
+    let trashed = 0
+
+    const children = await listFolderChildren(drive, lecturesFolderId)
+    for (const child of children) {
+        if (child.mimeType !== FOLDER_MIME) continue
+        if (currentSlugs.has(child.name)) continue
+        try {
+            await trashDriveFile(drive, child.id)
+            trashed++
+        } catch (e: any) {
+            errors.push(`Trash lectures/${child.name}: ${e.message}`)
+        }
+    }
+
+    return { trashed, errors }
 }
 
 // --- Download helpers (for restore) ---
