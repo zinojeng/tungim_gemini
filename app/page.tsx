@@ -13,7 +13,7 @@ export const revalidate = 0
 
 async function getData() {
   try {
-    const allLectures = await db.select().from(lectures).orderBy(desc(lectures.publishDate))
+    const allLectures = await db.select().from(lectures).where(eq(lectures.isPublished, true)).orderBy(desc(lectures.publishDate))
     const settings = await db.select().from(siteSettings)
 
     const settingsMap = settings.reduce((acc, curr) => {
