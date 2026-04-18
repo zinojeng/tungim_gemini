@@ -7,7 +7,6 @@ import { Lecture } from "@/types";
 import { LectureCard } from "@/components/LectureCard";
 import { EditorialHero } from "@/components/home/EditorialHero";
 import { DisciplineGrid } from "@/components/home/DisciplineGrid";
-import { FeaturedLecture } from "@/components/home/FeaturedLecture";
 import { CollectionsSection } from "@/components/home/CollectionsSection";
 import { PrinciplesSection } from "@/components/home/PrinciplesSection";
 import {
@@ -83,8 +82,6 @@ export default async function Home() {
       />
 
       <DisciplineGrid />
-
-      <FeaturedLecture lecture={featured} />
 
       {/* Journal grid — 3-col on desktop, 2-col on tablet, 1-col on mobile. */}
       <section className="border-b border-hair">

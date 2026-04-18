@@ -7,8 +7,8 @@ interface Principle {
 const PRINCIPLES: Principle[] = [
   {
     num: "I",
-    title: "AI 起稿，醫師覆核。",
-    body: "每篇都有署名的覆核者與覆核日期。AI 只做第一稿；臨床判斷的責任仍屬於人。",
+    title: "逐字呈現，不做摘要。",
+    body: "每篇都是演講現場的完整內容：投影片、口述、問答。AI 只負責把語音和 slide 整理成可讀結構；文字本身，仍是講者的原話。",
   },
   {
     num: "II",
