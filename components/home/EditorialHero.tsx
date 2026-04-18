@@ -15,14 +15,14 @@ export function EditorialHero({ title, subtitle }: EditorialHeroProps) {
 
   return (
     <section className="border-b border-hair">
-      <div className="mx-auto max-w-[1240px] px-6 py-14 md:px-10 md:py-24">
-        <h1 className="max-w-[18ch] whitespace-pre-line font-serif text-[40px] leading-[1.06] tracking-tighter2 text-ink md:text-[72px]">
+      <div className="mx-auto max-w-[1240px] px-6 py-14 md:px-10 md:py-20">
+        <h1 className="max-w-[18ch] whitespace-pre-line font-serif text-[40px] leading-[1.06] tracking-tighter2 text-ink md:text-[64px]">
           {headline}
         </h1>
-        <p className="mt-8 max-w-[56ch] font-serif text-[18px] italic leading-[1.55] text-ink-muted md:text-[22px]">
+        <p className="mt-6 max-w-[56ch] text-[13px] leading-relaxed text-ink-muted md:text-[14px]">
           {sub}
         </p>
-        <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px]">
+        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px]">
           <Link
             href="/lectures"
             className="group inline-flex items-center gap-2 text-ink transition-colors hover:text-editorial"
