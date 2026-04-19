@@ -74,7 +74,11 @@ export default async function Home() {
   return (
     <>
       <CommandPaletteLectureRegistrar items={lectureCommands} />
-      <EditorialHero title={heroTitle} subtitle={heroSubtitle} />
+      <EditorialHero
+        title={heroTitle}
+        subtitle={heroSubtitle}
+        recentLectures={lectureList.slice(0, 3)}
+      />
 
       <DisciplineGrid />
 
