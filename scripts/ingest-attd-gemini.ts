@@ -55,6 +55,11 @@ interface Args {
     manifest?: string
     output: string
     verbose: boolean
+    concurrency: number
+    maxRetries: number
+    strictSlides: boolean
+    cacheFile?: string
+    noCache: boolean
 }
 
 function parseArgs(argv: string[]): Args {
@@ -65,6 +70,10 @@ function parseArgs(argv: string[]): Args {
         output: process.cwd(),
         verbose: false,
         token: process.env.INGEST_API_TOKEN,
+        concurrency: 3,
+        maxRetries: 5,
+        strictSlides: false,
+        noCache: false,
     }
     for (let i = 0; i < argv.length; i++) {
         const a = argv[i]
@@ -80,6 +89,11 @@ function parseArgs(argv: string[]): Args {
             case '--manifest': args.manifest = next(); break
             case '--output': args.output = resolve(next()); break
             case '--verbose': args.verbose = true; break
+            case '--concurrency': args.concurrency = Math.max(1, Number(next())); break
+            case '--max-retries': args.maxRetries = Math.max(1, Number(next())); break
+            case '--strict-slides': args.strictSlides = true; break
+            case '--cache-file': args.cacheFile = resolve(next()); break
+            case '--no-cache': args.noCache = true; break
             case '-h':
             case '--help':
                 printHelp(); process.exit(0)
@@ -108,6 +122,19 @@ Options:
                         File overrides re-fuzzy: matchedSession is trusted.
   --output <dir>        Where to write manifest + report (default: cwd).
   --verbose             Chatty logging.
+
+Reliability:
+  --concurrency <n>     Parallel slide uploads. Default: 3.
+  --max-retries <n>     Retry attempts on 5xx / network errors. Default: 5.
+                        Exponential backoff with jitter (1s → 16s).
+  --strict-slides       Abort lecture create/update when ANY slide upload
+                        fails after retries. Without this flag, the lecture
+                        is still written with the slides that succeeded.
+  --cache-file <path>   Where to persist the upload URL cache. Default:
+                        <output>/.attd-upload-cache.json. Survives across
+                        runs so a failed batch resumes without re-uploading
+                        already-pushed files.
+  --no-cache            Disable the persistent cache (still uses in-memory).
 `)
 }
 
@@ -256,7 +283,12 @@ function fuzzyMatch(opts: {
 
 // Files written by previous runs of this very script — skip on recursive walk
 // so re-running with `--output` pointed at the input dir doesn't ingest them.
-const SCRIPT_OUTPUT_BASENAMES = new Set(['IMPORT_REPORT.md', 'attd_ingest_manifest.jsonl'])
+const SCRIPT_OUTPUT_BASENAMES = new Set([
+    'IMPORT_REPORT.md',
+    'attd_ingest_manifest.jsonl',
+    '.attd-upload-cache.json',
+    '.attd-upload-cache.json.tmp',
+])
 
 async function walkMarkdown(dir: string): Promise<string[]> {
     const out: string[] = []
@@ -273,12 +305,196 @@ async function walkMarkdown(dir: string): Promise<string[]> {
     return out.sort()
 }
 
+// ── Retry / concurrency / persistent cache ─────────────────────────────────
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
+/**
+ * True for the kinds of errors that are worth retrying — the upstream is
+ * up but momentarily unhappy (502/503/504, ECONNRESET, fetch network
+ * timeouts, MinIO behind Zeabur returning 5xx on slide #25 of 53). NEVER
+ * retry 4xx — auth or validation errors won't fix themselves.
+ *
+ * Inspects both `err.message` and `err.cause?.message` because undici
+ * (Node's built-in fetch) wraps the root error on `.cause` rather than
+ * surfacing the code in the top-level message. So a real socket reset
+ * shows up as message="fetch failed" with cause.message containing
+ * "ECONNRESET" or one of the UND_ERR_* codes.
+ */
+const RETRYABLE_PATTERN =
+    /\b(50[0-9]|429)\b|econnreset|econnrefused|etimedout|enotfound|eai_again|epipe|fetch failed|network|socket hang up|und_err_(connect_timeout|socket|headers_timeout|body_timeout|aborted)/
+
+function isRetryable(err: unknown): boolean {
+    if (!(err instanceof Error)) return false
+    const messages: string[] = [err.message.toLowerCase()]
+    const cause = (err as { cause?: unknown }).cause
+    if (cause instanceof Error) {
+        messages.push(cause.message.toLowerCase())
+        // undici nests one level deeper sometimes (e.g. AggregateError)
+        const nested = (cause as { cause?: unknown }).cause
+        if (nested instanceof Error) messages.push(nested.message.toLowerCase())
+        if (nested && typeof nested === 'object' && 'code' in nested) {
+            const nestedCode = (nested as { code: unknown }).code
+            if (typeof nestedCode === 'string') messages.push(nestedCode.toLowerCase())
+        }
+    }
+    // String-coded `code` field on the cause — undici uses this too
+    if (cause && typeof cause === 'object' && 'code' in cause) {
+        const code = (cause as { code: unknown }).code
+        if (typeof code === 'string') messages.push(code.toLowerCase())
+    }
+    return messages.some((m) => RETRYABLE_PATTERN.test(m))
+}
+
+/**
+ * Exponential backoff with full jitter. Caller passes a bumpRetries
+ * counter so the manifest / report can later show how many retries the
+ * run actually consumed (useful for spotting a flaky upstream).
+ */
+async function withRetry<T>(
+    label: string,
+    maxAttempts: number,
+    bumpRetries: () => void,
+    fn: () => Promise<T>,
+): Promise<T> {
+    let lastErr: unknown
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            return await fn()
+        } catch (err) {
+            lastErr = err
+            if (!isRetryable(err) || attempt === maxAttempts) throw err
+            bumpRetries()
+            const base = Math.min(16000, 1000 * 2 ** (attempt - 1))
+            const wait = Math.round(base * (0.5 + Math.random() * 0.5))
+            console.warn(
+                `  ⟳ ${label} attempt ${attempt} failed (${(err as Error).message}). Retrying in ${wait}ms…`,
+            )
+            await sleep(wait)
+        }
+    }
+    throw lastErr
+}
+
+/**
+ * Worker-pool concurrency. Preserves index ordering in the result array
+ * so callers can map back to slide-filename order without sorting again.
+ */
+async function mapWithConcurrency<T, R>(
+    items: T[],
+    concurrency: number,
+    fn: (item: T, idx: number) => Promise<R>,
+): Promise<R[]> {
+    const results: R[] = new Array(items.length)
+    let cursor = 0
+    const workers = Array.from(
+        { length: Math.min(concurrency, items.length) },
+        async () => {
+            while (cursor < items.length) {
+                const idx = cursor++
+                results[idx] = await fn(items[idx], idx)
+            }
+        },
+    )
+    await Promise.all(workers)
+    return results
+}
+
+/**
+ * Disk-backed upload cache so a failed run can resume without re-pushing
+ * the slides that already made it to S3. The PS08 incident (502 on
+ * slide 25 of 53) was the motivating case: without persistence the
+ * second run would re-upload the first 24 slides too.
+ *
+ * Cache is keyed by absolute path. If the user replaces a file with a
+ * new image at the same path, --no-cache is the escape hatch.
+ */
+class UploadCache {
+    private map = new Map<string, string>()
+    private path: string | null
+    /**
+     * Mutex chain. All flushes serialize through this promise so that
+     * with `--concurrency > 1`, two workers that both call set() can't
+     * race their renames and lose-update the file on disk (worker A
+     * could otherwise snapshot {x}, worker B then snapshot {x, y},
+     * B's rename completes first, A's stale rename overwrites with {x}).
+     */
+    private flushChain: Promise<void> = Promise.resolve()
+    /**
+     * Once a disk flush fails (disk full, permission, rename collision),
+     * we stop attempting further writes for the rest of the run and
+     * surface the error in the final IMPORT_REPORT. The in-memory map
+     * still works — current run continues — but the operator loses
+     * resume-across-runs durability and is told why.
+     */
+    private disabled = false
+    private flushError: string | null = null
+
+    constructor(path: string | null) {
+        this.path = path
+    }
+
+    async load(): Promise<void> {
+        if (!this.path) return
+        try {
+            const txt = await readFile(this.path, 'utf-8')
+            const obj = JSON.parse(txt) as Record<string, string>
+            this.map = new Map(Object.entries(obj))
+        } catch {
+            // Missing / unreadable / malformed → start fresh.
+        }
+    }
+
+    get(key: string): string | undefined {
+        return this.map.get(key)
+    }
+
+    async set(key: string, value: string): Promise<void> {
+        this.map.set(key, value)
+        if (this.disabled || !this.path) return
+        // Append THIS set's flush to the chain. Each flush writes the FULL
+        // current map state — there's no `dirty` flag to race against,
+        // so a set() that arrives during another flush's write window is
+        // automatically picked up by the next flush.
+        this.flushChain = this.flushChain.then(() => this.actualFlush())
+        try {
+            await this.flushChain
+        } catch (err) {
+            this.disabled = true
+            this.flushError = err instanceof Error ? err.message : String(err)
+            console.warn(`Upload cache disabled: ${this.flushError}`)
+        }
+    }
+
+    /** Atomic write so a Ctrl-C mid-flush doesn't corrupt the file. */
+    private async actualFlush(): Promise<void> {
+        if (!this.path) return
+        const obj = Object.fromEntries(this.map)
+        const tmp = this.path + '.tmp'
+        await writeFile(tmp, JSON.stringify(obj, null, 2), 'utf-8')
+        const { rename } = await import('node:fs/promises')
+        await rename(tmp, this.path)
+    }
+
+    size(): number {
+        return this.map.size
+    }
+
+    /** Disabled-with-reason status for the run summary. */
+    getDisabledReason(): string | null {
+        return this.disabled ? this.flushError : null
+    }
+}
+
 // ── HTTP helpers ────────────────────────────────────────────────────────────
 
 interface IngestClient {
     baseUrl: string
     token: string
     verbose: boolean
+    maxRetries: number
+    /** mutable counters bumped by withRetry — exposed to the report */
+    retries: { count: number }
 }
 
 async function getAgenda(c: IngestClient) {
@@ -288,37 +504,41 @@ async function getAgenda(c: IngestClient) {
 }
 
 async function listExisting(c: IngestClient, sessionId: string) {
-    const r = await fetch(
-        `${c.baseUrl}/api/ingest/lectures?conference=ATTD2026&sessionId=${encodeURIComponent(sessionId)}`,
-        { headers: { Authorization: `Bearer ${c.token}` } },
-    )
-    if (!r.ok) throw new Error(`GET lectures failed: ${r.status} ${await r.text()}`)
-    return r.json() as Promise<{
-        count: number
-        items: { id: string; tags: string[] | null; title: string }[]
-    }>
+    return withRetry(`GET lectures?sessionId=${sessionId}`, c.maxRetries, () => c.retries.count++, async () => {
+        const r = await fetch(
+            `${c.baseUrl}/api/ingest/lectures?conference=ATTD2026&sessionId=${encodeURIComponent(sessionId)}`,
+            { headers: { Authorization: `Bearer ${c.token}` } },
+        )
+        if (!r.ok) throw new Error(`GET lectures failed: ${r.status} ${await r.text()}`)
+        return r.json() as Promise<{
+            count: number
+            items: { id: string; tags: string[] | null; title: string }[]
+        }>
+    })
 }
 
 async function uploadFile(c: IngestClient, filePath: string): Promise<string> {
-    const buf = await readFile(filePath)
     const filename = basename(filePath)
-    const contentType = mimeFromExt(extname(filename))
-    const r = await fetch(`${c.baseUrl}/api/ingest/upload`, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${c.token}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            filename,
-            contentType,
-            base64: buf.toString('base64'),
-        }),
+    return withRetry(`upload ${filename}`, c.maxRetries, () => c.retries.count++, async () => {
+        const buf = await readFile(filePath)
+        const contentType = mimeFromExt(extname(filename))
+        const r = await fetch(`${c.baseUrl}/api/ingest/upload`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${c.token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                filename,
+                contentType,
+                base64: buf.toString('base64'),
+            }),
+        })
+        if (!r.ok) throw new Error(`Upload ${filename} failed: ${r.status} ${await r.text()}`)
+        const json = (await r.json()) as { urls: string[] }
+        if (!json.urls?.[0]) throw new Error(`Upload ${filename}: no URL returned`)
+        return json.urls[0]
     })
-    if (!r.ok) throw new Error(`Upload ${filename} failed: ${r.status} ${await r.text()}`)
-    const json = (await r.json()) as { urls: string[] }
-    if (!json.urls?.[0]) throw new Error(`Upload ${filename}: no URL returned`)
-    return json.urls[0]
 }
 
 function mimeFromExt(ext: string): string {
@@ -332,6 +552,13 @@ function mimeFromExt(ext: string): string {
     return 'application/octet-stream'
 }
 
+/**
+ * NOT auto-retried. A POST that times out after the server already
+ * committed would silently produce duplicates on retry. The caller
+ * relies on clientRef-based idempotency in the next run instead: if
+ * the lecture made it through, the next run's listExisting() will
+ * find the clientRef tag and PUT instead of POSTing again.
+ */
 async function postLecture(c: IngestClient, payload: any) {
     const r = await fetch(`${c.baseUrl}/api/ingest/lectures`, {
         method: 'POST',
@@ -345,17 +572,23 @@ async function postLecture(c: IngestClient, payload: any) {
     return r.json()
 }
 
+/**
+ * Idempotent by id, so retry is safe: replaying a successful PUT just
+ * overwrites with the same content.
+ */
 async function putLecture(c: IngestClient, id: string, payload: any) {
-    const r = await fetch(`${c.baseUrl}/api/ingest/lectures/${id}`, {
-        method: 'PUT',
-        headers: {
-            Authorization: `Bearer ${c.token}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+    return withRetry(`PUT lectures/${id}`, c.maxRetries, () => c.retries.count++, async () => {
+        const r = await fetch(`${c.baseUrl}/api/ingest/lectures/${id}`, {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${c.token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        })
+        if (!r.ok) throw new Error(`PUT lecture failed: ${r.status} ${await r.text()}`)
+        return r.json()
     })
-    if (!r.ok) throw new Error(`PUT lecture failed: ${r.status} ${await r.text()}`)
-    return r.json()
 }
 
 // ── Path containment ────────────────────────────────────────────────────────
@@ -403,7 +636,7 @@ async function rewriteInlineImages(opts: {
     slidesRoot?: string
     client: IngestClient
     dryRun: boolean
-    cache: Map<string, string>
+    cache: UploadCache
 }): Promise<{ rewritten: string; uploaded: number; firstInlineLocalPath?: string; errors: string[] }> {
     const { markdown, mdDir, slidesRoot, client, dryRun, cache } = opts
     const errors: string[] = []
@@ -444,7 +677,7 @@ async function rewriteInlineImages(opts: {
                     continue
                 }
             }
-            cache.set(abs, publicUrl)
+            await cache.set(abs, publicUrl)
         }
 
         // Replace ONLY this exact `(url)` span. The first capture group
@@ -478,7 +711,7 @@ async function pickCoverImage(opts: {
     firstInlineLocalPath?: string
     client: IngestClient
     dryRun: boolean
-    cache: Map<string, string>
+    cache: UploadCache
 }): Promise<string | null> {
     const { fm, mdDir, slidesRoot, firstInlineLocalPath, client, dryRun, cache } = opts
 
@@ -523,7 +756,7 @@ async function pickCoverImage(opts: {
     const cached = cache.get(chosen)
     if (cached) return cached
     const url = await uploadFile(client, chosen)
-    cache.set(chosen, url)
+    await cache.set(chosen, url)
     return url
 }
 
@@ -553,7 +786,8 @@ async function scanSlideGallery(opts: {
     slidesRoot?: string
     client: IngestClient
     dryRun: boolean
-    cache: Map<string, string>
+    cache: UploadCache
+    concurrency: number
 }): Promise<{ slides: SlideGalleryItem[]; scanned: number; uploaded: number; errors: string[] } | null> {
     const slideDir = fmString(opts.fm, 'slideDir')
     if (!slideDir) return null
@@ -585,26 +819,38 @@ async function scanSlideGallery(opts: {
         .filter((n) => GALLERY_IMAGE_RE.test(n))
         .sort()
 
-    const slides: SlideGalleryItem[] = []
+    type SlotResult = { url?: string; error?: string }
     let uploaded = 0
-    for (const filename of imageFiles) {
-        const abs = join(chosenDir, filename)
-        let url = opts.cache.get(abs)
-        if (!url) {
-            if (opts.dryRun) {
-                url = `dry-run://${abs}`
-            } else {
-                try {
-                    url = await uploadFile(opts.client, abs)
-                    uploaded++
-                } catch (err) {
-                    errors.push(`gallery slide ${filename}: ${(err as Error).message}`)
-                    continue
-                }
+
+    // Worker pool: at most `concurrency` slides hitting /api/ingest/upload
+    // at once. Each worker still goes through withRetry inside uploadFile,
+    // so flaky 5xx blips don't kill a single slide. Cache hits don't count
+    // against the concurrency budget — they resolve synchronously.
+    const slotResults = await mapWithConcurrency<string, SlotResult>(
+        imageFiles,
+        opts.concurrency,
+        async (filename) => {
+            const abs = join(chosenDir, filename)
+            const cached = opts.cache.get(abs)
+            if (cached) return { url: cached }
+            if (opts.dryRun) return { url: `dry-run://${abs}` }
+            try {
+                const url = await uploadFile(opts.client, abs)
+                uploaded++
+                await opts.cache.set(abs, url)
+                return { url }
+            } catch (err) {
+                return { error: `gallery slide ${filename}: ${(err as Error).message}` }
             }
-            opts.cache.set(abs, url)
-        }
-        slides.push({ imageUrl: url })
+        },
+    )
+
+    // Preserve filename order in the resulting slides[] (mapWithConcurrency
+    // already does, but we still need to split successes from failures).
+    const slides: SlideGalleryItem[] = []
+    for (const r of slotResults) {
+        if (r.url) slides.push({ imageUrl: r.url })
+        if (r.error) errors.push(r.error)
     }
     // `scanned` is the count of image files actually present on disk.
     // `slides.length` excludes upload failures, so reporting `scanned`
@@ -691,7 +937,7 @@ async function processFile(opts: {
     filePath: string
     args: Args
     client: IngestClient
-    cache: Map<string, string>
+    cache: UploadCache
     reviewedRow?: ManifestRow
 }): Promise<ManifestRow> {
     const { filePath, args, client, cache, reviewedRow } = opts
@@ -840,11 +1086,22 @@ async function processFile(opts: {
             client,
             dryRun: args.dryRun,
             cache,
+            concurrency: args.concurrency,
         })
         if (gallery) {
             row.slidesScanned = gallery.scanned
             row.slidesUploaded = gallery.uploaded
             if (gallery.errors.length) row.slideErrors = gallery.errors
+
+            // --strict-slides: any slide that failed to upload (after retries)
+            // aborts the whole talk so we never write a half-populated gallery.
+            // Without the flag we still write the lecture with whatever slides
+            // succeeded — partial > nothing for most operators.
+            if (args.strictSlides && gallery.errors.length > 0) {
+                row.status = 'failed'
+                row.error = `--strict-slides: ${gallery.errors.length} slide upload(s) failed; aborting lecture create/update.`
+                return row
+            }
         }
 
         if (args.dryRun) {
@@ -932,7 +1189,12 @@ async function writeManifest(file: string, rows: ManifestRow[]) {
     await writeFile(file, lines.join('\n') + '\n', 'utf-8')
 }
 
-async function writeReport(file: string, rows: ManifestRow[], args: Args) {
+async function writeReport(
+    file: string,
+    rows: ManifestRow[],
+    args: Args,
+    runStats: { retries: number; cacheSize: number; cacheDisabledReason: string | null },
+) {
     const counts: Record<ManifestRow['status'], number> = {
         pending: 0,
         'low-confidence': 0,
@@ -962,6 +1224,16 @@ async function writeReport(file: string, rows: ManifestRow[], args: Args) {
     lines.push(`- ✗ Failed       : ${counts.failed}`)
     lines.push(`- · Dry-run      : ${counts['dry-run']}`)
     lines.push(`- · Total        : ${rows.length}`)
+    lines.push('')
+    lines.push(`Retries used: **${runStats.retries}** · Upload cache size: **${runStats.cacheSize}** entries`)
+    if (runStats.retries > 0) {
+        lines.push(`(High retry counts may indicate flaky upstream — check Zeabur / MinIO logs.)`)
+    }
+    if (runStats.cacheDisabledReason) {
+        lines.push('')
+        lines.push(`> ⚠ Upload cache was DISABLED mid-run: ${runStats.cacheDisabledReason}`)
+        lines.push(`> Resume across runs is unavailable. Failed slide uploads will need to be re-pushed by the next run.`)
+    }
     lines.push('')
     if (lowConf.length) {
         lines.push('## Low-confidence (need manual review)')
@@ -1041,6 +1313,8 @@ async function main() {
         baseUrl: args.baseUrl,
         token: args.token ?? '',
         verbose: args.verbose,
+        maxRetries: args.maxRetries,
+        retries: { count: 0 },
     }
 
     // Live runs: ping the agenda endpoint to make sure the deploy is up.
@@ -1064,7 +1338,17 @@ async function main() {
     if (args.limit) files = files.slice(0, args.limit)
     console.log(`Processing ${files.length} markdown file(s)…`)
 
-    const cache = new Map<string, string>()
+    // Persistent upload cache. Lets a failed run resume without
+    // re-uploading the slides that already made it to S3.
+    const cachePath = args.noCache
+        ? null
+        : args.cacheFile ?? join(args.output, '.attd-upload-cache.json')
+    const cache = new UploadCache(cachePath)
+    await cache.load()
+    if (cache.size() > 0 && args.verbose) {
+        console.log(`✓ Upload cache: ${cache.size()} entries reused from ${cachePath}`)
+    }
+
     const rows: ManifestRow[] = []
     for (const f of files) {
         const relFile = relative(inputAbs, f)
@@ -1078,7 +1362,11 @@ async function main() {
     const manifestPath = join(args.output, 'attd_ingest_manifest.jsonl')
     const reportPath = join(args.output, 'IMPORT_REPORT.md')
     await writeManifest(manifestPath, rows)
-    await writeReport(reportPath, rows, args)
+    await writeReport(reportPath, rows, args, {
+        retries: client.retries.count,
+        cacheSize: cache.size(),
+        cacheDisabledReason: cache.getDisabledReason(),
+    })
     console.log('')
     console.log(`Manifest: ${manifestPath}`)
     console.log(`Report  : ${reportPath}`)
