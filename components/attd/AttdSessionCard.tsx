@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Lecture } from '@/types'
-import { AttdSession, AttdTrack, getDayKey } from '@/lib/attd2026-agenda'
+import { AttdSession, AttdTrack } from '@/lib/attd2026-agenda'
 import { Clock, MapPin, FileText } from 'lucide-react'
 
 interface Props {
@@ -24,7 +24,6 @@ const TYPE_LABEL: Record<AttdSession['type'], string> = {
 }
 
 export function AttdSessionCard({ session, track, lectures }: Props) {
-    const dayKey = getDayKey(session.date)
     const hasContent = lectures.length > 0
 
     return (
@@ -73,11 +72,7 @@ export function AttdSessionCard({ session, track, lectures }: Props) {
                 <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-foreground/60">
                     <span className="inline-flex items-center gap-1">
                         <Clock className="h-3.5 w-3.5" />
-                        <span className="font-medium">{dayKey}</span>
-                        <span>·</span>
-                        <span>
-                            {session.startTime} – {session.endTime}
-                        </span>
+                        {session.startTime} – {session.endTime}
                     </span>
                     <span className="inline-flex items-center gap-1">
                         <MapPin className="h-3.5 w-3.5" />

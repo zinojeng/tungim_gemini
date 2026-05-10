@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react'
 import {
     AttdSession,
     AttdTrack,
-    ATTD_2026_DAYS,
     ATTD_2026_TRACKS,
     ATTD_2026_SESSIONS,
 } from '@/lib/attd2026-agenda'
@@ -18,7 +17,6 @@ interface Props {
 
 export function AttdAgendaBoard({ lectures }: Props) {
     const [activeTrack, setActiveTrack] = useState<string | 'all'>('all')
-    const [activeDay, setActiveDay] = useState<string | 'all'>('all')
     const [showIndustry, setShowIndustry] = useState(false)
     const [search, setSearch] = useState('')
 
@@ -53,7 +51,6 @@ export function AttdAgendaBoard({ lectures }: Props) {
         let arr: AttdSession[] = ATTD_2026_SESSIONS.slice()
         if (!showIndustry) arr = arr.filter((s) => s.trackId !== 'industry')
         if (activeTrack !== 'all') arr = arr.filter((s) => s.trackId === activeTrack)
-        if (activeDay !== 'all') arr = arr.filter((s) => s.date === activeDay)
         if (search.trim()) {
             const q = search.toLowerCase()
             arr = arr.filter(
@@ -64,7 +61,7 @@ export function AttdAgendaBoard({ lectures }: Props) {
             )
         }
         return arr
-    }, [activeTrack, activeDay, showIndustry, search])
+    }, [activeTrack, showIndustry, search])
 
     const tracksToShow: AttdTrack[] = useMemo(() => {
         let t = ATTD_2026_TRACKS.slice()
@@ -109,24 +106,6 @@ export function AttdAgendaBoard({ lectures }: Props) {
                             />
                             Show industry
                         </label>
-                    </div>
-
-                    {/* Day chips */}
-                    <div className="flex flex-wrap items-center gap-1.5">
-                        <DayChip
-                            active={activeDay === 'all'}
-                            onClick={() => setActiveDay('all')}
-                            label="All days"
-                        />
-                        {ATTD_2026_DAYS.map((d) => (
-                            <DayChip
-                                key={d.key}
-                                active={activeDay === d.date}
-                                onClick={() => setActiveDay(d.date)}
-                                label={d.label}
-                                short={d.shortLabel}
-                            />
-                        ))}
                     </div>
 
                     {/* Track chips */}
@@ -188,32 +167,6 @@ export function AttdAgendaBoard({ lectures }: Props) {
                 </div>
             )}
         </div>
-    )
-}
-
-function DayChip({
-    active,
-    onClick,
-    label,
-    short,
-}: {
-    active: boolean
-    onClick: () => void
-    label: string
-    short?: string
-}) {
-    return (
-        <button
-            onClick={onClick}
-            aria-pressed={active}
-            className={`rounded-full px-3 py-1 text-xs font-medium ring-1 transition ${active
-                    ? 'bg-foreground text-background ring-foreground'
-                    : 'bg-background ring-border text-foreground/70 hover:bg-muted'
-                }`}
-        >
-            <span className="hidden sm:inline">{label}</span>
-            <span className="sm:hidden">{short ?? label}</span>
-        </button>
     )
 }
 

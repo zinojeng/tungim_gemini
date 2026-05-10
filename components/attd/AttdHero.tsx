@@ -64,11 +64,10 @@ export function AttdHero({ talksIndexed }: AttdHeroProps) {
                     A topic-first companion to the ATTD program. Browse the four-day agenda by theme — CGM, AI &amp; digital health, closed-loop, T1D, T2D, pregnancy, pediatrics — and dive into the transcripts and slide notes attached to each session.
                 </p>
 
-                <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl">
+                <div className="mt-8 grid grid-cols-3 gap-3 max-w-2xl">
                     <StatTile label="Tracks" value={featuredTrackCount} />
                     <StatTile label="Sessions" value={sessionCount} />
                     <StatTile label="Talks indexed" value={talksIndexed} />
-                    <StatTile label="Days" value={4} />
                 </div>
 
                 <div className="mt-8 flex flex-wrap gap-3">
