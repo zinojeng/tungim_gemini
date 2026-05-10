@@ -25,23 +25,41 @@ const TYPE_LABEL: Record<AttdSession['type'], string> = {
 
 export function AttdSessionCard({ session, track, lectures }: Props) {
     const dayKey = getDayKey(session.date)
+    const hasContent = lectures.length > 0
 
     return (
         <article
             id={`session-${session.id}`}
-            className={`relative rounded-xl border bg-card overflow-hidden transition-all hover:shadow-md hover:border-foreground/20 scroll-mt-24`}
+            className={`relative rounded-xl border overflow-hidden transition-all hover:shadow-md scroll-mt-24
+                ${hasContent
+                    ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-300/60 dark:border-emerald-800/40 hover:border-emerald-400'
+                    : 'bg-card hover:border-foreground/20'
+                }`}
         >
-            <div className={`absolute left-0 top-0 bottom-0 w-1 ${track.accent.dot}`} />
+            <div
+                className={`absolute left-0 top-0 bottom-0 w-1 ${hasContent ? 'bg-emerald-500' : track.accent.dot
+                    }`}
+            />
             <div className="p-4 md:p-5 pl-5 md:pl-6">
                 <div className="flex flex-wrap items-start gap-x-3 gap-y-2 mb-2">
+                    {hasContent && (
+                        <span
+                            className="relative flex h-2.5 w-2.5 items-center self-center"
+                            aria-label="Has uploaded content"
+                            title="Has uploaded content"
+                        >
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+                            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                        </span>
+                    )}
                     <span className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-foreground/60">
                         {session.id}
                     </span>
                     <Badge variant="outline" className={`${track.accent.chip} border-0 font-medium text-[11px]`}>
                         {TYPE_LABEL[session.type]}
                     </Badge>
-                    {lectures.length > 0 && (
-                        <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100 border-0 text-[11px]">
+                    {hasContent && (
+                        <Badge className="bg-emerald-500 text-white hover:bg-emerald-500 border-0 text-[11px] font-semibold shadow-sm">
                             <FileText className="h-3 w-3 mr-1" />
                             {lectures.length} note{lectures.length === 1 ? '' : 's'}
                         </Badge>

@@ -7,21 +7,16 @@ import {
     ATTD_2026_DAYS,
     ATTD_2026_TRACKS,
     ATTD_2026_SESSIONS,
-    getDayLabel,
 } from '@/lib/attd2026-agenda'
 import { Lecture } from '@/types'
-import { AttdSessionCard } from './AttdSessionCard'
 import { AttdTrackSection } from './AttdTrackSection'
-import { LayoutGrid, CalendarRange, Search, X } from 'lucide-react'
+import { Search, X } from 'lucide-react'
 
 interface Props {
     lectures: Lecture[]
 }
 
-type ViewMode = 'topic' | 'day'
-
 export function AttdAgendaBoard({ lectures }: Props) {
-    const [view, setView] = useState<ViewMode>('topic')
     const [activeTrack, setActiveTrack] = useState<string | 'all'>('all')
     const [activeDay, setActiveDay] = useState<string | 'all'>('all')
     const [showIndustry, setShowIndustry] = useState(false)
@@ -83,25 +78,8 @@ export function AttdAgendaBoard({ lectures }: Props) {
             {/* Sticky filter rail */}
             <div className="sticky top-14 z-30 -mx-4 md:mx-0 border-b border-border bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="px-4 md:px-0 py-3 space-y-3">
-                    {/* Top row: view + search + industry toggle */}
+                    {/* Top row: search + industry toggle */}
                     <div className="flex flex-wrap items-center gap-2">
-                        <div className="inline-flex rounded-full bg-muted p-0.5">
-                            <button
-                                onClick={() => setView('topic')}
-                                aria-pressed={view === 'topic'}
-                                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${view === 'topic' ? 'bg-background shadow-sm text-foreground' : 'text-foreground/60'}`}
-                            >
-                                <LayoutGrid className="h-3.5 w-3.5" /> By topic
-                            </button>
-                            <button
-                                onClick={() => setView('day')}
-                                aria-pressed={view === 'day'}
-                                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition ${view === 'day' ? 'bg-background shadow-sm text-foreground' : 'text-foreground/60'}`}
-                            >
-                                <CalendarRange className="h-3.5 w-3.5" /> By day
-                            </button>
-                        </div>
-
                         <div className="relative flex-1 min-w-[180px]">
                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                             <input
@@ -180,7 +158,7 @@ export function AttdAgendaBoard({ lectures }: Props) {
                 <div className="text-center py-16 text-muted-foreground text-sm">
                     No sessions match this filter.
                 </div>
-            ) : view === 'topic' ? (
+            ) : (
                 <div id="tracks" className="space-y-12">
                     {tracksToShow.map((track) => {
                         const trackSessions = filteredSessions.filter(
@@ -205,44 +183,6 @@ export function AttdAgendaBoard({ lectures }: Props) {
                                 )}
                                 looseLectures={looseLectures}
                             />
-                        )
-                    })}
-                </div>
-            ) : (
-                <div id="timeline" className="space-y-10">
-                    {ATTD_2026_DAYS.filter(
-                        (d) => activeDay === 'all' || d.date === activeDay,
-                    ).map((d) => {
-                        const daySessions = filteredSessions
-                            .filter((s) => s.date === d.date)
-                            .sort((a, b) => a.startTime.localeCompare(b.startTime))
-                        if (daySessions.length === 0) return null
-                        return (
-                            <section key={d.key} id={`day-${d.key}`} className="scroll-mt-32">
-                                <header className="mb-4 flex items-baseline gap-3 border-b pb-2">
-                                    <h2 className="text-xl md:text-2xl font-bold tracking-tight">
-                                        {getDayLabel(d.date)}
-                                    </h2>
-                                    <span className="text-xs text-foreground/50 font-mono">
-                                        {daySessions.length} session{daySessions.length === 1 ? '' : 's'}
-                                    </span>
-                                </header>
-                                <div className="space-y-3">
-                                    {daySessions.map((s) => {
-                                        const track =
-                                            ATTD_2026_TRACKS.find((t) => t.id === s.trackId) ??
-                                            ATTD_2026_TRACKS[0]
-                                        return (
-                                            <AttdSessionCard
-                                                key={s.id}
-                                                session={s}
-                                                track={track}
-                                                lectures={lecturesBySession[s.id] ?? []}
-                                            />
-                                        )
-                                    })}
-                                </div>
-                            </section>
                         )
                     })}
                 </div>

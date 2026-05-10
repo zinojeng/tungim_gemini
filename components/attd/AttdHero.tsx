@@ -79,12 +79,6 @@ export function AttdHero({ talksIndexed }: AttdHeroProps) {
                         Browse by topic
                     </a>
                     <a
-                        href="#timeline"
-                        className="inline-flex items-center rounded-full bg-white/70 dark:bg-white/10 ring-1 ring-border px-5 py-2.5 text-sm font-medium text-foreground hover:bg-white dark:hover:bg-white/20 transition"
-                    >
-                        View by day
-                    </a>
-                    <a
                         href={ATTD_2026_META.timetablePdfUrl}
                         target="_blank"
                         rel="noopener noreferrer"
