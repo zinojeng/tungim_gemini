@@ -527,6 +527,91 @@ async function pickCoverImage(opts: {
     return url
 }
 
+// ── Slide gallery scan ──────────────────────────────────────────────────────
+
+interface SlideGalleryItem {
+    imageUrl: string
+}
+
+const GALLERY_IMAGE_RE = /\.(png|jpe?g|webp|gif)$/i
+
+/**
+ * Walk a frontmatter `slideDir` and collect every image as a slide gallery
+ * row. Each file is uploaded via /api/ingest/upload (or stubbed in dry-run)
+ * and the resulting public URLs are returned in filename-sorted order — the
+ * lecture detail page sorts on imageUrl basename, so insertion order does
+ * not matter for display, but we keep it deterministic for testability.
+ *
+ * Returns null when no slideDir is declared. Otherwise returns
+ *   { slides, scanned, uploaded, errors }
+ * where `scanned` is the count of image files actually present on disk
+ * and `slides.length` may be lower if some uploads failed.
+ */
+async function scanSlideGallery(opts: {
+    fm: Record<string, unknown>
+    mdDir: string
+    slidesRoot?: string
+    client: IngestClient
+    dryRun: boolean
+    cache: Map<string, string>
+}): Promise<{ slides: SlideGalleryItem[]; scanned: number; uploaded: number; errors: string[] } | null> {
+    const slideDir = fmString(opts.fm, 'slideDir')
+    if (!slideDir) return null
+
+    const dirCandidates = [
+        safeResolve(opts.mdDir, slideDir),
+        opts.slidesRoot ? safeResolve(opts.slidesRoot, slideDir) : null,
+    ].filter((p): p is string => p !== null)
+
+    const errors: string[] = []
+    let chosenDir: string | undefined
+    for (const d of dirCandidates) {
+        if (existsSync(d)) { chosenDir = d; break }
+    }
+    if (!chosenDir) {
+        errors.push(`slideDir '${slideDir}' not found in any allowed root.`)
+        return { slides: [], scanned: 0, uploaded: 0, errors }
+    }
+
+    let entries: string[]
+    try {
+        entries = await readdir(chosenDir)
+    } catch (err) {
+        errors.push(`slideDir '${slideDir}' could not be read: ${(err as Error).message}`)
+        return { slides: [], scanned: 0, uploaded: 0, errors }
+    }
+
+    const imageFiles = entries
+        .filter((n) => GALLERY_IMAGE_RE.test(n))
+        .sort()
+
+    const slides: SlideGalleryItem[] = []
+    let uploaded = 0
+    for (const filename of imageFiles) {
+        const abs = join(chosenDir, filename)
+        let url = opts.cache.get(abs)
+        if (!url) {
+            if (opts.dryRun) {
+                url = `dry-run://${abs}`
+            } else {
+                try {
+                    url = await uploadFile(opts.client, abs)
+                    uploaded++
+                } catch (err) {
+                    errors.push(`gallery slide ${filename}: ${(err as Error).message}`)
+                    continue
+                }
+            }
+            opts.cache.set(abs, url)
+        }
+        slides.push({ imageUrl: url })
+    }
+    // `scanned` is the count of image files actually present on disk.
+    // `slides.length` excludes upload failures, so reporting `scanned`
+    // separately keeps the manifest honest about the source-of-truth size.
+    return { slides, scanned: imageFiles.length, uploaded, errors }
+}
+
 // ── Augment tags + clientRef ────────────────────────────────────────────────
 
 function computeClientRef(sessionId: string, title: string): string {
@@ -590,6 +675,12 @@ interface ManifestRow {
     error: string | null
     /** non-fatal errors during inline image rewrite (path traversal, missing files) */
     imageErrors: string[]
+    /** how many slide gallery images were found in slideDir */
+    slidesScanned: number
+    /** how many were actually uploaded this run (excludes cache hits and dry-run stubs) */
+    slidesUploaded: number
+    /** non-fatal errors from slide-gallery scan */
+    slideErrors: string[]
     lectureId: string | null
     lectureUrl: string | null
 }
@@ -622,6 +713,9 @@ async function processFile(opts: {
         status: 'pending',
         error: null,
         imageErrors: [],
+        slidesScanned: 0,
+        slidesUploaded: 0,
+        slideErrors: [],
         lectureId: null,
         lectureUrl: null,
     }
@@ -735,6 +829,24 @@ async function processFile(opts: {
         })
         row.coverUrl = coverUrl
 
+        // Slide gallery — INDEPENDENT from the cover and from inline body
+        // images. When frontmatter declares `slideDir`, every image in that
+        // directory is uploaded and attached as a per-slide row. The cover
+        // is allowed to overlap (it's just one of the slides).
+        const gallery = await scanSlideGallery({
+            fm,
+            mdDir,
+            slidesRoot: args.slidesRoot,
+            client,
+            dryRun: args.dryRun,
+            cache,
+        })
+        if (gallery) {
+            row.slidesScanned = gallery.scanned
+            row.slidesUploaded = gallery.uploaded
+            if (gallery.errors.length) row.slideErrors = gallery.errors
+        }
+
         if (args.dryRun) {
             row.status = 'dry-run'
             return row
@@ -745,6 +857,9 @@ async function processFile(opts: {
         const match = existing.items.find(
             (it) => Array.isArray(it.tags) && it.tags.includes(`clientRef:${clientRef}`),
         )
+
+        const slidesPayload =
+            gallery && gallery.slides.length > 0 ? gallery.slides : undefined
 
         const payload = {
             conference: 'ATTD2026' as const,
@@ -760,6 +875,7 @@ async function processFile(opts: {
             provider: fmString(fm, 'provider') ?? 'Gemini AI Studio',
             isPublished: typeof fm.isPublished === 'boolean' ? (fm.isPublished as boolean) : true,
             publishDate: row.publishDate,
+            slides: slidesPayload,
         }
 
         if (match) {
@@ -774,6 +890,11 @@ async function processFile(opts: {
                 provider: payload.provider,
                 isPublished: payload.isPublished,
                 publishDate: payload.publishDate,
+                // PUT slides only when the script actually scanned a gallery.
+                // Omitting the field leaves existing slides intact; passing
+                // an empty array would clear them. Passing a populated array
+                // replaces (consistent with the API's PUT semantics).
+                slides: slidesPayload,
             })) as { id: string; url: string }
             row.lectureId = updated.id
             row.lectureUrl = updated.url
@@ -871,6 +992,24 @@ async function writeReport(file: string, rows: ManifestRow[], args: Args) {
             for (const e of r.imageErrors) lines.push(`  - ${e}`)
         }
         lines.push('')
+    }
+    const totalSlidesScanned = rows.reduce((s, r) => s + r.slidesScanned, 0)
+    const totalSlidesUploaded = rows.reduce((s, r) => s + r.slidesUploaded, 0)
+    const withSlideErrors = rows.filter((r) => r.slideErrors.length)
+    if (totalSlidesScanned > 0 || withSlideErrors.length) {
+        lines.push('## Slide gallery')
+        lines.push('')
+        lines.push(`- Scanned: **${totalSlidesScanned}**`)
+        lines.push(`- Uploaded this run: **${totalSlidesUploaded}**${args.dryRun ? ' (dry-run — nothing pushed to S3)' : ''}`)
+        lines.push('')
+        if (withSlideErrors.length) {
+            lines.push('Issues:')
+            for (const r of withSlideErrors) {
+                lines.push(`- \`${r.file}\``)
+                for (const e of r.slideErrors) lines.push(`  - ${e}`)
+            }
+            lines.push('')
+        }
     }
     lines.push('## All rows')
     lines.push('')

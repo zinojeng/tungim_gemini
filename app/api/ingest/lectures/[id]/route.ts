@@ -3,6 +3,11 @@ import { db } from '@/lib/db'
 import { lectures, transcripts, summaries } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { requireIngestAuth } from '@/lib/ingest-auth'
+import {
+    replaceSlides,
+    SlidesValidationError,
+    validateSlides,
+} from '@/lib/ingest-slides'
 import { getSessionById, getTrackById } from '@/lib/attd2026-agenda'
 
 export const dynamic = 'force-dynamic'
@@ -24,6 +29,8 @@ interface UpdatePayload {
     coverImage?: string | null
     pdfUrl?: string | null
     sourceUrl?: string | null
+    /** Replace ALL slides for this lecture. Pass [] to clear. Omit to leave unchanged. */
+    slides?: unknown
     isPublished?: boolean
 }
 
@@ -101,6 +108,18 @@ export async function PUT(
         )
     }
 
+    // Pre-validate slides BEFORE any DB writes so a malformed payload
+    // doesn't leave the row in a partially-mutated state.
+    let slidesInput: ReturnType<typeof validateSlides> | undefined
+    if (body.slides !== undefined) {
+        try {
+            slidesInput = validateSlides(body.slides)
+        } catch (err) {
+            const msg = err instanceof SlidesValidationError ? err.message : 'Invalid slides.'
+            return NextResponse.json({ error: msg }, { status: 400 })
+        }
+    }
+
     const lectureUpdate: Record<string, unknown> = {}
     if (body.title !== undefined) lectureUpdate.title = body.title
     if (body.trackId !== undefined) lectureUpdate.subcategory = body.trackId
@@ -112,60 +131,74 @@ export async function PUT(
     if (body.isPublished !== undefined) lectureUpdate.isPublished = body.isPublished
     if (body.publishDate !== undefined) lectureUpdate.publishDate = new Date(body.publishDate)
 
-    if (Object.keys(lectureUpdate).length > 0) {
-        try {
-            await db.update(lectures).set(lectureUpdate).where(eq(lectures.id, id))
-        } catch (err: unknown) {
-            const msg = err instanceof Error ? err.message : 'Update failed.'
-            return NextResponse.json({ error: msg }, { status: 500 })
-        }
-    }
-
-    if (body.transcript !== undefined) {
-        const [existingTranscript] = await db
-            .select()
-            .from(transcripts)
-            .where(eq(transcripts.lectureId, id))
-        if (existingTranscript) {
-            await db
-                .update(transcripts)
-                .set({ content: body.transcript })
-                .where(eq(transcripts.lectureId, id))
-        } else if (body.transcript) {
-            await db.insert(transcripts).values({
-                lectureId: id,
-                content: body.transcript,
-                segments: [],
-            })
-        }
-    }
-
-    if (body.summary !== undefined || body.keyTakeaways !== undefined) {
-        const [existingSummary] = await db
-            .select()
-            .from(summaries)
-            .where(eq(summaries.lectureId, id))
-        if (existingSummary) {
-            const summaryUpdate: Record<string, unknown> = {}
-            if (body.summary !== undefined)
-                summaryUpdate.fullMarkdownContent = body.summary
-            if (body.keyTakeaways !== undefined)
-                summaryUpdate.keyTakeaways = body.keyTakeaways
-            if (Object.keys(summaryUpdate).length > 0) {
-                await db
-                    .update(summaries)
-                    .set(summaryUpdate)
-                    .where(eq(summaries.lectureId, id))
+    // All mutations go in one transaction so a failure (e.g. slide INSERT
+    // hits a constraint) rolls back the lecture/transcript/summary updates
+    // too. Without this, replaceSlides' DELETE could permanently destroy
+    // the gallery while the rest of the response says "updated".
+    let slidesReplaced: number | undefined
+    try {
+        await db.transaction(async (tx) => {
+            if (Object.keys(lectureUpdate).length > 0) {
+                await tx.update(lectures).set(lectureUpdate).where(eq(lectures.id, id))
             }
-        } else {
-            await db.insert(summaries).values({
-                lectureId: id,
-                executiveSummary: null,
-                fullMarkdownContent: body.summary ?? null,
-                keyTakeaways: body.keyTakeaways ?? [],
-                tags: [existing.category ?? 'General'],
-            })
-        }
+
+            if (body.transcript !== undefined) {
+                const [existingTranscript] = await tx
+                    .select()
+                    .from(transcripts)
+                    .where(eq(transcripts.lectureId, id))
+                if (existingTranscript) {
+                    await tx
+                        .update(transcripts)
+                        .set({ content: body.transcript })
+                        .where(eq(transcripts.lectureId, id))
+                } else if (body.transcript) {
+                    await tx.insert(transcripts).values({
+                        lectureId: id,
+                        content: body.transcript,
+                        segments: [],
+                    })
+                }
+            }
+
+            if (body.summary !== undefined || body.keyTakeaways !== undefined) {
+                const [existingSummary] = await tx
+                    .select()
+                    .from(summaries)
+                    .where(eq(summaries.lectureId, id))
+                if (existingSummary) {
+                    const summaryUpdate: Record<string, unknown> = {}
+                    if (body.summary !== undefined)
+                        summaryUpdate.fullMarkdownContent = body.summary
+                    if (body.keyTakeaways !== undefined)
+                        summaryUpdate.keyTakeaways = body.keyTakeaways
+                    if (Object.keys(summaryUpdate).length > 0) {
+                        await tx
+                            .update(summaries)
+                            .set(summaryUpdate)
+                            .where(eq(summaries.lectureId, id))
+                    }
+                } else {
+                    await tx.insert(summaries).values({
+                        lectureId: id,
+                        executiveSummary: null,
+                        fullMarkdownContent: body.summary ?? null,
+                        keyTakeaways: body.keyTakeaways ?? [],
+                        tags: [existing.category ?? 'General'],
+                    })
+                }
+            }
+
+            if (slidesInput !== undefined) {
+                // PUT semantics: replace ALL slides (consistent with
+                // /admin's existing PUT). Empty array clears the gallery.
+                slidesReplaced = await replaceSlides(id, slidesInput, tx)
+            }
+        })
+    } catch (err: unknown) {
+        console.error('Ingest update lecture transaction failed:', err)
+        const msg = err instanceof Error ? err.message : 'Update failed.'
+        return NextResponse.json({ error: msg }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -177,6 +210,7 @@ export async function PUT(
             ...(body.transcript !== undefined ? ['transcript'] : []),
             ...(body.summary !== undefined ? ['summary'] : []),
             ...(body.keyTakeaways !== undefined ? ['keyTakeaways'] : []),
+            ...(slidesReplaced !== undefined ? [`slides (${slidesReplaced})`] : []),
         ],
     })
 }

@@ -4,6 +4,11 @@ import { lectures, transcripts, summaries } from '@/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
 import { requireIngestAuth } from '@/lib/ingest-auth'
 import {
+    replaceSlides,
+    SlidesValidationError,
+    validateSlides,
+} from '@/lib/ingest-slides'
+import {
     getSessionById,
     getTrackById,
     ATTD_2026_META,
@@ -44,6 +49,8 @@ interface CreatePayload {
     coverImage?: string
     pdfUrl?: string
     sourceUrl?: string
+    /** per-slide gallery rows (independent of inline body images) */
+    slides?: unknown
     isPublished?: boolean
 }
 
@@ -110,6 +117,18 @@ export async function POST(req: Request) {
         }
     }
 
+    // Pre-validate slides BEFORE creating the lecture row so a malformed
+    // payload doesn't leave an orphaned half-created lecture.
+    let slidesInput: ReturnType<typeof validateSlides> | undefined
+    if (body.slides !== undefined) {
+        try {
+            slidesInput = validateSlides(body.slides)
+        } catch (err) {
+            const msg = err instanceof SlidesValidationError ? err.message : 'Invalid slides.'
+            return NextResponse.json({ error: msg }, { status: 400 })
+        }
+    }
+
     const tags = Array.isArray(body.tags) ? body.tags.filter(Boolean) : []
     const finalTags = body.sessionId
         ? [body.sessionId, ...tags.filter((t) => t !== body.sessionId)]
@@ -123,46 +142,11 @@ export async function POST(req: Request) {
             )
             : new Date()
 
-    let lectureRow
-    try {
-        const inserted = await db
-            .insert(lectures)
-            .values({
-                title: body.title,
-                sourceUrl: body.sourceUrl || null,
-                provider: body.provider || 'Ingest API',
-                category: conferenceMap.category,
-                subcategory: body.trackId || null,
-                tags: finalTags,
-                coverImage: body.coverImage || null,
-                pdfUrl: body.pdfUrl || null,
-                status: 'completed',
-                isPublished:
-                    body.isPublished === undefined ? true : Boolean(body.isPublished),
-                publishDate,
-            })
-            .returning()
-        lectureRow = inserted[0]
-    } catch (err: unknown) {
-        console.error('Ingest insert lecture failed:', err)
-        const msg = err instanceof Error ? err.message : 'Failed to insert lecture.'
-        return NextResponse.json({ error: msg }, { status: 500 })
-    }
-
-    if (body.transcript) {
-        try {
-            await db.insert(transcripts).values({
-                lectureId: lectureRow.id,
-                content: body.transcript,
-                segments: [],
-            })
-        } catch (err) {
-            console.error('Ingest insert transcript failed:', err)
-        }
-    }
-
+    // Parse keyTakeaways before the transaction so a malformed string
+    // doesn't waste a roundtrip.
+    let parsedTakeaways: unknown[] | undefined
     if (body.summary || body.keyTakeaways) {
-        let parsedTakeaways: unknown[] = []
+        parsedTakeaways = []
         if (Array.isArray(body.keyTakeaways)) {
             parsedTakeaways = body.keyTakeaways
         } else if (typeof body.keyTakeaways === 'string') {
@@ -175,17 +159,61 @@ export async function POST(req: Request) {
                     .filter(Boolean)
             }
         }
-        try {
-            await db.insert(summaries).values({
-                lectureId: lectureRow.id,
-                executiveSummary: null,
-                keyTakeaways: parsedTakeaways,
-                fullMarkdownContent: body.summary || null,
-                tags: [conferenceMap.category],
-            })
-        } catch (err) {
-            console.error('Ingest insert summary failed:', err)
-        }
+    }
+
+    // All writes go in one transaction so a failure anywhere — slides
+    // insert, transcript insert, summary insert — rolls back the lecture
+    // row too. Avoids orphan lectures with silently missing slides.
+    let lectureRow: typeof lectures.$inferSelect
+    let slidesInserted = 0
+    try {
+        lectureRow = await db.transaction(async (tx) => {
+            const [created] = await tx
+                .insert(lectures)
+                .values({
+                    title: body.title,
+                    sourceUrl: body.sourceUrl || null,
+                    provider: body.provider || 'Ingest API',
+                    category: conferenceMap.category,
+                    subcategory: body.trackId || null,
+                    tags: finalTags,
+                    coverImage: body.coverImage || null,
+                    pdfUrl: body.pdfUrl || null,
+                    status: 'completed',
+                    isPublished:
+                        body.isPublished === undefined ? true : Boolean(body.isPublished),
+                    publishDate,
+                })
+                .returning()
+
+            if (slidesInput && slidesInput.length > 0) {
+                slidesInserted = await replaceSlides(created.id, slidesInput, tx)
+            }
+
+            if (body.transcript) {
+                await tx.insert(transcripts).values({
+                    lectureId: created.id,
+                    content: body.transcript,
+                    segments: [],
+                })
+            }
+
+            if (parsedTakeaways !== undefined) {
+                await tx.insert(summaries).values({
+                    lectureId: created.id,
+                    executiveSummary: null,
+                    keyTakeaways: parsedTakeaways,
+                    fullMarkdownContent: body.summary || null,
+                    tags: [conferenceMap.category],
+                })
+            }
+
+            return created
+        })
+    } catch (err: unknown) {
+        console.error('Ingest create lecture transaction failed:', err)
+        const msg = err instanceof Error ? err.message : 'Failed to create lecture.'
+        return NextResponse.json({ error: msg }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -196,6 +224,7 @@ export async function POST(req: Request) {
         sessionId: body.sessionId || null,
         title: lectureRow.title,
         publishDate: lectureRow.publishDate,
+        slidesInserted,
         ingestedAt: new Date().toISOString(),
         agendaUrl:
             body.conference === 'ATTD2026'

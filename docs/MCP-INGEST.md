@@ -70,6 +70,21 @@ Response:
 
 `sessionId` is optional — if omitted, the lecture lands in the track but isn't pinned to a specific session card.
 
+**Slide gallery.** Attach a per-slide image gallery (separate from inline
+body images) by passing a `slides` array on POST or PUT:
+
+```json
+"slides": [
+  { "imageUrl": "https://.../01.png" },
+  { "imageUrl": "https://.../02.png", "ocrText": "Methods", "timestampSeconds": 240 },
+  { "imageUrl": "https://.../03.png" }
+]
+```
+
+POST inserts the full set on creation. PUT *replaces* the entire gallery (pass
+`[]` to clear). Hard cap: 500 slides per lecture. Each row needs `imageUrl`;
+`timestampSeconds`, `ocrText`, `aiSummary` are optional.
+
 ### Upload a file
 
 ```bash
@@ -112,7 +127,8 @@ Transport: **Streamable HTTP** (JSON-RPC 2.0 over `POST`).
 | `attd_list_tracks` | The 12 thematic tracks. |
 | `attd_list_sessions` | All sessions, filterable by `trackId` / `day` / `query`. |
 | `attd_list_lectures` | What's already attached to ATTD 2026. |
-| `attd_create_lecture` | Create a transcript/summary lecture, optionally pinned to a session. |
+| `attd_create_lecture` | Create a transcript/summary lecture, optionally pinned to a session. Accepts `slides[]` for the per-slide gallery. |
+| `attd_attach_slides_to_lecture` | Append slide rows to an existing lecture (incremental gallery growth). |
 | `attd_attach_url_to_session` | Attach an external URL to a session (no transcript needed). |
 | `attd_upload_file` | Upload a base64-encoded asset to S3, get back a public URL. |
 
@@ -134,7 +150,7 @@ Transport: **Streamable HTTP** (JSON-RPC 2.0 over `POST`).
 }
 ```
 
-Restart Claude Desktop. The seven `attd_*` tools should appear in the tool drawer.
+Restart Claude Desktop. The eight `attd_*` tools should appear in the tool drawer.
 
 ### Wire it up — Cursor / Codex / generic MCP client
 
@@ -145,16 +161,27 @@ Most clients accept the same shape — point them at `https://mednote.zeabur.app
 ```text
 1. attd_list_tracks                 → pick "aid" (Automated Insulin Delivery)
 2. attd_list_sessions { trackId: "aid" }   → see PS07, PS17, PS25, OP05, OP10
-3. attd_upload_file { filename, base64 }   → optional: get cover image URL
+3. attd_upload_file × N            → upload cover + every gallery slide,
+                                      collect their public URLs
 4. attd_create_lecture {
      sessionId: "PS07",
      title: "...",
      transcript: "...",
      summary: "...",
-     coverImage: "<url from step 3>"
+     coverImage: "<cover url>",
+     slides: [
+       { imageUrl: "<slide-01 url>" },
+       { imageUrl: "<slide-02 url>" },
+       ...
+     ]
    }
-   → returns the public lecture URL
+   → returns the public lecture URL + slidesInserted count
 ```
+
+To extend an existing lecture's gallery later (e.g. you only had half the
+slides at create time), use `attd_attach_slides_to_lecture { lectureId, slides[] }`.
+That tool appends; to fully replace the gallery, use the REST PUT endpoint
+with a complete `slides[]` array.
 
 ---
 

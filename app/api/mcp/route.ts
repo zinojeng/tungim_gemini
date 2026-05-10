@@ -17,6 +17,11 @@ import {
     assertUnderLimit,
     getMaxUploadBytes,
 } from '@/lib/ingest-limits'
+import {
+    appendSlides,
+    replaceSlides,
+    validateSlides,
+} from '@/lib/ingest-slides'
 
 export const dynamic = 'force-dynamic'
 
@@ -146,12 +151,33 @@ const TOOLS: ToolDef[] = [
                 sourceUrl: { type: 'string', description: 'Original source link if any.' },
                 provider: { type: 'string', description: 'Origin label (e.g. "Claude MCP").' },
                 isPublished: { type: 'boolean', description: 'Default true.' },
+                slides: {
+                    type: 'array',
+                    description:
+                        'Per-slide gallery rows shown on the lecture detail page. INDEPENDENT from inline body images. Use attd_upload_file first to get a public URL for each slide image, then pass them here.',
+                    items: {
+                        type: 'object',
+                        required: ['imageUrl'],
+                        properties: {
+                            imageUrl: { type: 'string' },
+                            timestampSeconds: { type: 'number' },
+                            ocrText: { type: 'string' },
+                            aiSummary: { type: 'string' },
+                        },
+                        additionalProperties: false,
+                    },
+                },
             },
             additionalProperties: false,
         },
         handler: async (args) => {
             const title = asString(args.title)
             if (!title) throw new Error('Field `title` is required.')
+
+            // Pre-validate slides BEFORE creating the lecture so a malformed
+            // payload doesn't leave an orphaned half-created row.
+            const slidesInput =
+                args.slides !== undefined ? validateSlides(args.slides) : undefined
 
             const sessionId = asString(args.sessionId)
             let trackId = asString(args.trackId)
@@ -178,43 +204,56 @@ const TOOLS: ToolDef[] = [
             const isPublished =
                 typeof args.isPublished === 'boolean' ? args.isPublished : true
 
-            const inserted = await db
-                .insert(lectures)
-                .values({
-                    title,
-                    sourceUrl: asString(args.sourceUrl) ?? null,
-                    provider: asString(args.provider) ?? 'Claude MCP',
-                    category: 'ATTD2026',
-                    subcategory: trackId ?? null,
-                    tags: finalTags,
-                    coverImage: asString(args.coverImage) ?? null,
-                    pdfUrl: asString(args.pdfUrl) ?? null,
-                    status: 'completed',
-                    isPublished,
-                    publishDate: inferredDate ?? new Date(),
-                })
-                .returning()
-            const row = inserted[0]
-
             const transcript = asString(args.transcript)
-            if (transcript) {
-                await db.insert(transcripts).values({
-                    lectureId: row.id,
-                    content: transcript,
-                    segments: [],
-                })
-            }
             const summary = asString(args.summary)
             const keyTakeaways = asStringArray(args.keyTakeaways)
-            if (summary || keyTakeaways.length) {
-                await db.insert(summaries).values({
-                    lectureId: row.id,
-                    executiveSummary: null,
-                    keyTakeaways,
-                    fullMarkdownContent: summary ?? null,
-                    tags: ['ATTD2026'],
-                })
-            }
+
+            // One transaction across lecture + slides + transcript + summary
+            // so a downstream INSERT failure rolls back the lecture too,
+            // never leaving an orphan row that the LLM thinks succeeded.
+            let slidesInserted = 0
+            const row = await db.transaction(async (tx) => {
+                const [created] = await tx
+                    .insert(lectures)
+                    .values({
+                        title,
+                        sourceUrl: asString(args.sourceUrl) ?? null,
+                        provider: asString(args.provider) ?? 'Claude MCP',
+                        category: 'ATTD2026',
+                        subcategory: trackId ?? null,
+                        tags: finalTags,
+                        coverImage: asString(args.coverImage) ?? null,
+                        pdfUrl: asString(args.pdfUrl) ?? null,
+                        status: 'completed',
+                        isPublished,
+                        publishDate: inferredDate ?? new Date(),
+                    })
+                    .returning()
+
+                if (slidesInput && slidesInput.length > 0) {
+                    slidesInserted = await replaceSlides(created.id, slidesInput, tx)
+                }
+
+                if (transcript) {
+                    await tx.insert(transcripts).values({
+                        lectureId: created.id,
+                        content: transcript,
+                        segments: [],
+                    })
+                }
+
+                if (summary || keyTakeaways.length) {
+                    await tx.insert(summaries).values({
+                        lectureId: created.id,
+                        executiveSummary: null,
+                        keyTakeaways,
+                        fullMarkdownContent: summary ?? null,
+                        tags: ['ATTD2026'],
+                    })
+                }
+
+                return created
+            })
 
             return {
                 id: row.id,
@@ -225,6 +264,50 @@ const TOOLS: ToolDef[] = [
                 title: row.title,
                 trackId: row.subcategory,
                 sessionId: sessionId ?? null,
+                slidesInserted,
+            }
+        },
+    },
+    {
+        name: 'attd_attach_slides_to_lecture',
+        description:
+            'Append slide gallery rows to an EXISTING lecture. Use after attd_create_lecture if more slides arrive later, or to incrementally extend the gallery. Does NOT replace existing slides — to replace, use the REST PUT /api/ingest/lectures/[id] endpoint with a full slides[] array.',
+        inputSchema: {
+            type: 'object',
+            required: ['lectureId', 'slides'],
+            properties: {
+                lectureId: { type: 'string', description: 'UUID returned by attd_create_lecture.' },
+                slides: {
+                    type: 'array',
+                    minItems: 1,
+                    items: {
+                        type: 'object',
+                        required: ['imageUrl'],
+                        properties: {
+                            imageUrl: { type: 'string' },
+                            timestampSeconds: { type: 'number' },
+                            ocrText: { type: 'string' },
+                            aiSummary: { type: 'string' },
+                        },
+                        additionalProperties: false,
+                    },
+                },
+            },
+            additionalProperties: false,
+        },
+        handler: async (args) => {
+            const lectureId = asString(args.lectureId)
+            if (!lectureId) throw new Error('Field `lectureId` is required.')
+            const items = validateSlides(args.slides)
+            if (items.length === 0) throw new Error('At least one slide is required.')
+            // Confirm the lecture exists before inserting orphan slide rows.
+            const [row] = await db.select().from(lectures).where(eq(lectures.id, lectureId))
+            if (!row) throw new Error(`Lecture '${lectureId}' not found.`)
+            const inserted = await appendSlides(lectureId, items)
+            return {
+                lectureId,
+                appended: inserted,
+                url: `${SITE_URL}/lectures/${lectureId}`,
             }
         },
     },
