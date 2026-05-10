@@ -9,7 +9,8 @@
     "lint": "eslint",
     "db:push": "drizzle-kit push",
     "db:backup": "tsx scripts/backup-db.ts",
-    "db:restore": "tsx scripts/restore-db.ts"
+    "db:restore": "tsx scripts/restore-db.ts",
+    "ingest:attd": "tsx scripts/ingest-attd-gemini.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.940.0",

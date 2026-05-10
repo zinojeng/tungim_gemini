@@ -44,6 +44,9 @@ export function Navbar() {
                         <Link href="/aoce-2026" className="transition-colors hover:text-foreground/80 text-foreground/60">
                             AOCE2026
                         </Link>
+                        <Link href="/attd-2026" className="transition-colors hover:text-foreground/80 text-foreground/60">
+                            ATTD2026
+                        </Link>
                         <Link href="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
                             About
                         </Link>

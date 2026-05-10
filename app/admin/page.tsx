@@ -25,6 +25,7 @@ const CATEGORIES = [
     "2026 ADA",
     "Diabetes AI",
     "AOCE2026",
+    "ATTD2026",
     "Other"
 ]
 
