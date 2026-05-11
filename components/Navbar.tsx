@@ -4,9 +4,68 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Search } from "lucide-react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useSession, signOut } from "next-auth/react"
+
+function UserMenu() {
+    const { data: session, status } = useSession()
+
+    if (status === "loading") {
+        return <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
+    }
+
+    if (!session?.user) {
+        return (
+            <div className="flex items-center gap-2">
+                <Button asChild variant="ghost" size="sm">
+                    <Link href="/login">Log in</Link>
+                </Button>
+                <Button asChild size="sm">
+                    <Link href="/register">Sign up</Link>
+                </Button>
+            </div>
+        )
+    }
+
+    const name = session.user.name || session.user.email || "Account"
+    const initials = name.slice(0, 2).toUpperCase()
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full">
+                    <Avatar className="h-8 w-8">
+                        {session.user.image ? <AvatarImage src={session.user.image} alt={name} /> : null}
+                        <AvatarFallback>{initials}</AvatarFallback>
+                    </Avatar>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="font-normal">
+                    <div className="text-sm font-medium">{session.user.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">{session.user.email}</div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {session.user.role === "admin" ? (
+                    <DropdownMenuItem asChild>
+                        <Link href="/admin">Admin</Link>
+                    </DropdownMenuItem>
+                ) : null}
+                <DropdownMenuItem onSelect={() => signOut({ callbackUrl: "/" })}>Sign out</DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
 
 export function Navbar() {
     const router = useRouter()
@@ -66,13 +125,7 @@ export function Navbar() {
                         </div>
                     </div>
                     <nav className="flex items-center gap-2">
-
-                        <Button variant="ghost" size="icon">
-                            <Avatar className="h-8 w-8">
-                                <AvatarImage src="/nanobanana.png" alt="User" />
-                                <AvatarFallback>MD</AvatarFallback>
-                            </Avatar>
-                        </Button>
+                        <UserMenu />
                     </nav>
                 </div>
             </div>

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { BackToTop } from "@/components/BackToTop";
+import { AuthProvider } from "@/components/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -27,12 +28,14 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <div className="relative flex min-h-screen flex-col">
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-          <BackToTop />
-        </div>
+        <AuthProvider>
+          <div className="relative flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <BackToTop />
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

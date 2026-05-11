@@ -4,6 +4,8 @@ import { lectures, transcripts, summaries, slides } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import { LectureClient } from './LectureClient'
+import { auth } from '@/lib/auth'
+import { LectureGate } from '@/components/auth/LectureGate'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -54,16 +56,14 @@ export async function generateMetadata(
         }
     }
 
-    const { lecture, summary, slides } = data
+    const { lecture, summary } = data
 
     const title = lecture.title || 'Lecture'
     const description = summary?.executiveSummary || 'AI-powered medical lecture notes.'
     
-    // Determine the best image for og:image.
-    // 1. lecture.coverImage (if available)
-    // 2. slides[0].imageUrl (if available)
-    // Absolute URLs should be used. The Image URLs in DB are expected to be absolute (from cloud storage).
-    const imageUrl = lecture.coverImage || (slides && slides.length > 0 ? slides[0].imageUrl : null)
+    // og:image: only ever the public cover image. Slide images are members-only
+    // content, so they must not leak into public page metadata.
+    const imageUrl = lecture.coverImage || null
     
     const previousImages = (await parent).openGraph?.images || []
     const images = imageUrl ? [imageUrl, ...previousImages] : previousImages
@@ -94,6 +94,20 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
 
     if (!data) {
         notFound()
+    }
+
+    // Free visitors see the outline/agenda and a talk's executive summary, but
+    // the full transcript and slide notes require a (free) signed-in account.
+    const session = await auth()
+    if (!session?.user) {
+        return (
+            <LectureGate
+                lectureId={id}
+                title={data.lecture.title}
+                executiveSummary={data.summary?.executiveSummary}
+                keyTakeaways={data.summary?.keyTakeaways}
+            />
+        )
     }
 
     return <LectureClient {...data} />
