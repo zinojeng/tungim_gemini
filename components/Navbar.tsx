@@ -20,22 +20,8 @@ import { useSession, signOut } from "next-auth/react"
 function UserMenu() {
     const { data: session, status } = useSession()
 
-    if (status === "loading") {
-        return <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
-    }
-
-    if (!session?.user) {
-        return (
-            <div className="flex items-center gap-2">
-                <Button asChild variant="ghost" size="sm">
-                    <Link href="/login">Log in</Link>
-                </Button>
-                <Button asChild size="sm">
-                    <Link href="/register">Sign up</Link>
-                </Button>
-            </div>
-        )
-    }
+    if (status === "loading") return null
+    if (!session?.user) return null
 
     const name = session.user.name || session.user.email || "Account"
     const initials = name.slice(0, 2).toUpperCase()
