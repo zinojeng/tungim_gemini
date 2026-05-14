@@ -1,10 +1,9 @@
 import { db } from '@/lib/db'
-import { lectures } from '@/db/schema'
+import { lectures, summaries } from '@/db/schema'
 import { eq, desc, and } from 'drizzle-orm'
-import { Lecture } from '@/types'
 import type { Metadata } from 'next'
 import { AttdHero } from '@/components/attd/AttdHero'
-import { AttdAgendaBoard } from '@/components/attd/AttdAgendaBoard'
+import { AttdAgendaBoard, AttdLecture } from '@/components/attd/AttdAgendaBoard'
 import { ATTD_2026_META } from '@/lib/attd2026-agenda'
 
 const SITE_URL = 'https://mednote.zeabur.app'
@@ -33,11 +32,28 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-async function getAttdLectures(): Promise<Lecture[]> {
+async function getAttdLectures(): Promise<AttdLecture[]> {
     try {
         const rows = await db
-            .select()
+            .select({
+                id: lectures.id,
+                title: lectures.title,
+                sourceUrl: lectures.sourceUrl,
+                videoFileUrl: lectures.videoFileUrl,
+                audioFileUrl: lectures.audioFileUrl,
+                provider: lectures.provider,
+                category: lectures.category,
+                subcategory: lectures.subcategory,
+                tags: lectures.tags,
+                coverImage: lectures.coverImage,
+                publishDate: lectures.publishDate,
+                status: lectures.status,
+                isPublished: lectures.isPublished,
+                executiveSummary: summaries.executiveSummary,
+                summaryTags: summaries.tags,
+            })
             .from(lectures)
+            .leftJoin(summaries, eq(summaries.lectureId, lectures.id))
             .where(
                 and(
                     eq(lectures.isPublished, true),
@@ -45,7 +61,26 @@ async function getAttdLectures(): Promise<Lecture[]> {
                 ),
             )
             .orderBy(desc(lectures.publishDate))
-        return rows as Lecture[]
+
+        // A lecture may have multiple summary rows; merge — keep the first non-null executiveSummary
+        // and union summaryTags across rows so neither field is silently dropped.
+        const byId = new Map<string, AttdLecture>()
+        for (const r of rows) {
+            const existing = byId.get(r.id)
+            if (!existing) {
+                byId.set(r.id, r as AttdLecture)
+                continue
+            }
+            const mergedTags = Array.from(
+                new Set([...(existing.summaryTags ?? []), ...(r.summaryTags ?? [])]),
+            )
+            byId.set(r.id, {
+                ...existing,
+                executiveSummary: existing.executiveSummary ?? r.executiveSummary,
+                summaryTags: mergedTags.length ? mergedTags : null,
+            })
+        }
+        return [...byId.values()]
     } catch (error) {
         console.error('Error fetching ATTD lectures:', error)
         return []

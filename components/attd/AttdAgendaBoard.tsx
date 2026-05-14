@@ -9,10 +9,24 @@ import {
 } from '@/lib/attd2026-agenda'
 import { Lecture } from '@/types'
 import { AttdTrackSection } from './AttdTrackSection'
+import { matchQuery } from '@/lib/attd-glossary'
 import { Search, X } from 'lucide-react'
 
+export type AttdLecture = Lecture & {
+    executiveSummary?: string | null
+    summaryTags?: string[] | null
+}
+
 interface Props {
-    lectures: Lecture[]
+    lectures: AttdLecture[]
+}
+
+function buildLectureBlob(l: AttdLecture): string {
+    const parts: string[] = [l.title]
+    if (l.tags?.length) parts.push(l.tags.join(' '))
+    if (l.executiveSummary) parts.push(l.executiveSummary)
+    if (l.summaryTags?.length) parts.push(l.summaryTags.join(' '))
+    return parts.join(' \n ')
 }
 
 export function AttdAgendaBoard({ lectures }: Props) {
@@ -22,8 +36,8 @@ export function AttdAgendaBoard({ lectures }: Props) {
 
     // Index lectures by session id (tags[0]) and by track (subcategory)
     const { lecturesBySession, lecturesByTrack } = useMemo(() => {
-        const bySession: Record<string, Lecture[]> = {}
-        const byTrack: Record<string, Lecture[]> = {}
+        const bySession: Record<string, AttdLecture[]> = {}
+        const byTrack: Record<string, AttdLecture[]> = {}
         for (const l of lectures) {
             const sessionId = l.tags?.[0]
             if (sessionId) {
@@ -36,6 +50,18 @@ export function AttdAgendaBoard({ lectures }: Props) {
         }
         return { lecturesBySession: bySession, lecturesByTrack: byTrack }
     }, [lectures])
+
+    // Per-session search blob: session metadata + every attached lecture's title/tags/summary.
+    const sessionBlobs = useMemo(() => {
+        const out: Record<string, string> = {}
+        for (const s of ATTD_2026_SESSIONS) {
+            const lectureBlobs = (lecturesBySession[s.id] ?? []).map(buildLectureBlob).join(' \n ')
+            out[s.id] = [s.id, s.title, s.room, s.speakers ?? '', s.description ?? '', lectureBlobs]
+                .filter(Boolean)
+                .join(' \n ')
+        }
+        return out
+    }, [lecturesBySession])
 
     const trackCounts = useMemo(() => {
         const counts: Record<string, number> = {}
@@ -52,16 +78,22 @@ export function AttdAgendaBoard({ lectures }: Props) {
         if (!showIndustry) arr = arr.filter((s) => s.trackId !== 'industry')
         if (activeTrack !== 'all') arr = arr.filter((s) => s.trackId === activeTrack)
         if (search.trim()) {
-            const q = search.toLowerCase()
-            arr = arr.filter(
-                (s) =>
-                    s.title.toLowerCase().includes(q) ||
-                    s.id.toLowerCase().includes(q) ||
-                    s.room.toLowerCase().includes(q),
-            )
+            arr = arr.filter((s) => matchQuery(sessionBlobs[s.id] ?? '', search))
         }
         return arr
-    }, [activeTrack, showIndustry, search])
+    }, [activeTrack, showIndustry, search, sessionBlobs])
+
+    // Loose lectures (no session id, only a track) — split once, memoize their search blobs.
+    const looseByTrack = useMemo(() => {
+        const sessionIdSet = new Set(ATTD_2026_SESSIONS.map((s) => s.id))
+        const out: Record<string, { lecture: AttdLecture; blob: string }[]> = {}
+        for (const [trackId, list] of Object.entries(lecturesByTrack)) {
+            out[trackId] = list
+                .filter((l) => !l.tags?.[0] || !sessionIdSet.has(l.tags[0]))
+                .map((lecture) => ({ lecture, blob: buildLectureBlob(lecture) }))
+        }
+        return out
+    }, [lecturesByTrack])
 
     const tracksToShow: AttdTrack[] = useMemo(() => {
         let t = ATTD_2026_TRACKS.slice()
@@ -69,6 +101,20 @@ export function AttdAgendaBoard({ lectures }: Props) {
         if (activeTrack !== 'all') t = t.filter((x) => x.id === activeTrack)
         return t
     }, [showIndustry, activeTrack])
+
+    // Filter loose lectures by search, scoped to currently visible tracks only —
+    // otherwise a match in a hidden track suppresses the empty state with nothing rendered.
+    const filteredLooseByTrack = useMemo(() => {
+        const out: Record<string, AttdLecture[]> = {}
+        const q = search.trim()
+        for (const t of tracksToShow) {
+            const entries = looseByTrack[t.id] ?? []
+            out[t.id] = q
+                ? entries.filter((e) => matchQuery(e.blob, q)).map((e) => e.lecture)
+                : entries.map((e) => e.lecture)
+        }
+        return out
+    }, [looseByTrack, tracksToShow, search])
 
     return (
         <div className="space-y-6">
@@ -81,7 +127,7 @@ export function AttdAgendaBoard({ lectures }: Props) {
                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                             <input
                                 type="search"
-                                placeholder="Search session title, ID, or room..."
+                                placeholder="Search title, speaker, content — 中英文皆可 (e.g. 妊娠 → pregnancy)"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 className="w-full rounded-full border border-input bg-background pl-8 pr-8 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-foreground/30"
@@ -133,7 +179,8 @@ export function AttdAgendaBoard({ lectures }: Props) {
             </div>
 
             {/* Body */}
-            {filteredSessions.length === 0 ? (
+            {filteredSessions.length === 0 &&
+                Object.values(filteredLooseByTrack).every((a) => a.length === 0) ? (
                 <div className="text-center py-16 text-muted-foreground text-sm">
                     No sessions match this filter.
                 </div>
@@ -143,12 +190,8 @@ export function AttdAgendaBoard({ lectures }: Props) {
                         const trackSessions = filteredSessions.filter(
                             (s) => s.trackId === track.id,
                         )
-                        if (trackSessions.length === 0) return null
-                        const trackLectures = lecturesByTrack[track.id] ?? []
-                        const sessionIds = new Set(trackSessions.map((s) => s.id))
-                        const looseLectures = trackLectures.filter(
-                            (l) => !l.tags?.[0] || !sessionIds.has(l.tags[0]),
-                        )
+                        const looseLectures = filteredLooseByTrack[track.id] ?? []
+                        if (trackSessions.length === 0 && looseLectures.length === 0) return null
                         return (
                             <AttdTrackSection
                                 key={track.id}
