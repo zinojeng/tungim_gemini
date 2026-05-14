@@ -4,8 +4,6 @@ import { lectures, transcripts, summaries, slides } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 import { notFound } from 'next/navigation'
 import { LectureClient } from './LectureClient'
-import { auth } from '@/lib/auth'
-import { LectureGate } from '@/components/auth/LectureGate'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -94,20 +92,6 @@ export default async function LecturePage({ params }: { params: Promise<{ id: st
 
     if (!data) {
         notFound()
-    }
-
-    // Free visitors see the outline/agenda and a talk's executive summary, but
-    // the full transcript and slide notes require a (free) signed-in account.
-    const session = await auth()
-    if (!session?.user) {
-        return (
-            <LectureGate
-                lectureId={id}
-                title={data.lecture.title}
-                executiveSummary={data.summary?.executiveSummary}
-                keyTakeaways={data.summary?.keyTakeaways}
-            />
-        )
     }
 
     return <LectureClient {...data} />
