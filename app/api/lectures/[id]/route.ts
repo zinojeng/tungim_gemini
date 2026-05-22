@@ -3,6 +3,7 @@ import { lectures, transcripts, summaries, slides } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
+import { isAdminFromCookie } from '@/lib/admin-auth';
 
 export const runtime = 'nodejs';
 
@@ -13,8 +14,11 @@ export async function GET(
     try {
         // Full transcript/slides are members-only — mirror the page-level gate
         // in app/lectures/[id]/page.tsx so the API can't be used to bypass it.
+        // The legacy password-only admin panel authenticates via an HMAC cookie
+        // set by /api/auth/login, so allow that as an alternative.
         const session = await auth();
-        if (!session?.user) {
+        const adminCookie = await isAdminFromCookie();
+        if (!session?.user && !adminCookie) {
             return NextResponse.json({ error: 'Sign in to view this lecture.' }, { status: 401 });
         }
 
@@ -24,7 +28,8 @@ export async function GET(
 
         // Unpublished lectures are admin-only — mirror the page loader, which
         // 404s them for everyone else.
-        if (!lecture || (lecture.isPublished === false && session.user.role !== 'admin')) {
+        const isAdmin = adminCookie || session?.user?.role === 'admin';
+        if (!lecture || (lecture.isPublished === false && !isAdmin)) {
             return NextResponse.json({ error: 'Lecture not found' }, { status: 404 });
         }
 
@@ -51,7 +56,8 @@ export async function PUT(
 ) {
     try {
         const session = await auth();
-        if (session?.user?.role !== 'admin') {
+        const adminCookie = await isAdminFromCookie();
+        if (!adminCookie && session?.user?.role !== 'admin') {
             return NextResponse.json({ error: 'Admin access required.' }, { status: 403 });
         }
 
@@ -141,7 +147,8 @@ export async function DELETE(
 ) {
     try {
         const session = await auth();
-        if (session?.user?.role !== 'admin') {
+        const adminCookie = await isAdminFromCookie();
+        if (!adminCookie && session?.user?.role !== 'admin') {
             return NextResponse.json({ error: 'Admin access required.' }, { status: 403 });
         }
 
