@@ -11,6 +11,8 @@ interface Props {
     sourceUrl: string | null
     /** Parts, already sorted by `part:NN` tag (falling back to publishDate desc). */
     parts: Lecture[]
+    /** Search-matched ids; unmatched parts dim when a group expands from one hit. */
+    matchedIds?: Set<string> | null
 }
 
 /**
@@ -22,7 +24,7 @@ interface Props {
  * group; the group header carries one "Watch full recording" link instead,
  * avoiding 8 identical buttons for an 8-part recording.
  */
-export function Ada2026ArchiveGroup({ groupId, title, sourceUrl, parts }: Props) {
+export function Ada2026ArchiveGroup({ groupId, title, sourceUrl, parts, matchedIds }: Props) {
     const labelId = `archive-group-${groupId}`
     const displayTitle = title ?? 'Archive recording'
     return (
@@ -54,13 +56,17 @@ export function Ada2026ArchiveGroup({ groupId, title, sourceUrl, parts }: Props)
                 )}
             </header>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {parts.map((part, i) => (
-                    <Ada2026LectureCard
-                        key={part.id}
-                        lecture={part}
-                        groupChild={{ partIndex: i + 1, partTotal: parts.length }}
-                    />
-                ))}
+                {parts.map((part, i) => {
+                    const matched = matchedIds == null || matchedIds.has(part.id)
+                    return (
+                        <div key={part.id} className={matched ? undefined : 'opacity-50 saturate-50'}>
+                            <Ada2026LectureCard
+                                lecture={part}
+                                groupChild={{ partIndex: i + 1, partTotal: parts.length }}
+                            />
+                        </div>
+                    )
+                })}
             </div>
         </section>
     )

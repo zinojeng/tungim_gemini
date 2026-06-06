@@ -8,6 +8,32 @@ import { Ada2026Board, type Ada2026Lecture } from '@/components/ada2026/Ada2026B
 
 const SITE_URL = 'https://mednote.zeabur.app'
 
+function appendDistinctText(current: string | null | undefined, next: string | null | undefined) {
+    if (!next) return current ?? null
+    if (!current) return next
+    if (current.includes(next)) return current
+    if (next.includes(current)) return next
+    return `${current}\n\n${next}`
+}
+
+function appendDistinctJson(current: unknown, next: unknown) {
+    if (next == null) return current
+    if (current == null) return next
+
+    const values = [
+        ...(Array.isArray(current) ? current : [current]),
+        ...(Array.isArray(next) ? next : [next]),
+    ]
+    const seen = new Set<string>()
+    const merged = values.filter((value) => {
+        const key = JSON.stringify(value)
+        if (seen.has(key)) return false
+        seen.add(key)
+        return true
+    })
+    return merged.length === 1 ? merged[0] : merged
+}
+
 export const metadata: Metadata = {
     title: 'ADA 2026 — Recorded Sessions Archive | MedNote AI',
     description:
@@ -69,9 +95,10 @@ async function getAdaLectures(): Promise<Ada2026Lecture[]> {
             )
             .orderBy(desc(lectures.publishDate))
 
-        // Collapse duplicates from the join. For each lecture id, keep the
-        // first non-null content per text field — searching cares about
-        // *whether* a term appears, not which summary row it appeared in.
+        // Collapse duplicates from the join. Both joined tables can have many
+        // rows per lecture, so a 2-summary x 3-transcript lecture returns 6
+        // rows. Keep all distinct searchable content instead of only the first
+        // non-null value encountered.
         const byId = new Map<string, Ada2026Lecture>()
         for (const r of rows) {
             const prev = byId.get(r.id)
@@ -81,10 +108,10 @@ async function getAdaLectures(): Promise<Ada2026Lecture[]> {
             }
             byId.set(r.id, {
                 ...prev,
-                executiveSummary: prev.executiveSummary ?? r.executiveSummary,
-                fullMarkdownContent: prev.fullMarkdownContent ?? r.fullMarkdownContent,
-                keyTakeaways: prev.keyTakeaways ?? r.keyTakeaways,
-                transcriptContent: prev.transcriptContent ?? r.transcriptContent,
+                executiveSummary: appendDistinctText(prev.executiveSummary, r.executiveSummary),
+                fullMarkdownContent: appendDistinctText(prev.fullMarkdownContent, r.fullMarkdownContent),
+                keyTakeaways: appendDistinctJson(prev.keyTakeaways, r.keyTakeaways),
+                transcriptContent: appendDistinctText(prev.transcriptContent, r.transcriptContent),
             })
         }
         return [...byId.values()]

@@ -15,7 +15,7 @@ import { Search, X } from 'lucide-react'
  * markdown body).
  *
  * The card UI itself doesn't read these fields — they exist purely so
- * `buildSearchBlob` below can include them in the substring search.
+ * `buildSearchBlob` below can include them in the bounded text search.
  */
 export type Ada2026Lecture = Lecture & {
     executiveSummary?: string | null
@@ -29,8 +29,7 @@ interface Props {
 }
 
 /**
- * Flatten every searchable text surface of a lecture into one lowercased
- * blob. The board's search bar does substring matching against this blob.
+ * Flatten every searchable text surface of a lecture into one lowercased blob.
  *
  * Sources included, in order of expected hit rate:
  *   - title (always present)
@@ -51,10 +50,10 @@ function buildSearchBlob(l: Ada2026Lecture): string {
     if (l.transcriptContent) parts.push(l.transcriptContent)
     if (l.keyTakeaways != null) {
         // keyTakeaways is jsonb — usually a string[] but can be a free-form
-        // object. Flatten to a plain string for substring search; avoid
+        // object. Flatten to a plain string for bounded text search; avoid
         // JSON.stringify quoting noise when the shape is the common one.
         if (Array.isArray(l.keyTakeaways)) {
-            parts.push(l.keyTakeaways.filter((x) => typeof x === 'string').join(' '))
+            parts.push(l.keyTakeaways.map((x) => (typeof x === 'string' ? x : JSON.stringify(x))).join(' '))
         } else if (typeof l.keyTakeaways === 'string') {
             parts.push(l.keyTakeaways)
         } else {
@@ -62,6 +61,32 @@ function buildSearchBlob(l: Ada2026Lecture): string {
         }
     }
     return parts.join(' \n ').toLowerCase()
+}
+
+function bodyCharCount(l: Ada2026Lecture): number {
+    const parts = [l.executiveSummary, l.fullMarkdownContent, l.transcriptContent]
+    let total = parts.reduce((acc, part) => acc + (part?.length ?? 0), 0)
+    if (l.keyTakeaways != null) {
+        if (typeof l.keyTakeaways === 'string') {
+            total += l.keyTakeaways.length
+        } else {
+            total += JSON.stringify(l.keyTakeaways).length
+        }
+    }
+    return total
+}
+
+function escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function matchesSearchBlob(blob: string | undefined, rawQuery: string): boolean {
+    if (!blob) return false
+    const terms = rawQuery.trim().toLowerCase().split(/\s+/).filter(Boolean)
+    if (terms.length === 0) return true
+    const phrase = terms.map(escapeRegExp).join('\\s+')
+    const pattern = new RegExp(`(?:^|[^\\p{L}\\p{N}_])${phrase}(?:$|[^\\p{L}\\p{N}_])`, 'u')
+    return pattern.test(blob)
 }
 
 const ARCHIVE_GROUP_PREFIX = 'archiveGroup:'
@@ -167,13 +192,15 @@ export function Ada2026Board({ lectures }: Props) {
     const [search, setSearch] = useState('')
 
     // Precompute search blob + theme bucketing once per lecture set.
-    const { searchBlobs, lecturesByTheme, uncategorized } = useMemo(() => {
+    const { searchBlobs, lecturesByTheme, uncategorized, indexedBodyChars } = useMemo(() => {
         const blobs: Record<string, string> = {}
         const byTheme: Record<string, Lecture[]> = {}
         const orphans: Lecture[] = []
+        let bodyChars = 0
         const themeIds = new Set(ADA_2026_THEMES.map((t) => t.id))
         for (const l of lectures) {
             blobs[l.id] = buildSearchBlob(l)
+            bodyChars += bodyCharCount(l)
             const tid = l.subcategory ?? ''
             if (tid && themeIds.has(tid)) {
                 ; (byTheme[tid] ??= []).push(l)
@@ -181,7 +208,7 @@ export function Ada2026Board({ lectures }: Props) {
                 orphans.push(l)
             }
         }
-        return { searchBlobs: blobs, lecturesByTheme: byTheme, uncategorized: orphans }
+        return { searchBlobs: blobs, lecturesByTheme: byTheme, uncategorized: orphans, indexedBodyChars: bodyChars }
     }, [lectures])
 
     const themeCounts = useMemo(() => {
@@ -202,7 +229,7 @@ export function Ada2026Board({ lectures }: Props) {
     const visibleIds = useMemo<Set<string> | null>(() => {
         const q = search.trim().toLowerCase()
         if (!q) return null
-        return new Set(lectures.filter((l) => searchBlobs[l.id]?.includes(q)).map((l) => l.id))
+        return new Set(lectures.filter((l) => matchesSearchBlob(searchBlobs[l.id], q)).map((l) => l.id))
     }, [lectures, searchBlobs, search])
 
     const themeBuckets = useMemo(() => {
@@ -229,6 +256,9 @@ export function Ada2026Board({ lectures }: Props) {
 
     const totalShown =
         themeBuckets.reduce((a, b) => a + b.visibleCount, 0) + uncategorizedBucket.visibleCount
+    const searchMatchCount = visibleIds?.size ?? lectures.length
+    const hasOtherThemeMatches =
+        search.trim().length > 0 && activeTheme !== 'all' && totalShown === 0 && searchMatchCount > 0
 
     return (
         <div className="space-y-6">
@@ -255,6 +285,11 @@ export function Ada2026Board({ lectures }: Props) {
                                 </button>
                             )}
                         </div>
+                        {process.env.NODE_ENV !== 'production' && (
+                            <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] text-foreground/50 tabular-nums">
+                                search indexed {indexedBodyChars.toLocaleString()} body chars
+                            </span>
+                        )}
                     </div>
 
                     <div className="flex flex-nowrap items-center gap-1.5 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin">
@@ -289,8 +324,18 @@ export function Ada2026Board({ lectures }: Props) {
                     <p className="text-foreground/70">
                         {lectures.length === 0
                             ? '演講重點陸續整理中。會議於 2026 年 6 月 5–8 日於 New Orleans 舉行；只有具備 archive 錄影回播的場次會在此呈現。'
-                            : '沒有符合篩選條件的演講。試試調整主題或搜尋字詞。'}
+                            : hasOtherThemeMatches
+                                ? `${searchMatchCount} match${searchMatchCount === 1 ? '' : 'es'} found in other themes — switch to All.`
+                                : '沒有符合篩選條件的演講。試試調整主題或搜尋字詞。'}
                     </p>
+                    {hasOtherThemeMatches && (
+                        <button
+                            onClick={() => setActiveTheme('all')}
+                            className="mt-4 inline-flex items-center rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background hover:opacity-90 transition"
+                        >
+                            Switch to All
+                        </button>
+                    )}
                 </div>
             ) : (
                 <div className="space-y-12">
@@ -315,7 +360,7 @@ export function Ada2026Board({ lectures }: Props) {
                                     </span>
                                 </div>
                                 <p className="text-sm text-foreground/60 mb-4 max-w-2xl">{theme.description}</p>
-                                <RenderList items={items} />
+                                <RenderList items={items} visibleIds={visibleIds} />
                             </section>
                         )
                     })}
@@ -331,7 +376,7 @@ export function Ada2026Board({ lectures }: Props) {
                                     {uncategorizedBucket.visibleCount} talks
                                 </span>
                             </div>
-                            <RenderList items={uncategorizedBucket.items} />
+                            <RenderList items={uncategorizedBucket.items} visibleIds={visibleIds} />
                         </section>
                     )}
                 </div>
@@ -349,7 +394,7 @@ export function Ada2026Board({ lectures }: Props) {
  * a full-width row so the group container reads as one unit. Adjacent solo
  * cards regroup into the next grid below.
  */
-function RenderList({ items }: { items: RenderItem[] }) {
+function RenderList({ items, visibleIds }: { items: RenderItem[]; visibleIds: Set<string> | null }) {
     // Collapse runs of solos into one grid; each group renders standalone.
     const blocks: Array<{ kind: 'solos'; lectures: Lecture[] } | { kind: 'group'; item: Extract<RenderItem, { kind: 'group' }> }> = []
     let buffer: Lecture[] = []
@@ -384,6 +429,7 @@ function RenderList({ items }: { items: RenderItem[] }) {
                         title={b.item.title}
                         sourceUrl={b.item.sourceUrl}
                         parts={b.item.parts}
+                        matchedIds={visibleIds}
                     />
                 ),
             )}
