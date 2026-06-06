@@ -23,7 +23,7 @@ const SITE_URL =
 const KNOWN_CONFERENCES: Record<string, { category: string }> = {
     ATTD2026: { category: 'ATTD2026' },
     AOCE2026: { category: 'AOCE2026' },
-    ADA2026: { category: '2026 ADA' },
+    ADA2026: { category: 'ADA2026' },
     DIABETES_AI: { category: 'Diabetes AI' },
 }
 

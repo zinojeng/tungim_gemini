@@ -92,6 +92,15 @@ export function Navbar() {
                         <Link href="/attd-2026" className="transition-colors hover:text-foreground/80 text-foreground/60">
                             ATTD2026
                         </Link>
+                        <Link
+                            href="/ada2026"
+                            className="relative inline-flex items-center gap-1.5 transition-colors text-rose-600 hover:text-rose-700 font-semibold"
+                        >
+                            ADA2026
+                            <span className="inline-flex items-center rounded-full bg-rose-500 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white shadow-sm animate-pulse motion-reduce:animate-none">
+                                New
+                            </span>
+                        </Link>
                         <Link href="/about" className="transition-colors hover:text-foreground/80 text-foreground/60">
                             About
                         </Link>
