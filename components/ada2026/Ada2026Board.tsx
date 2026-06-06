@@ -240,7 +240,7 @@ export function Ada2026Board({ lectures }: Props) {
                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                             <input
                                 type="search"
-                                placeholder="搜尋演講標題、講者、tags…"
+                                placeholder="搜尋 title、speaker、summary、transcript、archive、tags…"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 className="w-full rounded-full border border-input bg-background pl-8 pr-8 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-rose-400/40"
@@ -261,19 +261,24 @@ export function Ada2026Board({ lectures }: Props) {
                         <ThemeChip
                             active={activeTheme === 'all'}
                             onClick={() => setActiveTheme('all')}
-                            label="All themes"
+                            label="All ADA 2026"
                             count={lectures.length}
                         />
-                        {ADA_2026_THEMES.map((t) => (
-                            <ThemeChip
-                                key={t.id}
-                                active={activeTheme === t.id}
-                                onClick={() => setActiveTheme(t.id)}
-                                label={t.shortName}
-                                count={themeCounts[t.id]}
-                                accent={activeTheme === t.id ? t.accent.chipActive : t.accent.chip}
-                            />
-                        ))}
+                        {ADA_2026_THEMES.map((t) => {
+                            const count = themeCounts[t.id]
+                            const isEmpty = count === 0
+                            return (
+                                <ThemeChip
+                                    key={t.id}
+                                    active={activeTheme === t.id}
+                                    onClick={() => setActiveTheme(t.id)}
+                                    label={t.shortName}
+                                    count={count}
+                                    accent={activeTheme === t.id ? t.accent.chipActive : t.accent.chip}
+                                    empty={isEmpty}
+                                />
+                            )
+                        })}
                     </div>
                 </div>
             </div>
@@ -392,12 +397,19 @@ function ThemeChip({
     label,
     count,
     accent,
+    empty = false,
 }: {
     active: boolean
     onClick: () => void
     label: string
     count: number
     accent?: string
+    /**
+     * True when this theme has zero matching lectures. Chip stays clickable
+     * (so the user can confirm there's nothing there) but dims so the eye
+     * skips it when scanning the rail.
+     */
+    empty?: boolean
 }) {
     const base =
         accent ??
@@ -406,7 +418,8 @@ function ThemeChip({
         <button
             onClick={onClick}
             aria-pressed={active}
-            className={`flex-shrink-0 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition ${base}`}
+            aria-disabled={empty}
+            className={`flex-shrink-0 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition ${base} ${empty && !active ? 'opacity-40 hover:opacity-60' : ''}`}
         >
             <span>{label}</span>
             <span className="tabular-nums opacity-70 text-[10px]">{count}</span>

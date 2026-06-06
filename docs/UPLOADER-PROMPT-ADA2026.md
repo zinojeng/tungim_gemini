@@ -365,8 +365,37 @@ this order so future filters / search work well:
     "archiveGroup:" + groupId,   // optional — see §ARCHIVE GROUPING below
     "part:" + partNN,            // optional — e.g. "part:03" (zero-padded)
     "archiveTitle:" + title,     // optional — group label, one part can set this
+    "topic:" + slug,             // optional — see §TAG VISIBILITY below
     ...frontmatter.tags          // user free-text: drug names, trial names, etc.
   ]
+
+────────────────────────────────────────
+ TAG VISIBILITY ON THE CARD
+────────────────────────────────────────
+The /ada2026 lecture card surfaces tags by category:
+
+  shown elsewhere on the card (not as chips):
+    - track:*         → theme badge (top-right corner)
+    - part:NN         → "Part N/M" badge (bottom-left), when in a group
+    - speaker:*       → "🎤 <name>" line under the title
+    - archiveTitle:*  → group container header (above the cards)
+
+  HIDDEN entirely (infrastructure, never shown to readers):
+    - clientRef:*     → idempotency only
+    - archiveGroup:*  → frontend grouping key
+    - day:*           → not yet surfaced (reserved)
+
+  SHOWN as topic chips below the title:
+    - topic:<slug>    → rendered as "<slug>" (prefix stripped)
+    - <plain string>  → rendered verbatim (no colon in the tag)
+    - any other prefix:value tag is dropped from the visible chips
+      to avoid leaking unknown infra. If you want it visible, use
+      the `topic:` prefix.
+
+So for richer secondary classification, prefer:
+  "topic:precision-prevention", "topic:circadian-rhythm",
+  "topic:proteomics", "topic:AI"
+over bare strings that might collide with future prefix conventions.
 
 ────────────────────────────────────────
  ARCHIVE GROUPING (one recording = N talks)
