@@ -1,11 +1,10 @@
 import { db } from '@/lib/db'
-import { lectures } from '@/db/schema'
+import { lectures, summaries, transcripts } from '@/db/schema'
 import { eq, desc, and } from 'drizzle-orm'
-import { Lecture } from '@/types'
 import type { Metadata } from 'next'
 import { CalendarDays, MapPin, Sparkles, PlayCircle } from 'lucide-react'
 import { ADA_2026_META, ADA_2026_THEMES } from '@/lib/ada2026-themes'
-import { Ada2026Board } from '@/components/ada2026/Ada2026Board'
+import { Ada2026Board, type Ada2026Lecture } from '@/components/ada2026/Ada2026Board'
 
 const SITE_URL = 'https://mednote.zeabur.app'
 
@@ -33,11 +32,35 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-async function getAdaLectures(): Promise<Lecture[]> {
+async function getAdaLectures(): Promise<Ada2026Lecture[]> {
     try {
+        // LEFT JOIN summaries + transcripts so we can index their text in the
+        // client-side search blob. Both tables may have >1 row per lecture
+        // (no unique constraint on lecture_id), so we merge into one row per
+        // lecture below.
         const rows = await db
-            .select()
+            .select({
+                id: lectures.id,
+                title: lectures.title,
+                sourceUrl: lectures.sourceUrl,
+                videoFileUrl: lectures.videoFileUrl,
+                audioFileUrl: lectures.audioFileUrl,
+                provider: lectures.provider,
+                category: lectures.category,
+                subcategory: lectures.subcategory,
+                tags: lectures.tags,
+                coverImage: lectures.coverImage,
+                publishDate: lectures.publishDate,
+                status: lectures.status,
+                isPublished: lectures.isPublished,
+                executiveSummary: summaries.executiveSummary,
+                fullMarkdownContent: summaries.fullMarkdownContent,
+                keyTakeaways: summaries.keyTakeaways,
+                transcriptContent: transcripts.content,
+            })
             .from(lectures)
+            .leftJoin(summaries, eq(summaries.lectureId, lectures.id))
+            .leftJoin(transcripts, eq(transcripts.lectureId, lectures.id))
             .where(
                 and(
                     eq(lectures.isPublished, true),
@@ -45,7 +68,26 @@ async function getAdaLectures(): Promise<Lecture[]> {
                 ),
             )
             .orderBy(desc(lectures.publishDate))
-        return rows as Lecture[]
+
+        // Collapse duplicates from the join. For each lecture id, keep the
+        // first non-null content per text field — searching cares about
+        // *whether* a term appears, not which summary row it appeared in.
+        const byId = new Map<string, Ada2026Lecture>()
+        for (const r of rows) {
+            const prev = byId.get(r.id)
+            if (!prev) {
+                byId.set(r.id, r as Ada2026Lecture)
+                continue
+            }
+            byId.set(r.id, {
+                ...prev,
+                executiveSummary: prev.executiveSummary ?? r.executiveSummary,
+                fullMarkdownContent: prev.fullMarkdownContent ?? r.fullMarkdownContent,
+                keyTakeaways: prev.keyTakeaways ?? r.keyTakeaways,
+                transcriptContent: prev.transcriptContent ?? r.transcriptContent,
+            })
+        }
+        return [...byId.values()]
     } catch (error) {
         console.error('Error fetching ADA 2026 lectures:', error)
         return []

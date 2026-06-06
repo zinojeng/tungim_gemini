@@ -9,6 +9,9 @@ import {
     validateSlides,
 } from '@/lib/ingest-slides'
 import { getSessionById, getTrackById } from '@/lib/attd2026-agenda'
+import { ADA_2026_THEMES } from '@/lib/ada2026-themes'
+
+const ADA_2026_THEME_IDS = new Set(ADA_2026_THEMES.map((t) => t.id))
 
 export const dynamic = 'force-dynamic'
 
@@ -39,9 +42,12 @@ interface UpdatePayload {
  * the batch script land here when an existing lecture matches by clientRef.
  * Only updates fields explicitly provided.
  *
- * Tag invariant: if tags are provided AND sessionId is present (either in
- * the body or in the existing row), tags[0] MUST equal sessionId. The
- * endpoint rejects payloads that violate this — never silently reorder.
+ * Validation is conference-aware (driven by the existing row's `category`):
+ *   - ATTD2026: trackId/sessionId validated against the structured agenda;
+ *     tags[0] MUST equal sessionId when present (rejects, never reorders).
+ *   - ADA2026:  trackId validated against the 6-theme allowlist; sessionId
+ *     is meaningless here so tags[0] carries no special semantics.
+ *   - Other categories: no trackId/tag validation.
  */
 export async function PUT(
     req: Request,
@@ -67,46 +73,64 @@ export async function PUT(
         return NextResponse.json({ error: 'Lecture not found.' }, { status: 404 })
     }
 
-    // Determine which session this row is or will be pinned to. Used by
-    // BOTH (a) the trackId cross-check and (b) the tags[0] invariant check
-    // so that updating `trackId` alone or `tags` alone can't silently move
-    // a session-pinned lecture out of its track.
-    const expectedSessionId =
-        body.sessionId ??
-        (Array.isArray(existing.tags) ? existing.tags[0] : undefined)
+    // Branch validation by the existing row's conference category. ADA 2026
+    // has no sessionIds — its tags[0] is typically "clientRef:..." or
+    // "archiveGroup:...", neither of which should ever be interpreted as a
+    // sessionId. ATTD 2026 keeps its strict tags[0]==sessionId invariant.
+    if (existing.category === 'ATTD2026') {
+        // Determine which session this row is or will be pinned to. Used by
+        // BOTH (a) the trackId cross-check and (b) the tags[0] invariant
+        // check so that updating `trackId` alone or `tags` alone can't
+        // silently move a session-pinned lecture out of its track.
+        const expectedSessionId =
+            body.sessionId ??
+            (Array.isArray(existing.tags) ? existing.tags[0] : undefined)
 
-    if (expectedSessionId) {
-        const session = getSessionById(expectedSessionId)
-        if (!session) {
+        if (expectedSessionId) {
+            const session = getSessionById(expectedSessionId)
+            if (!session) {
+                return NextResponse.json(
+                    { error: `Unknown sessionId '${expectedSessionId}'.` },
+                    { status: 400 },
+                )
+            }
+            if (body.trackId && body.trackId !== session.trackId) {
+                return NextResponse.json(
+                    {
+                        error: `trackId '${body.trackId}' does not match session '${expectedSessionId}' which belongs to track '${session.trackId}'.`,
+                    },
+                    { status: 400 },
+                )
+            }
+        }
+        if (body.trackId && !getTrackById(body.trackId)) {
             return NextResponse.json(
-                { error: `Unknown sessionId '${expectedSessionId}'.` },
+                { error: `Unknown trackId '${body.trackId}'.` },
                 { status: 400 },
             )
         }
-        if (body.trackId && body.trackId !== session.trackId) {
+        if (body.tags && expectedSessionId && body.tags[0] !== expectedSessionId) {
             return NextResponse.json(
                 {
-                    error: `trackId '${body.trackId}' does not match session '${expectedSessionId}' which belongs to track '${session.trackId}'.`,
+                    error: `Tag invariant violation: tags[0] must equal sessionId '${expectedSessionId}'. Got '${body.tags[0]}'.`,
                 },
                 { status: 400 },
             )
         }
+    } else if (existing.category === 'ADA2026') {
+        if (body.trackId && !ADA_2026_THEME_IDS.has(body.trackId)) {
+            return NextResponse.json(
+                {
+                    error: `Unknown trackId '${body.trackId}' for ADA2026. Valid themes: ${[...ADA_2026_THEME_IDS].join(', ')}.`,
+                },
+                { status: 400 },
+            )
+        }
+        // ADA has no sessionId / tags[0] invariant. body.sessionId is
+        // accepted but stored only by mirroring into tags if the caller
+        // also passes tags — we do not auto-prepend it.
     }
-    if (body.trackId && !getTrackById(body.trackId)) {
-        return NextResponse.json(
-            { error: `Unknown trackId '${body.trackId}'.` },
-            { status: 400 },
-        )
-    }
-
-    if (body.tags && expectedSessionId && body.tags[0] !== expectedSessionId) {
-        return NextResponse.json(
-            {
-                error: `Tag invariant violation: tags[0] must equal sessionId '${expectedSessionId}'. Got '${body.tags[0]}'.`,
-            },
-            { status: 400 },
-        )
-    }
+    // Other categories: no trackId/tag validation.
 
     // Pre-validate slides BEFORE any DB writes so a malformed payload
     // doesn't leave the row in a partially-mutated state.
@@ -212,5 +236,13 @@ export async function PUT(
             ...(body.keyTakeaways !== undefined ? ['keyTakeaways'] : []),
             ...(slidesReplaced !== undefined ? [`slides (${slidesReplaced})`] : []),
         ],
+        // Slide gallery state after this call:
+        //   - field omitted from response  → request did not touch slides
+        //     (`slides` was omitted from the body — gallery unchanged)
+        //   - 0                            → gallery cleared (`slides: []`)
+        //   - N (>0)                       → gallery REPLACED with N rows
+        // The number is the count actually persisted, after slide-row
+        // validation rejected any malformed entries.
+        slidesReplaced: slidesReplaced ?? null,
     })
 }

@@ -13,6 +13,9 @@ import {
     getTrackById,
     ATTD_2026_META,
 } from '@/lib/attd2026-agenda'
+import { ADA_2026_META, ADA_2026_THEMES } from '@/lib/ada2026-themes'
+
+const ADA_2026_THEME_IDS = new Set(ADA_2026_THEMES.map((t) => t.id))
 
 export const dynamic = 'force-dynamic'
 
@@ -88,6 +91,19 @@ export async function POST(req: Request) {
         )
     }
 
+    // Validate trackId against the ADA 2026 theme allowlist. ADA has no
+    // sessionIds — only a fixed 6-theme list. Reject anything outside it
+    // so the /ada2026 page doesn't end up with talks bucketed into
+    // free-text subcategories that no theme chip matches.
+    if (body.conference === 'ADA2026' && body.trackId && !ADA_2026_THEME_IDS.has(body.trackId)) {
+        return NextResponse.json(
+            {
+                error: `Unknown trackId '${body.trackId}' for ADA2026. Valid themes: ${[...ADA_2026_THEME_IDS].join(', ')}.`,
+            },
+            { status: 400 },
+        )
+    }
+
     // Validate trackId / sessionId for ATTD2026 (only conference with structured agenda for now)
     if (body.conference === 'ATTD2026') {
         if (body.trackId && !getTrackById(body.trackId)) {
@@ -130,15 +146,23 @@ export async function POST(req: Request) {
     }
 
     const tags = Array.isArray(body.tags) ? body.tags.filter(Boolean) : []
-    const finalTags = body.sessionId
-        ? [body.sessionId, ...tags.filter((t) => t !== body.sessionId)]
+
+    // sessionId-driven behaviour (auto-prepend to tags[0], infer publishDate
+    // from the agenda) only applies to conferences with a structured session
+    // schema. Today that is ATTD2026 only — ADA2026 is a curated archive
+    // with no sessionIds, and silently mutating its tags[0] would break the
+    // archiveGroup/part conventions the /ada2026 page relies on.
+    const sessionAware = body.conference === 'ATTD2026' && Boolean(body.sessionId)
+
+    const finalTags = sessionAware
+        ? [body.sessionId!, ...tags.filter((t) => t !== body.sessionId)]
         : tags
 
     const publishDate = body.publishDate
         ? new Date(body.publishDate)
-        : body.sessionId
+        : sessionAware
             ? new Date(
-                `${getSessionById(body.sessionId)!.date}T${getSessionById(body.sessionId)!.startTime}:00`,
+                `${getSessionById(body.sessionId!)!.date}T${getSessionById(body.sessionId!)!.startTime}:00`,
             )
             : new Date()
 
@@ -229,8 +253,15 @@ export async function POST(req: Request) {
         agendaUrl:
             body.conference === 'ATTD2026'
                 ? `${SITE_URL}/attd-2026#session-${body.sessionId ?? ''}`
-                : null,
-        meta: body.conference === 'ATTD2026' ? ATTD_2026_META : null,
+                : body.conference === 'ADA2026'
+                    ? `${SITE_URL}/ada2026`
+                    : null,
+        meta:
+            body.conference === 'ATTD2026'
+                ? ATTD_2026_META
+                : body.conference === 'ADA2026'
+                    ? ADA_2026_META
+                    : null,
     })
 }
 

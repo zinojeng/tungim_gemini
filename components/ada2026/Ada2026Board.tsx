@@ -7,14 +7,60 @@ import { Ada2026LectureCard } from './Ada2026LectureCard'
 import { Ada2026ArchiveGroup } from './Ada2026ArchiveGroup'
 import { Search, X } from 'lucide-react'
 
-interface Props {
-    lectures: Lecture[]
+/**
+ * Lecture row enriched with the joined `summaries` + `transcripts` text
+ * columns so the in-page search bar can find terms that only appear in
+ * the summary / transcript / takeaways body, not just in title/tags
+ * (e.g. "circadian", "proteomics", a speaker's name buried in the
+ * markdown body).
+ *
+ * The card UI itself doesn't read these fields — they exist purely so
+ * `buildSearchBlob` below can include them in the substring search.
+ */
+export type Ada2026Lecture = Lecture & {
+    executiveSummary?: string | null
+    fullMarkdownContent?: string | null
+    keyTakeaways?: unknown
+    transcriptContent?: string | null
 }
 
-function buildSearchBlob(l: Lecture): string {
+interface Props {
+    lectures: Ada2026Lecture[]
+}
+
+/**
+ * Flatten every searchable text surface of a lecture into one lowercased
+ * blob. The board's search bar does substring matching against this blob.
+ *
+ * Sources included, in order of expected hit rate:
+ *   - title (always present)
+ *   - tags (each `prefix:value` string is searchable verbatim, so a query
+ *     like "woychik" matches `speaker:Woychik`, and "player-4948" matches
+ *     `archiveGroup:player-4948`)
+ *   - subcategory / trackId
+ *   - executiveSummary / fullMarkdownContent (the curated body text)
+ *   - keyTakeaways (jsonb — array of strings most commonly, flattened)
+ *   - transcript (large but bounded for the curated archive page)
+ */
+function buildSearchBlob(l: Ada2026Lecture): string {
     const parts: string[] = [l.title]
     if (l.tags?.length) parts.push(l.tags.join(' '))
     if (l.subcategory) parts.push(l.subcategory)
+    if (l.executiveSummary) parts.push(l.executiveSummary)
+    if (l.fullMarkdownContent) parts.push(l.fullMarkdownContent)
+    if (l.transcriptContent) parts.push(l.transcriptContent)
+    if (l.keyTakeaways != null) {
+        // keyTakeaways is jsonb — usually a string[] but can be a free-form
+        // object. Flatten to a plain string for substring search; avoid
+        // JSON.stringify quoting noise when the shape is the common one.
+        if (Array.isArray(l.keyTakeaways)) {
+            parts.push(l.keyTakeaways.filter((x) => typeof x === 'string').join(' '))
+        } else if (typeof l.keyTakeaways === 'string') {
+            parts.push(l.keyTakeaways)
+        } else {
+            parts.push(JSON.stringify(l.keyTakeaways))
+        }
+    }
     return parts.join(' \n ').toLowerCase()
 }
 
