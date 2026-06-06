@@ -1,28 +1,22 @@
 import { db } from '@/lib/db'
 import { lectures } from '@/db/schema'
 import { eq, desc, and } from 'drizzle-orm'
-import { LectureCard } from '@/components/LectureCard'
 import { Lecture } from '@/types'
 import type { Metadata } from 'next'
-import { CalendarDays, MapPin, Sparkles } from 'lucide-react'
+import { CalendarDays, MapPin, Sparkles, PlayCircle } from 'lucide-react'
+import { ADA_2026_META, ADA_2026_THEMES } from '@/lib/ada2026-themes'
+import { Ada2026Board } from '@/components/ada2026/Ada2026Board'
 
 const SITE_URL = 'https://mednote.zeabur.app'
 
-const ADA2026_META = {
-    city: 'New Orleans',
-    country: 'USA',
-    venue: 'Ernest N. Morial Convention Center',
-    eventUrl: 'https://events.diabetes.org/live/32/page/330',
-}
-
 export const metadata: Metadata = {
-    title: 'ADA 2026 — Scientific Sessions Companion | MedNote AI',
+    title: 'ADA 2026 — Recorded Sessions Archive | MedNote AI',
     description:
-        'ADA 86th Scientific Sessions（New Orleans, 5–8 June 2026）演講重點整理。從各場次的逐字稿與投影片重點，快速掌握今年最重要的糖尿病臨床與研究進展。',
+        'ADA 86th Scientific Sessions（New Orleans, 5–8 June 2026）精選有 archive 錄影回播的演講重點整理。GLP-1、SGLT2、Tirzepatide、AID、Beta cell、Stem cell 等熱門主題。',
     openGraph: {
-        title: 'ADA 2026 — Scientific Sessions Companion',
+        title: 'ADA 2026 — Recorded Sessions Archive',
         description:
-            'ADA 86th Scientific Sessions（New Orleans, 5–8 June 2026）演講重點整理。',
+            'ADA 86th Scientific Sessions（New Orleans, 5–8 June 2026）精選有 archive 錄影回播的演講重點整理。',
         url: `${SITE_URL}/ada2026`,
         siteName: 'MedNote AI',
         locale: 'zh_TW',
@@ -30,9 +24,9 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'ADA 2026 — Scientific Sessions Companion',
+        title: 'ADA 2026 — Recorded Sessions Archive',
         description:
-            'ADA 86th Scientific Sessions（New Orleans, 5–8 June 2026）演講重點整理。',
+            'ADA 86th Scientific Sessions（New Orleans, 5–8 June 2026）精選有 archive 錄影回播的演講重點整理。',
     },
 }
 
@@ -60,61 +54,41 @@ async function getAdaLectures(): Promise<Lecture[]> {
 
 export default async function Ada2026Page() {
     const adaLectures = await getAdaLectures()
+    const archiveCount = adaLectures.filter((l) => Boolean(l.sourceUrl)).length
 
     return (
         <div className="container py-8 md:py-10 max-w-6xl space-y-8">
-            <Ada2026Hero talksIndexed={adaLectures.length} />
+            <Ada2026Hero talksIndexed={adaLectures.length} archiveCount={archiveCount} />
 
             <section id="talks" className="space-y-6">
-                <div className="flex items-baseline justify-between">
-                    <h2 className="text-2xl font-bold tracking-tight">演講重點整理</h2>
-                    <span className="text-sm text-foreground/60 tabular-nums">
-                        {adaLectures.length} talks
-                    </span>
-                </div>
-
-                {adaLectures.length === 0 ? (
-                    <div className="rounded-2xl border border-dashed border-border bg-muted/30 px-6 py-16 text-center">
-                        <p className="text-foreground/70">
-                            演講重點陸續整理中。會議於 2026 年 6 月 5–8 日在 New Orleans 舉行，內容將在會議期間與會後陸續上線。
-                        </p>
-                        <a
-                            href={ADA2026_META.eventUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mt-4 inline-flex items-center rounded-full ring-1 ring-border px-4 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition"
-                        >
-                            前往大會官方頁面 ↗
-                        </a>
-                    </div>
-                ) : (
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        {adaLectures.map((lecture) => (
-                            <LectureCard key={lecture.id} lecture={lecture} />
-                        ))}
-                    </div>
-                )}
+                <Ada2026Board lectures={adaLectures} />
             </section>
 
             <footer className="pt-6 mt-12 border-t text-xs text-foreground/50">
                 <p>
-                    Session data referenced from the official{' '}
+                    精選自{' '}
                     <a
-                        href={ADA2026_META.eventUrl}
+                        href={ADA_2026_META.archiveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="underline hover:text-foreground"
                     >
-                        ADA Scientific Sessions site
+                        ADA Scientific Sessions on-demand portal
                     </a>
-                    . Lecture summaries are independent study notes and not affiliated with the ADA.
+                    。演講重點為獨立研讀整理，與美國糖尿病協會（ADA）並無從屬關係。
                 </p>
             </footer>
         </div>
     )
 }
 
-function Ada2026Hero({ talksIndexed }: { talksIndexed: number }) {
+function Ada2026Hero({
+    talksIndexed,
+    archiveCount,
+}: {
+    talksIndexed: number
+    archiveCount: number
+}) {
     return (
         <section className="relative overflow-hidden rounded-3xl border bg-gradient-to-br from-rose-50 via-amber-50 to-orange-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800">
             <div
@@ -136,6 +110,9 @@ function Ada2026Hero({ talksIndexed }: { talksIndexed: number }) {
                     <span className="inline-flex items-center gap-1 rounded-full bg-white/70 dark:bg-white/10 px-3 py-1 text-xs font-medium text-foreground/70 ring-1 ring-border">
                         <Sparkles className="h-3 w-3" /> 86th Scientific Sessions
                     </span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-white/70 dark:bg-white/10 px-3 py-1 text-xs font-medium text-foreground/70 ring-1 ring-border">
+                        <PlayCircle className="h-3 w-3" /> Recorded sessions only
+                    </span>
                 </div>
 
                 <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">
@@ -152,34 +129,63 @@ function Ada2026Hero({ talksIndexed }: { talksIndexed: number }) {
                     </span>
                     <span className="inline-flex items-center gap-1.5">
                         <MapPin className="h-4 w-4" />
-                        {ADA2026_META.city}, {ADA2026_META.country} · {ADA2026_META.venue}
+                        {ADA_2026_META.city}, {ADA_2026_META.country} · {ADA_2026_META.venue}
                     </span>
                 </div>
 
                 <p className="mt-6 max-w-3xl text-foreground/75 leading-relaxed">
-                    今年 ADA 會議現場演講內容的重點整理。從各場次的逐字稿與投影片重點，幫你快速掌握 GLP-1、SGLT2、Tirzepatide、AID、Beta-cell、Stem cell 等熱門主題的最新進展。
+                    本頁是{' '}
+                    <strong className="text-foreground/90">策展型 archive 重點整理</strong>
+                    ：只收錄具有 on-demand 錄影回播的演講，附逐字稿、投影片重點與我整理的摘要。並非完整議程。
                 </p>
                 <p className="mt-2 max-w-3xl text-sm text-foreground/60">
-                    註：本頁與導覽列上的「2026 ADA」（學會年度治療指引）不同——這裡專注於 ADA 2026 大會現場的演講內容整理。
+                    註：與導覽列「2026 ADA」（學會年度治療指引）為不同頁面——此處專注於 ADA 2026 大會現場演講。
                 </p>
+
+                <div className="mt-8 grid grid-cols-3 gap-3 max-w-2xl">
+                    <StatTile label="Themes" value={ADA_2026_THEMES.length} />
+                    <StatTile label="Talks indexed" value={talksIndexed} />
+                    <StatTile label="With archive" value={archiveCount} />
+                </div>
 
                 <div className="mt-8 flex flex-wrap gap-3">
                     <a
                         href="#talks"
                         className="inline-flex items-center rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium hover:opacity-90 transition"
                     >
-                        查看演講重點 ({talksIndexed})
+                        瀏覽演講重點
                     </a>
                     <a
-                        href={ADA2026_META.eventUrl}
+                        href={ADA_2026_META.archiveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center rounded-full ring-1 ring-border px-5 py-2.5 text-sm font-medium text-foreground/70 hover:text-foreground transition"
                     >
-                        ADA 官方議程 ↗
+                        ADA on-demand portal ↗
                     </a>
+                </div>
+
+                <div className="mt-8 flex flex-wrap gap-1.5">
+                    {ADA_2026_THEMES.map((t) => (
+                        <span
+                            key={t.id}
+                            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium ${t.accent.chip}`}
+                        >
+                            <span className={`inline-block h-1.5 w-1.5 rounded-full ${t.accent.dot}`} />
+                            {t.shortName}
+                        </span>
+                    ))}
                 </div>
             </div>
         </section>
+    )
+}
+
+function StatTile({ label, value }: { label: string; value: number }) {
+    return (
+        <div className="rounded-xl bg-white/70 dark:bg-white/5 ring-1 ring-border px-4 py-3">
+            <div className="text-2xl font-bold tabular-nums text-foreground">{value}</div>
+            <div className="text-xs uppercase tracking-wide text-foreground/60 mt-0.5">{label}</div>
+        </div>
     )
 }
