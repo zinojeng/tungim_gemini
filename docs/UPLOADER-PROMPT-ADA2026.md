@@ -12,7 +12,7 @@ differ in three important ways:
 | Agenda model | Full 200-session timetable, every talk pinned to a `sessionId` | **Curated archive only** — no session list. Talks bucketed by theme. |
 | `trackId` source | From `GET /api/ingest/agenda` | Pick from the **fixed list of 6 ADA themes** below |
 | `tags[0]` invariant | Must equal `sessionId` | No invariant — `sessionId` is not used |
-| Idempotency key | Tag `clientRef:<hash>` derived from `sessionId + title` | Tag `clientRef:<hash>` derived from `archiveUrl` (or title) |
+| Idempotency key | Tag `clientRef:<hash>` derived from `sessionId + title` | Tag `clientRef:<hash>` derived from `archiveUrl + part + title` (or title alone for solos) — see §PER-TALK PROCEDURE step 6 |
 | Archive playback link | n/a | Goes in `sourceUrl` — page renders it as **"▶ Watch on ADA portal"** |
 
 The shared `/api/ingest/upload` and `/api/ingest/lectures` endpoints behave
@@ -20,7 +20,27 @@ identically. Only the payload shape and validation rules differ.
 
 ---
 
+## Reading order — who reads what
+
+This doc has two audiences. Skip the sections that aren't for you.
+
+| You are… | Read these | Skip these |
+|---|---|---|
+| **The LLM** that will do the uploading | §2 (your full system contract — paste-ready) → §4 (worked examples to ground yourself) → §5 (avoid these mistakes) | §1, §3, §6, §7, §8 |
+| **The human operator** preparing to hand this brief to an LLM | §1 (your one-time token setup) → §3 (how to format the markdown files you give the LLM) → §6 (smoke-test before bulk upload) → §7 (reference) | §2 is what you paste *into* the LLM — read it once to understand the contract, then trust it |
+
+**One-line summary for the LLM**: you have a folder of talk markdown files
+and a bearer token. For each file: upload its slide images via
+`POST /api/ingest/upload` to get URLs, then `POST /api/ingest/lectures`
+(or `PUT` if a previous upload exists) with the conference set to
+`"ADA2026"` and the recording's archive URL in `sourceUrl`. Full
+contract in §2. Minimal-request example in §2 near the top.
+
+---
+
 ## 1. Operator setup (one-time, before handing the brief to an LLM)
+
+> **Audience: the human operator.** An LLM reading this file should skip to §2.
 
 ### Does the uploader LLM need to log into `mednote.zeabur.app/admin`?
 
@@ -87,6 +107,11 @@ Authorization: Bearer <INGEST_API_TOKEN>
 ---
 
 ## 2. Paste-ready system prompt
+
+> **Audience: the LLM doing the uploading.** Everything below this header
+> (inside the code fence) is the contract you must follow. The operator
+> will paste it into your system prompt verbatim and also tell you the
+> `INGEST_API_TOKEN` value to use.
 
 Copy this verbatim into the system prompt of whichever uploader LLM is running.
 Tested with GPT-5, Claude Opus 4.7. Works with HTTP-capable agents (curl/fetch/
@@ -156,6 +181,35 @@ AUTHENTICATED (Authorization: Bearer <token>)
 below is the source of truth.)
 
 ────────────────────────────────────────
+ MINIMAL WORKING REQUEST (read this first)
+────────────────────────────────────────
+The absolute simplest valid upload — one talk, no slide gallery,
+no transcript. Use this as a sanity check before assembling fuller
+payloads. The full schema is in §SCHEMA below.
+
+  curl -sX POST https://mednote.zeabur.app/api/ingest/lectures \
+    -H "Authorization: Bearer $INGEST_API_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "conference": "ADA2026",
+      "trackId":    "obesity-metabolic",
+      "title":      "Smoke test — please delete",
+      "sourceUrl":  "https://events.diabetes.org/live/32/page/330",
+      "tags":       ["clientRef:smoke-test-001"]
+    }'
+
+  Response: { "id": "<uuid>", "url": "https://mednote.zeabur.app/lectures/<uuid>",
+              "slidesInserted": 0, ... }
+
+The four fields that matter:
+  - conference: literal "ADA2026"  (required)
+  - title:      any string         (required)
+  - trackId:    one of the 6 themes below (optional; omit → "Other")
+  - sourceUrl:  the archive URL    (semantically required for /ada2026)
+
+Every other field in §SCHEMA is optional but improves the rendered card.
+
+────────────────────────────────────────
  THE 6 ADA 2026 THEMES (use as trackId)
 ────────────────────────────────────────
 Pass ONE of these exact strings as `trackId`. If you genuinely can't
@@ -223,8 +277,17 @@ For each markdown file in the operator's input folder:
    ask which theme to use. Never auto-pick.
 
 3. For every image file in <markdown_dir>/<slideDir>/, upload it
-   via POST /api/ingest/upload and collect its public URL. Sort
-   by filename (lexicographic ascending) so order is deterministic.
+   via POST /api/ingest/upload and collect its public URL. Sort by
+   filename using NATURAL NUMERIC ORDER — i.e. `1.png, 2.png, 10.png`
+   sorts to 1 → 2 → 10, not the lexicographic 1 → 10 → 2.
+
+   In JS:  files.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+   In Py:  files = natsort.natsorted(files)  (or roll a (\d+|\D+)-tuple key)
+
+   If the operator's files are already zero-padded (`01.png, 02.png,
+   10.png`), plain lexicographic sort works too — but always defaulting
+   to natural sort costs nothing and survives unpadded filenames from
+   AI Studio or screenshot tools.
 
 4. Pick a cover image URL:
    a. If frontmatter `cover` is set → upload that file
@@ -238,12 +301,20 @@ For each markdown file in the operator's input folder:
    exact file. The rewritten body becomes the `summary` field.
 
 6. **IDEMPOTENCY — check before creating.** Compute the clientRef:
-   - If frontmatter has `clientRef`, use it verbatim.
-   - Otherwise, derive: clientRef = sha256(archiveUrl).slice(0,16)
-     If archiveUrl is also missing, fall back to:
-     clientRef = sha256(normalized_title).slice(0,16)
-     where normalized_title = lowercase, collapse whitespace,
-     strip punctuation.
+   - If frontmatter has `clientRef`, use it verbatim. (Strongly preferred
+     for grouped archives — set one per part.)
+   - Otherwise, derive based on whether this is a grouped-archive part:
+       - **Grouped part** (frontmatter has `archiveGroup` AND `part`):
+         clientRef = sha256(archiveUrl + "|" + part + "|" + normalized_title).slice(0,16)
+         All 8 parts of one recording share the same `archiveUrl`, so
+         hashing only `archiveUrl` would produce 8 colliding clientRefs
+         and silently overwrite each other on re-upload. The
+         `part + title` discriminator keeps them distinct.
+       - **Solo talk** (no archiveGroup tag):
+         clientRef = sha256(archiveUrl).slice(0,16)
+         If archiveUrl is also missing, fall back to:
+         clientRef = sha256(normalized_title).slice(0,16)
+   - `normalized_title` = lowercase, collapse whitespace, strip punctuation.
 
    Then call:
      GET /api/ingest/lectures?conference=ADA2026
@@ -298,9 +369,23 @@ To group N talks under one archive:
    Only the first non-null value wins; if every part sets it identically
    that is fine too. Omit and the group falls back to "Archive recording".
 
-4. All parts SHOULD use the SAME `sourceUrl` (the recording URL) and
-   the SAME `trackId`. Different trackIds will split the group across
-   theme sections, which usually isn't what you want.
+4. All parts MUST share the SAME `sourceUrl` and the SAME `trackId`.
+
+   - **sourceUrl**: use the PARENT recording's player URL (e.g.
+     `https://events.diabetes.org/live/player/4948`) on every part —
+     not a child / per-segment URL on some parts and the parent on
+     others. The group header's "Watch full recording" button is
+     picked from the first non-null `sourceUrl` it finds; mixing
+     parent and child URLs makes that button non-deterministic.
+   - **trackId**: pick ONE theme for the whole bundle even if
+     individual parts touch different subtopics. Example: an 8-part
+     "Pathway to Stop Diabetes" / Keynote recording belongs entirely
+     under `prevention` — even if part 7 is circadian biology and
+     part 8 is AI/proteomics. Those subtopics go in `tags` (e.g.
+     `"circadian"`, `"AI"`, `"proteomics"`), NOT in a different
+     `trackId`. Splitting a group's trackId fragments it across
+     theme sections on the page (see pitfall §Splitting one group
+     across themes).
 
 5. Each part is still a separate POST / PUT — there is no batch
    "upload group" call. The grouping is reconstructed by the frontend
@@ -353,7 +438,7 @@ auto-demoted to a solo card (no "1 parts" container).
    file via /api/ingest/upload and reference the returned URL.
 
 6. NEVER POST without checking via the GET-first idempotency rule
-   in §6 of the procedure. Bare POST will create a duplicate row
+   in step 6 of §PER-TALK PROCEDURE. Bare POST will create a duplicate row
    on every re-run.
 
 7. Report failures per-talk; do not abort the whole batch unless
@@ -379,6 +464,10 @@ End with a summary:
 ---
 
 ## 3. Recommended markdown frontmatter (operator-side)
+
+> **Audience: the human operator.** This describes how to format the
+> talk markdown files you give the LLM as input. The LLM also reads this
+> section so it knows what to expect from the operator's input.
 
 Each talk markdown file you hand to the LLM should look like this. The
 agent will read the YAML block at the top and use those fields directly.
@@ -414,7 +503,13 @@ talk eligible for this page and what powers the "Watch on ADA portal" CTA.
 
 ---
 
-## 4. Worked example — one obesity-track talk
+## 4. Worked examples
+
+> **Audience: both.** Walk-through of one solo talk and one 8-part
+> grouped archive. The LLM should ground itself on these before
+> processing the operator's real folder.
+
+### 4.1 One obesity-track talk (solo)
 
 Operator says:
 
@@ -455,7 +550,7 @@ After upload, the talk appears at https://mednote.zeabur.app/ada2026 under
 the "Obesity & Metabolic Health" section, with a "▶ Watch on ADA portal"
 button linking back to the archive URL.
 
-### Grouped-archive variant — one recording, 8 parts
+### 4.2 Grouped-archive variant — one recording, 8 parts
 
 Operator says:
 
@@ -483,8 +578,15 @@ archiveGroup: player-4948    # same on all 8
 part: 01                     # 01..08 per file
 archiveTitle: "Opening Session — 86th ADA Scientific Sessions"
                              # only on part-01-welcome.md is enough
-sourceUrl: https://events.diabetes.org/live/player/4948
-trackId: innovation-access   # same on all 8
+archiveUrl: https://events.diabetes.org/live/player/4948
+                             # parent recording URL — IDENTICAL on all 8 parts
+                             # (do not use child / per-segment URLs for some
+                             #  parts and the parent for others)
+trackId: prevention          # same on all 8 — pick ONE theme for the whole group
+                             # e.g. a Pathway-to-Stop-Diabetes / Keynote bundle
+                             # is `prevention` even if part 7 is circadian
+                             # biology and part 8 is AI/proteomics — those
+                             # subtopics go in `tags`, NOT in trackId
 ```
 
 The uploader script then translates them into the API payload's `tags`
@@ -532,6 +634,11 @@ On the page, the 8 cards render inside one bordered container titled
 ---
 
 ## 5. Common pitfalls
+
+> **Audience: both.** The first six pitfalls are mistakes the LLM can
+> make at upload time. The last three are operator-side input-formatting
+> mistakes that the LLM should detect and refuse (rather than silently
+> work around).
 
 ### ❌ Bare POST every run
 
@@ -627,6 +734,8 @@ on the upload side is risky — ask the operator to split.
 
 ## 6. Testing checklist (operator-side, before running the agent on a big batch)
 
+> **Audience: the human operator.** Skip if you are the LLM.
+
 1. Test auth with a harmless GET:
    ```bash
    curl -i -H "Authorization: Bearer $INGEST_API_TOKEN" \
@@ -656,6 +765,9 @@ on the upload side is risky — ask the operator to split.
 
 ## 7. Conference metadata (for the agent's reference)
 
+> **Audience: both.** Useful facts the LLM may need (timezone for
+> publishDate, day-key mapping for tags) and operator may need to confirm.
+
 | Field | Value |
 |---|---|
 | Name | ADA 86th Scientific Sessions |
@@ -679,6 +791,9 @@ Day mapping for `day:Dn` tags:
 
 ## 8. Versioning
 
+> **Audience: human operator + future maintainer.** What's stable vs
+> what could change. The LLM does not need to read this.
+
 | Field | Status as of |
 |---|---|
 | `/ada2026` archive page | Active since June 2026 |
@@ -686,6 +801,19 @@ Day mapping for `day:Dn` tags:
 | `conference: "ADA2026"` in ingest API | Active |
 | `sourceUrl` rendered as "Watch on ADA portal" CTA | Active |
 | `archiveGroup:` / `part:NN` / `archiveTitle:` tag grouping | Active since v2 |
+| clientRef collision-safe derivation for grouped parts | Active since v3 |
+| Natural numeric slide-filename sort | Active since v3 |
 | Per-file upload cap | 50 MB (override via `INGEST_MAX_UPLOAD_MB` env) |
 
-Current version: **v2** — June 2026 (adds archive grouping).
+Current version: **v3** — June 2026.
+
+Changes vs v2:
+- clientRef for grouped parts now derives from `archiveUrl + part + title`
+  (was: `archiveUrl` alone, which collided across an N-part recording)
+- Slide gallery sort is natural numeric (was: lexicographic)
+- archiveUrl is the canonical operator-side YAML field name (the §4.2
+  example previously and incorrectly used `sourceUrl:` in YAML)
+- Group's `sourceUrl` MUST be the parent recording URL on every part,
+  not a mix of parent + child URLs
+- Explicit guidance: pick ONE trackId per group even when subtopics differ
+  (subtopics go in `tags`)
