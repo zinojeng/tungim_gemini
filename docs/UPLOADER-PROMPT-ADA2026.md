@@ -12,7 +12,7 @@ differ in three important ways:
 | Agenda model | Full 200-session timetable, every talk pinned to a `sessionId` | **Curated archive only** — no session list. Talks bucketed by theme. |
 | `trackId` source | From `GET /api/ingest/agenda` | Pick from the **fixed list of 6 ADA themes** below |
 | `tags[0]` invariant | Must equal `sessionId` | No invariant — `sessionId` is not used |
-| Idempotency key | Tag `clientRef:<hash>` derived from `sessionId + title` | Tag `clientRef:<hash>` derived from `archiveUrl + part + title` (or title alone for solos) — see §PER-TALK PROCEDURE step 6 |
+| Idempotency key | Tag `clientRef:<hash>` derived from `sessionId + title` | Tag `clientRef:<hash>` — **grouped parts**: `archiveUrl + part + title`; **solos**: `archiveUrl` alone, falling back to `title` only if archiveUrl is missing — see §PER-TALK PROCEDURE step 6 |
 | Archive playback link | n/a | Goes in `sourceUrl` — page renders it as **"▶ Watch on ADA portal"** |
 
 The shared `/api/ingest/upload` and `/api/ingest/lectures` endpoints behave
@@ -231,6 +231,25 @@ decide, OMIT trackId and the talk lands in the "Other" bucket.
 ────────────────────────────────────────
  SCHEMA — POST /api/ingest/lectures body
 ────────────────────────────────────────
+NB: The operator's YAML frontmatter and the JSON POST body use
+DIFFERENT field names for the same data. The renames you must make:
+
+  operator YAML        →  JSON payload field
+  ───────────────────     ───────────────────
+  archiveUrl              sourceUrl       ← rename
+  trackId                 trackId         ← same
+  archiveGroup            (tag string)    ← write as "archiveGroup:<id>" in tags[]
+  part                    (tag string)    ← write as "part:<NN>" in tags[]
+  archiveTitle            (tag string)    ← write as "archiveTitle:<text>" in tags[]
+  clientRef               (tag string)    ← write as "clientRef:<hash>" in tags[]
+  speaker                 (tag string)    ← write as "speaker:<lastname>" in tags[]
+  tags                    tags[] suffix   ← appended after the prefixed strings
+
+Sending YAML field names verbatim in the JSON body will not error but
+will produce blank cards: the API silently ignores unknown top-level
+fields, and the renderer reads from `tags[]`, not from arbitrary keys.
+
+
   {
     "conference": "ADA2026",           // required, literal
     "trackId":    "obesity-metabolic", // optional, one of the 6 themes above
@@ -304,16 +323,22 @@ For each markdown file in the operator's input folder:
    - If frontmatter has `clientRef`, use it verbatim. (Strongly preferred
      for grouped archives — set one per part.)
    - Otherwise, derive based on whether this is a grouped-archive part:
-       - **Grouped part** (frontmatter has `archiveGroup` AND `part`):
+       - **Grouped part** (frontmatter has BOTH `archiveGroup` AND `part`):
          clientRef = sha256(archiveUrl + "|" + part + "|" + normalized_title).slice(0,16)
          All 8 parts of one recording share the same `archiveUrl`, so
          hashing only `archiveUrl` would produce 8 colliding clientRefs
          and silently overwrite each other on re-upload. The
          `part + title` discriminator keeps them distinct.
-       - **Solo talk** (no archiveGroup tag):
+       - **Solo talk** (no `archiveGroup` tag):
          clientRef = sha256(archiveUrl).slice(0,16)
          If archiveUrl is also missing, fall back to:
          clientRef = sha256(normalized_title).slice(0,16)
+       - **Half-tagged edge cases** (one of `archiveGroup` / `part` is set
+         without the other): STOP and ask the operator. These half-states
+         signal a frontmatter mistake — either both tags belong on this
+         file (grouped) or neither does (solo). Do not auto-promote a
+         lone `part` to a solo or a lone `archiveGroup` to a single-part
+         group; both silently bury the operator's intent.
    - `normalized_title` = lowercase, collapse whitespace, strip punctuation.
 
    Then call:
@@ -597,7 +622,7 @@ include:
 ```json
 "tags": [
   "clientRef:opening-2026-player-4948-part-01",
-  "track:innovation-access",
+  "track:prevention",
   "archiveGroup:player-4948",
   "part:01",
   "archiveTitle:Opening Session — 86th ADA Scientific Sessions",
@@ -618,10 +643,10 @@ Resulting POSTs:
 ...
 8. POST part-08 → tags include archiveGroup:player-4948, part:08
 
-✓ part-01-welcome.md → innovation-access → .../<id1> (4 slides, created)
-✓ part-02-strategy.md → innovation-access → .../<id2> (9 slides, created)
+✓ part-01-welcome.md → prevention → .../<id1> (4 slides, created)
+✓ part-02-strategy.md → prevention → .../<id2> (9 slides, created)
 ...
-✓ part-08-closing.md → innovation-access → .../<id8> (6 slides, created)
+✓ part-08-closing.md → prevention → .../<id8> (6 slides, created)
 
 Created: 8 | Updated: 0 | Skipped: 0 | Failed: 0
 ```
