@@ -266,8 +266,64 @@ this order so future filters / search work well:
     "track:" + trackId,          // e.g. "track:obesity-metabolic"
     "day:" + dayNumber,          // e.g. "day:D2" for Sat 6 Jun
     "speaker:" + speakerLastName,// e.g. "speaker:Lingvay"
+    "archiveGroup:" + groupId,   // optional — see §ARCHIVE GROUPING below
+    "part:" + partNN,            // optional — e.g. "part:03" (zero-padded)
+    "archiveTitle:" + title,     // optional — group label, one part can set this
     ...frontmatter.tags          // user free-text: drug names, trial names, etc.
   ]
+
+────────────────────────────────────────
+ ARCHIVE GROUPING (one recording = N talks)
+────────────────────────────────────────
+A single ADA archive recording often packages multiple back-to-back
+talks (e.g. an "Opening Session" recording with 8 short presentations,
+each from a different speaker). The DB still stores one lecture row
+per talk — but the /ada2026 page can render them as a single grouped
+archive card if you tag them consistently.
+
+To group N talks under one archive:
+
+1. Pick a stable group id derived from the archive URL. The recording's
+   trailing path segment is a good choice:
+     archiveUrl = https://events.diabetes.org/live/player/4948
+     groupId    = "player-4948"
+
+2. On EVERY part, include these tags:
+     "archiveGroup:player-4948"   ← same value on all N parts
+     "part:01"                    ← zero-padded ordinal, 01..NN
+     (the operator's standard "track:..." etc. still go on each part)
+
+3. On ONE part (typically part 1), include the human-readable label:
+     "archiveTitle:Opening Session — 86th ADA Scientific Sessions"
+   Only the first non-null value wins; if every part sets it identically
+   that is fine too. Omit and the group falls back to "Archive recording".
+
+4. All parts SHOULD use the SAME `sourceUrl` (the recording URL) and
+   the SAME `trackId`. Different trackIds will split the group across
+   theme sections, which usually isn't what you want.
+
+5. Each part is still a separate POST / PUT — there is no batch
+   "upload group" call. The grouping is reconstructed by the frontend
+   at render time from the tags. This keeps the schema unchanged and
+   means re-uploading just one part doesn't require touching the others.
+
+What changes on the page:
+  - All N parts render inside one bordered archive container
+  - The container header shows "<archiveTitle> · N parts" + ONE
+    "▶ Watch full recording" button (the per-card "Watch on ADA portal"
+    is suppressed for parts inside a group, to avoid 8 identical buttons)
+  - Each part card shows a "Part 1/8" badge in place of the standalone
+    "Archive" badge
+
+Ungrouped lectures (no `archiveGroup:` tag) keep their per-card CTA
+and render in the standard 4-column grid. Solos and groups interleave
+by most-recent publishDate within a theme.
+
+When a user searches the page, a group renders in full whenever ANY
+of its parts matches the query — so the "Part N/M" badges and group
+title stay accurate (1/8 means 1 of 8, not 1 of 3). A group disappears
+only when NONE of its parts match. A group with only one part is
+auto-demoted to a solo card (no "1 parts" container).
 
 ────────────────────────────────────────
  HARD RULES
@@ -399,6 +455,80 @@ After upload, the talk appears at https://mednote.zeabur.app/ada2026 under
 the "Obesity & Metabolic Health" section, with a "▶ Watch on ADA portal"
 button linking back to the archive URL.
 
+### Grouped-archive variant — one recording, 8 parts
+
+Operator says:
+
+> Here is `~/ada-talks/opening-session/`:
+>
+> ```
+> part-01-welcome.md          ← speaker: Henderson
+> part-02-strategy.md         ← speaker: Kalyani
+> ... (six more)
+> part-08-closing.md          ← speaker: Pragnell
+> slides/
+>   part-01/01.png ... 04.png
+>   part-02/01.png ... 09.png
+>   ...
+> ```
+>
+> All eight `.md` files share archive URL `https://events.diabetes.org/live/player/4948`.
+> Please upload as one grouped archive.
+
+The agent processes each file as one talk. Each part's frontmatter
+declares the grouping with these fields:
+
+```yaml
+archiveGroup: player-4948    # same on all 8
+part: 01                     # 01..08 per file
+archiveTitle: "Opening Session — 86th ADA Scientific Sessions"
+                             # only on part-01-welcome.md is enough
+sourceUrl: https://events.diabetes.org/live/player/4948
+trackId: innovation-access   # same on all 8
+```
+
+The uploader script then translates them into the API payload's `tags`
+array (the renderer reads from `tags`, not from arbitrary frontmatter
+keys). For the part-01 file above, the resulting POST body's tags would
+include:
+
+```json
+"tags": [
+  "clientRef:opening-2026-player-4948-part-01",
+  "track:innovation-access",
+  "archiveGroup:player-4948",
+  "part:01",
+  "archiveTitle:Opening Session — 86th ADA Scientific Sessions",
+  "speaker:Henderson"
+]
+```
+
+Any custom frontmatter key is fine for the operator's own use, but ONLY
+the prefixed strings inside `tags` reach the renderer. Forgetting the
+`archiveGroup:` prefix in the tags array — even if the YAML frontmatter
+has it — silently breaks the grouping.
+
+Resulting POSTs:
+
+```text
+1. POST part-01 → tags include archiveGroup:player-4948, part:01, archiveTitle:...
+2. POST part-02 → tags include archiveGroup:player-4948, part:02
+...
+8. POST part-08 → tags include archiveGroup:player-4948, part:08
+
+✓ part-01-welcome.md → innovation-access → .../<id1> (4 slides, created)
+✓ part-02-strategy.md → innovation-access → .../<id2> (9 slides, created)
+...
+✓ part-08-closing.md → innovation-access → .../<id8> (6 slides, created)
+
+Created: 8 | Updated: 0 | Skipped: 0 | Failed: 0
+```
+
+On the page, the 8 cards render inside one bordered container titled
+"Opening Session — 86th ADA Scientific Sessions · 8 parts" with one
+"▶ Watch full recording" button at the top. Each card shows "Part 1/8",
+"Part 2/8", ..., "Part 8/8" instead of the standalone "Archive" badge.
+
 ---
 
 ## 5. Common pitfalls
@@ -446,6 +576,46 @@ into `slides[]`. Cover overlap is fine; full duplication is not.
 
 Bloats the Postgres row, bypasses S3 / CDN / Drive backup. Always upload
 via `/api/ingest/upload` and substitute the returned URL.
+
+### ❌ Reusing `archiveGroup:` across different recordings
+
+```yaml
+# talk-A.md
+archiveGroup: opening    # too generic
+# talk-B.md (from a totally different recording)
+archiveGroup: opening    # collides!
+```
+
+Both will render inside the same container on /ada2026, which is
+misleading. Derive the group id from the archive URL (e.g. the trailing
+`/player/<n>` segment) so it's automatically unique per recording.
+
+### ❌ Non-numeric or missing `part:` values
+
+```yaml
+# part-A.md → part: A      (not a number)
+# part-B.md → (no part tag)
+```
+
+The frontend parses `part:` with `Number()` and sorts numerically.
+Numeric values (zero-padded or not) sort correctly: `part:1`, `part:2`,
+`part:10` produce 1 → 2 → 10. But non-numeric or missing values are
+silently coerced to the maximum sort key, lumping all malformed parts
+at the end with no warning. Recommended convention: always
+zero-pad to two digits (`part:01`..`part:NN`) for readable badges and
+to make the sort intent obvious in a tag dump.
+
+### ❌ Splitting one group across themes
+
+```yaml
+# part-01.md → trackId: prevention
+# part-02.md → trackId: cardiometabolic
+```
+
+Each part lands in a different theme section. The group renders only
+where each part lives — you end up with "1 part" containers in two
+sections instead of one "8 parts" container. Pick one `trackId` for
+the whole group.
 
 ### ❌ Two talks in one markdown file
 
@@ -515,6 +685,7 @@ Day mapping for `day:Dn` tags:
 | 6 theme IDs in `lib/ada2026-themes.ts` | Frozen — adding a 7th requires a code change |
 | `conference: "ADA2026"` in ingest API | Active |
 | `sourceUrl` rendered as "Watch on ADA portal" CTA | Active |
+| `archiveGroup:` / `part:NN` / `archiveTitle:` tag grouping | Active since v2 |
 | Per-file upload cap | 50 MB (override via `INGEST_MAX_UPLOAD_MB` env) |
 
-Current version: **v1** — June 2026.
+Current version: **v2** — June 2026 (adds archive grouping).

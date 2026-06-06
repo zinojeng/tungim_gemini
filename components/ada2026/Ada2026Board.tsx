@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { Lecture } from '@/types'
 import { ADA_2026_THEMES, Ada2026Theme } from '@/lib/ada2026-themes'
 import { Ada2026LectureCard } from './Ada2026LectureCard'
+import { Ada2026ArchiveGroup } from './Ada2026ArchiveGroup'
 import { Search, X } from 'lucide-react'
 
 interface Props {
@@ -15,6 +16,104 @@ function buildSearchBlob(l: Lecture): string {
     if (l.tags?.length) parts.push(l.tags.join(' '))
     if (l.subcategory) parts.push(l.subcategory)
     return parts.join(' \n ').toLowerCase()
+}
+
+const ARCHIVE_GROUP_PREFIX = 'archiveGroup:'
+const ARCHIVE_TITLE_PREFIX = 'archiveTitle:'
+const PART_PREFIX = 'part:'
+
+function tagValue(tags: string[] | null | undefined, prefix: string): string | null {
+    if (!tags) return null
+    const t = tags.find((x) => x.startsWith(prefix))
+    return t ? t.slice(prefix.length) : null
+}
+
+function partOrder(l: Lecture): number {
+    const raw = tagValue(l.tags, PART_PREFIX)
+    if (!raw) return Number.MAX_SAFE_INTEGER
+    const n = Number(raw)
+    return Number.isFinite(n) ? n : Number.MAX_SAFE_INTEGER
+}
+
+function pubTime(l: Lecture): number {
+    return l.publishDate ? new Date(l.publishDate).getTime() : 0
+}
+
+type RenderItem =
+    | { kind: 'solo'; lecture: Lecture }
+    | {
+          kind: 'group'
+          id: string
+          title: string | null
+          sourceUrl: string | null
+          parts: Lecture[]
+          /** Most recent publishDate among parts — used for ordering against solos. */
+          mostRecent: number
+      }
+
+/**
+ * Split a theme's lecture list into mixed solo/group render items.
+ *
+ * Grouping is computed against `unfiltered` (the full theme list), but the
+ * caller supplies `visibleIds` describing which lectures survived the current
+ * search filter. A group renders in full whenever ANY of its parts is in
+ * `visibleIds` — this keeps "Part N/M" badges and the group title accurate
+ * even when the user's query only matches some parts of an 8-part archive.
+ *
+ * A group with only one part is demoted to a solo card — a "1 parts"
+ * container with a duplicate CTA is worse than just showing the lecture.
+ *
+ * Groups and solos interleave by the parts' most-recent publishDate so a
+ * freshly-uploaded archive doesn't sink under older solo cards.
+ */
+function buildRenderItems(unfiltered: Lecture[], visibleIds: Set<string> | null): RenderItem[] {
+    const isVisible = (id: string) => visibleIds === null || visibleIds.has(id)
+    const groupMap = new Map<string, Lecture[]>()
+    const solos: Lecture[] = []
+    for (const l of unfiltered) {
+        const gid = tagValue(l.tags, ARCHIVE_GROUP_PREFIX)
+        if (gid) {
+            const arr = groupMap.get(gid) ?? []
+            arr.push(l)
+            groupMap.set(gid, arr)
+        } else if (isVisible(l.id)) {
+            solos.push(l)
+        }
+    }
+    const items: RenderItem[] = []
+    for (const [id, parts] of groupMap) {
+        const anyVisible = parts.some((p) => isVisible(p.id))
+        if (!anyVisible) continue
+        // Single-part group → render as a plain solo so we don't show a
+        // "1 parts" container and suppress the only useful CTA.
+        if (parts.length < 2) {
+            const lone = parts[0]
+            if (isVisible(lone.id)) solos.push(lone)
+            continue
+        }
+        parts.sort((a, b) => {
+            const pa = partOrder(a)
+            const pb = partOrder(b)
+            if (pa !== pb) return pa - pb
+            return pubTime(b) - pubTime(a)
+        })
+        const title = parts.map((p) => tagValue(p.tags, ARCHIVE_TITLE_PREFIX)).find(Boolean) ?? null
+        const sourceUrl = parts.find((p) => p.sourceUrl)?.sourceUrl ?? null
+        const mostRecent = parts.reduce((acc, p) => Math.max(acc, pubTime(p)), 0)
+        items.push({ kind: 'group', id, title, sourceUrl, parts, mostRecent })
+    }
+    for (const s of solos) items.push({ kind: 'solo', lecture: s })
+    items.sort((a, b) => {
+        const at = a.kind === 'group' ? a.mostRecent : pubTime(a.lecture)
+        const bt = b.kind === 'group' ? b.mostRecent : pubTime(b.lecture)
+        if (at !== bt) return bt - at
+        // Stable tiebreak: groups before solos at equal time, then by id/title
+        // so the order is deterministic across renders.
+        const aKey = a.kind === 'group' ? `g:${a.id}` : `s:${a.lecture.id}`
+        const bKey = b.kind === 'group' ? `g:${b.id}` : `s:${b.lecture.id}`
+        return aKey.localeCompare(bKey)
+    })
+    return items
 }
 
 export function Ada2026Board({ lectures }: Props) {
@@ -50,24 +149,40 @@ export function Ada2026Board({ lectures }: Props) {
         return ADA_2026_THEMES.filter((t) => t.id === activeTheme)
     }, [activeTheme])
 
-    const filteredByTheme = useMemo(() => {
+    // Single source of truth for the active search filter. `null` = no filter.
+    // Pre-grouping IDs only — group rendering then expands matching IDs back
+    // to their full group (see buildRenderItems) so part numbering stays
+    // honest even when only some parts of an 8-part archive match the query.
+    const visibleIds = useMemo<Set<string> | null>(() => {
         const q = search.trim().toLowerCase()
-        const out: Record<string, Lecture[]> = {}
-        for (const t of visibleThemes) {
-            const list = lecturesByTheme[t.id] ?? []
-            out[t.id] = q ? list.filter((l) => searchBlobs[l.id]?.includes(q)) : list
-        }
-        return out
-    }, [visibleThemes, lecturesByTheme, searchBlobs, search])
+        if (!q) return null
+        return new Set(lectures.filter((l) => searchBlobs[l.id]?.includes(q)).map((l) => l.id))
+    }, [lectures, searchBlobs, search])
 
-    const filteredUncategorized = useMemo(() => {
-        if (activeTheme !== 'all') return []
-        const q = search.trim().toLowerCase()
-        return q ? uncategorized.filter((l) => searchBlobs[l.id]?.includes(q)) : uncategorized
-    }, [activeTheme, uncategorized, searchBlobs, search])
+    const themeBuckets = useMemo(() => {
+        return visibleThemes.map((theme) => {
+            const list = lecturesByTheme[theme.id] ?? []
+            const items = buildRenderItems(list, visibleIds)
+            const visibleCount = items.reduce(
+                (acc, it) => acc + (it.kind === 'solo' ? 1 : it.parts.length),
+                0,
+            )
+            return { theme, items, visibleCount }
+        })
+    }, [visibleThemes, lecturesByTheme, visibleIds])
+
+    const uncategorizedBucket = useMemo(() => {
+        if (activeTheme !== 'all') return { items: [] as RenderItem[], visibleCount: 0 }
+        const items = buildRenderItems(uncategorized, visibleIds)
+        const visibleCount = items.reduce(
+            (acc, it) => acc + (it.kind === 'solo' ? 1 : it.parts.length),
+            0,
+        )
+        return { items, visibleCount }
+    }, [activeTheme, uncategorized, visibleIds])
 
     const totalShown =
-        Object.values(filteredByTheme).reduce((a, b) => a + b.length, 0) + filteredUncategorized.length
+        themeBuckets.reduce((a, b) => a + b.visibleCount, 0) + uncategorizedBucket.visibleCount
 
     return (
         <div className="space-y-6">
@@ -128,9 +243,8 @@ export function Ada2026Board({ lectures }: Props) {
                 </div>
             ) : (
                 <div className="space-y-12">
-                    {visibleThemes.map((theme) => {
-                        const list = filteredByTheme[theme.id] ?? []
-                        if (list.length === 0) return null
+                    {themeBuckets.map(({ theme, items, visibleCount }) => {
+                        if (items.length === 0) return null
                         return (
                             <section
                                 key={theme.id}
@@ -146,20 +260,16 @@ export function Ada2026Board({ lectures }: Props) {
                                         {theme.name}
                                     </h2>
                                     <span className="text-xs text-foreground/50 tabular-nums">
-                                        {list.length} talks
+                                        {visibleCount} talks
                                     </span>
                                 </div>
                                 <p className="text-sm text-foreground/60 mb-4 max-w-2xl">{theme.description}</p>
-                                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                    {list.map((lecture) => (
-                                        <Ada2026LectureCard key={lecture.id} lecture={lecture} />
-                                    ))}
-                                </div>
+                                <RenderList items={items} />
                             </section>
                         )
                     })}
 
-                    {filteredUncategorized.length > 0 && (
+                    {uncategorizedBucket.items.length > 0 && (
                         <section aria-labelledby="theme-uncategorized" className="scroll-mt-32">
                             <div className="flex items-baseline gap-3 mb-4 pb-2 border-b border-slate-300">
                                 <span className="inline-block h-2 w-2 rounded-full bg-slate-400" />
@@ -167,17 +277,64 @@ export function Ada2026Board({ lectures }: Props) {
                                     Other
                                 </h2>
                                 <span className="text-xs text-foreground/50 tabular-nums">
-                                    {filteredUncategorized.length} talks
+                                    {uncategorizedBucket.visibleCount} talks
                                 </span>
                             </div>
-                            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                {filteredUncategorized.map((lecture) => (
-                                    <Ada2026LectureCard key={lecture.id} lecture={lecture} />
-                                ))}
-                            </div>
+                            <RenderList items={uncategorizedBucket.items} />
                         </section>
                     )}
                 </div>
+            )}
+        </div>
+    )
+}
+
+/**
+ * Renders a mixed list of solos (lecture cards) and archive groups (bordered
+ * containers wrapping their part cards). Solos and groups interleave purely
+ * by `mostRecent` publish time — see buildRenderItems above.
+ *
+ * Solo cards live in a 4-col grid; archive groups break out of the grid into
+ * a full-width row so the group container reads as one unit. Adjacent solo
+ * cards regroup into the next grid below.
+ */
+function RenderList({ items }: { items: RenderItem[] }) {
+    // Collapse runs of solos into one grid; each group renders standalone.
+    const blocks: Array<{ kind: 'solos'; lectures: Lecture[] } | { kind: 'group'; item: Extract<RenderItem, { kind: 'group' }> }> = []
+    let buffer: Lecture[] = []
+    const flush = () => {
+        if (buffer.length) {
+            blocks.push({ kind: 'solos', lectures: buffer })
+            buffer = []
+        }
+    }
+    for (const it of items) {
+        if (it.kind === 'solo') buffer.push(it.lecture)
+        else {
+            flush()
+            blocks.push({ kind: 'group', item: it })
+        }
+    }
+    flush()
+
+    return (
+        <div className="space-y-5">
+            {blocks.map((b, i) =>
+                b.kind === 'solos' ? (
+                    <div key={`solos-${i}`} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {b.lectures.map((l) => (
+                            <Ada2026LectureCard key={l.id} lecture={l} />
+                        ))}
+                    </div>
+                ) : (
+                    <Ada2026ArchiveGroup
+                        key={b.item.id}
+                        groupId={b.item.id}
+                        title={b.item.title}
+                        sourceUrl={b.item.sourceUrl}
+                        parts={b.item.parts}
+                    />
+                ),
             )}
         </div>
     )

@@ -7,12 +7,20 @@ import { getTheme } from '@/lib/ada2026-themes'
 
 interface Props {
     lecture: Lecture
+    /**
+     * When set, this card is rendered inside an Ada2026ArchiveGroup container.
+     * The per-card "Watch on ADA portal" CTA is suppressed (the group header
+     * carries the recording link) and a "Part N/M" badge replaces the
+     * standalone "Archive" badge.
+     */
+    groupChild?: { partIndex: number; partTotal: number }
 }
 
-export function Ada2026LectureCard({ lecture }: Props) {
+export function Ada2026LectureCard({ lecture, groupChild }: Props) {
     const theme = getTheme(lecture.subcategory)
     const coverImage = lecture.coverImage || null
     const hasArchive = Boolean(lecture.sourceUrl)
+    const inGroup = Boolean(groupChild)
 
     return (
         <Card className="h-full overflow-hidden transition-all hover:shadow-lg hover:border-rose-300 group">
@@ -42,13 +50,21 @@ export function Ada2026LectureCard({ lecture }: Props) {
                         </div>
                     )}
 
-                    {hasArchive && (
+                    {inGroup ? (
                         <div className="absolute bottom-3 left-3">
-                            <span className="inline-flex items-center gap-1 rounded-full bg-rose-600/90 text-white px-2.5 py-1 text-[10px] font-semibold backdrop-blur-md shadow-sm">
-                                <PlayCircle className="h-3 w-3" />
-                                Archive
+                            <span className="inline-flex items-center gap-1 rounded-full bg-rose-600/90 text-white px-2.5 py-1 text-[10px] font-semibold backdrop-blur-md shadow-sm tabular-nums">
+                                Part {groupChild!.partIndex} / {groupChild!.partTotal}
                             </span>
                         </div>
+                    ) : (
+                        hasArchive && (
+                            <div className="absolute bottom-3 left-3">
+                                <span className="inline-flex items-center gap-1 rounded-full bg-rose-600/90 text-white px-2.5 py-1 text-[10px] font-semibold backdrop-blur-md shadow-sm">
+                                    <PlayCircle className="h-3 w-3" />
+                                    Archive
+                                </span>
+                            </div>
+                        )
                     )}
                 </div>
                 <CardHeader className="p-4 pb-2">
@@ -85,7 +101,7 @@ export function Ada2026LectureCard({ lecture }: Props) {
                 </CardContent>
             </Link>
 
-            {hasArchive && (
+            {hasArchive && !inGroup && (
                 <div className="px-4 pb-4 -mt-1">
                     <a
                         href={lecture.sourceUrl ?? '#'}
