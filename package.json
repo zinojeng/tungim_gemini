@@ -10,7 +10,8 @@
     "db:push": "drizzle-kit push",
     "db:backup": "tsx scripts/backup-db.ts",
     "db:restore": "tsx scripts/restore-db.ts",
-    "ingest:attd": "tsx scripts/ingest-attd-gemini.ts"
+    "ingest:attd": "tsx scripts/ingest-attd-gemini.ts",
+    "check:ada": "tsx scripts/check-ada-agenda.ts"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.2",

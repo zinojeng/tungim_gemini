@@ -18,7 +18,7 @@
 //   room:<text>         → session room (reserved)
 // Talks with no archiveGroup tag become their own single-talk session.
 
-import { getTheme } from '@/lib/ada2026-themes'
+import { getTheme, ADA_2026_THEMES } from '@/lib/ada2026-themes'
 
 /** Conference days — mirrors docs/UPLOADER-PROMPT-ADA2026.md §7. */
 export const ADA_2026_DAYS: {
@@ -218,23 +218,78 @@ function buildTalk(l: AgendaInputLecture): AdaTalk {
 
 const PART_FALLBACK = Number.MAX_SAFE_INTEGER
 
+/** A recording URL groups its parts into one session. The ADA on-demand
+ *  portal uses `/live/player/<n>` (and sometimes `/recording/<n>`); the
+ *  landing page `/live/32/page/330` is NOT a recording and must never become
+ *  a group key, or unrelated solos would merge under it. */
+function isRecordingUrl(url: string | null | undefined): boolean {
+    return Boolean(url && /\/(player|recording)\//.test(url))
+}
+
 /**
- * Reconstruct the ADA agenda from flat lecture rows.
+ * The session a talk belongs to. Preference order:
+ *   1. `archiveGroup:` tag  — explicit, structural (what the uploader sets)
+ *   2. shared recording `sourceUrl` — structural fallback: every part of one
+ *      ADA recording carries the same parent player URL, so talks that were
+ *      uploaded without an archiveGroup tag still reconstruct into the right
+ *      session. This is NOT a public topic tag — it's the recording identity.
+ * Returns null for talks with neither signal (true solos).
+ */
+function sessionKey(l: AgendaInputLecture): { key: string; id: string } | null {
+    const ag = tagValue(l.tags, 'archiveGroup:')
+    if (ag) return { key: `ag:${ag}`, id: ag }
+    if (isRecordingUrl(l.sourceUrl)) {
+        const seg = l.sourceUrl!.replace(/\/+$/, '').split('/').slice(-2).join('-')
+        return { key: `url:${l.sourceUrl}`, id: `rec:${seg}` }
+    }
+    return null
+}
+
+const GENERIC_TITLE_TAGS = new Set(['ada 2026', 'ada2026', 'ada', 'diabetes'])
+
+function isGenericTitleTag(tag: string): boolean {
+    const low = tag.toLowerCase()
+    if (GENERIC_TITLE_TAGS.has(low)) return true
+    return ADA_2026_THEMES.some(
+        (th) => th.name.toLowerCase() === low || th.shortName.toLowerCase() === low,
+    )
+}
+
+/** When no archiveTitle tag exists, derive a session label from the most
+ *  descriptive plain tag shared by ALL parts (e.g. "Pathway to Stop
+ *  Diabetes"), skipping generic conference/theme tokens. Used for DISPLAY
+ *  only — grouping is structural (see sessionKey). */
+function derivedSessionTitle(parts: AgendaInputLecture[]): string | null {
+    const lists = parts.map(
+        (p) => new Set((p.tags ?? []).filter((t) => !t.includes(':'))),
+    )
+    if (lists.length === 0) return null
+    let common = [...lists[0]]
+    for (const s of lists.slice(1)) common = common.filter((t) => s.has(t))
+    const specific = common.filter((t) => !isGenericTitleTag(t))
+    specific.sort((a, b) => b.length - a.length)
+    return specific[0] ?? null
+}
+
+/**
+ * Reconstruct the ADA agenda from flat lecture rows — date → session → talk,
+ * mirroring the on-demand portal's hierarchy (a session holds one or more
+ * talks, not a flat list).
  *
  * Sessions are sorted within their day by start time (then title); the
  * caller groups them under day headers using `session.dayKey`. Talks inside
  * a session are ordered by `part:NN`, falling back to start time.
  */
 export function buildAgenda(lectures: AgendaInputLecture[]): AdaSession[] {
-    const groups = new Map<string, AgendaInputLecture[]>()
+    const groups = new Map<string, { id: string; parts: AgendaInputLecture[] }>()
     const solos: AgendaInputLecture[] = []
 
     for (const l of lectures) {
-        const gid = tagValue(l.tags, 'archiveGroup:')
-        if (gid) {
-            const arr = groups.get(gid) ?? []
-            arr.push(l)
-            groups.set(gid, arr)
+        const sk = sessionKey(l)
+        if (sk) {
+            const g = groups.get(sk.key) ?? { id: sk.id, parts: [] }
+            g.parts.push(l)
+            groups.set(sk.key, g)
         } else {
             solos.push(l)
         }
@@ -242,8 +297,9 @@ export function buildAgenda(lectures: AgendaInputLecture[]): AdaSession[] {
 
     const sessions: AdaSession[] = []
 
-    for (const [gid, parts] of groups) {
-        // A lone archiveGroup part is effectively a solo session.
+    for (const { id, parts } of groups.values()) {
+        // A session with a single part is just a solo — don't wrap one talk
+        // in a multi-talk container.
         if (parts.length < 2) {
             sessions.push(makeSoloSession(parts[0]))
             continue
@@ -259,9 +315,10 @@ export function buildAgenda(lectures: AgendaInputLecture[]): AdaSession[] {
         const talks = parts.map(buildTalk)
         const times = talks.map((t) => t.startTime).filter(Boolean) as string[]
         sessions.push({
-            id: gid,
+            id,
             title:
                 parts.map((p) => tagValue(p.tags, 'archiveTitle:')).find(Boolean) ??
+                derivedSessionTitle(parts) ??
                 'Archive recording',
             track: parts.map((p) => p.subcategory).find(Boolean) ?? null,
             chair: parts.map((p) => tagValue(p.tags, 'chair:')).find(Boolean) ?? null,

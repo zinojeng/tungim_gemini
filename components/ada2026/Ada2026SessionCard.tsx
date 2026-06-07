@@ -75,7 +75,7 @@ export function Ada2026SessionCard({ session, tz, matchedIds }: Props) {
                             {session.talks.length} talks
                         </span>
                     </div>
-                    <h3 className="text-base md:text-lg font-semibold leading-tight text-foreground">
+                    <h3 className="text-base md:text-lg font-semibold leading-tight text-foreground break-words">
                         {session.title}
                     </h3>
                     {session.chair && (
@@ -150,7 +150,7 @@ function SoloSession({
                             </span>
                         )}
                     </div>
-                    <h3 className="text-base md:text-lg font-semibold leading-tight">
+                    <h3 className="text-base md:text-lg font-semibold leading-tight break-words">
                         <Link href={`/lectures/${talk.lectureId}`} className="transition-colors hover:text-rose-700">
                             {session.title}
                         </Link>
@@ -200,7 +200,7 @@ function TalkRow({
                     {index}/{total}
                 </span>
                 <div className="min-w-0 flex-1 space-y-1">
-                    <p className="text-sm font-medium leading-snug text-foreground transition-colors group-hover:text-rose-700">
+                    <p className="text-sm font-medium leading-snug text-foreground transition-colors group-hover:text-rose-700 break-words">
                         {talk.title}
                     </p>
                     <TalkMeta talk={talk} />
