@@ -21,6 +21,7 @@ function check(name: string, cond: boolean, detail = '') {
 }
 
 const PLAYER_4948 = 'https://events.diabetes.org/live/player/4948' // in RECORDING_OVERRIDES
+const PLAYER_4738 = 'https://events.diabetes.org/live/player/4738' // overridden with a -20h date shift
 const PLAYER_SYNTH = 'https://events.diabetes.org/live/player/9001' // not overridden — tests derived title
 const PORTAL = 'https://events.diabetes.org/live/32/page/330'
 
@@ -80,7 +81,28 @@ const overridePair: AgendaInputLecture[] = [
     part(1, 'Keynote', PLAYER_4948),
 ]
 
-const sessions = buildAgenda([...pathway, ...overridePair, solo, portalA, portalB])
+// 3 foot talks stamped Saturday 13:45–14:15Z — the override must shift them
+// back to Friday (−20h) and the day bucket must become D1.
+function footPart(id: string, title: string, iso: string): AgendaInputLecture {
+    return {
+        id,
+        title,
+        subcategory: 'complications',
+        sourceUrl: PLAYER_4738,
+        tags: ['ADA 2026', 'Complications'],
+        publishDate: iso,
+        slideCount: 1,
+        pdfUrl: null,
+        keyTakeaways: [],
+    }
+}
+const foot: AgendaInputLecture[] = [
+    footPart('lec-foot-1', 'Endothelial Metallothionein', '2026-06-06T13:45:00.000Z'),
+    footPart('lec-foot-2', 'Topical Insulin Dressings', '2026-06-06T14:00:00.000Z'),
+    footPart('lec-foot-3', 'Bedside Bone Biopsy', '2026-06-06T14:15:00.000Z'),
+]
+
+const sessions = buildAgenda([...pathway, ...overridePair, ...foot, solo, portalA, portalB])
 
 console.log('ADA agenda grouping checks:')
 
@@ -117,6 +139,20 @@ check(
     `got "${overridden?.title}"`,
 )
 check('overridden session carries the official room', overridden?.room === 'Hall F (Level 1)', `got "${overridden?.room}"`)
+
+const foot4738 = sessions.find((s) => s.id === 'rec:player-4738')
+check('4738 forms one 3-talk session', foot4738?.talks.length === 3, `got ${foot4738?.talks.length}`)
+check('4738 date-shift moves it to Friday (D1)', foot4738?.dayKey === 'D1', `got "${foot4738?.dayKey}"`)
+check(
+    '4738 first talk shifted to Fri 12:45 CDT (17:45Z)',
+    foot4738?.talks[0]?.startTime === '2026-06-05T17:45:00.000Z',
+    `got "${foot4738?.talks[0]?.startTime}"`,
+)
+check(
+    '4738 official title + room',
+    foot4738?.title === 'Beyond Conventional Care: Regenerative Medicine and Smart Dressings for Diabetic Foot Ulcer' &&
+        foot4738?.room === 'Room 217 (Level 2)',
+)
 check(
     'unique-recording talk stays solo',
     Boolean(sessions.find((s) => s.isSolo && s.talks[0]?.lectureId === 'lec-solo')),

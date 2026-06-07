@@ -258,6 +258,20 @@ function isGenericTitleTag(tag: string): boolean {
 interface RecordingOverride {
     title: string
     room?: string
+    /**
+     * Hours to shift every part's publishDate by, to correct a wrong upload
+     * timestamp (applied for agenda display only — the lecture row is
+     * untouched). Uniform across parts, so their order and spacing are
+     * preserved. Remove once the source publishDate is fixed.
+     */
+    shiftHours?: number
+}
+
+function shiftIso(iso: string | null | undefined, hours: number): string | null {
+    if (!iso) return null
+    const t = Date.parse(iso)
+    if (Number.isNaN(t)) return null
+    return new Date(t + hours * 3_600_000).toISOString()
 }
 
 /**
@@ -288,6 +302,15 @@ const RECORDING_OVERRIDES: Record<string, RecordingOverride> = {
     'https://events.diabetes.org/live/player/4728': {
         title: 'Top Research Abstracts: Mechanisms of Diabetic Kidney Disease',
         room: 'Hall E-2 (Level 1)',
+    },
+    // Diabetic-foot oral session. Content + program (the only foot-ulcer oral
+    // session, and Saturday has no oral session at this hour) place it on
+    // Friday 12:45 — but the upload stamped it Saturday 13:45Z, so shift −20h
+    // back to Fri 17:45Z (= 12:45 CDT), matching its sibling 12:45 sessions.
+    'https://events.diabetes.org/live/player/4738': {
+        title: 'Beyond Conventional Care: Regenerative Medicine and Smart Dressings for Diabetic Foot Ulcer',
+        room: 'Room 217 (Level 2)',
+        shiftHours: -20,
     },
 }
 
@@ -356,9 +379,15 @@ export function buildAgenda(lectures: AgendaInputLecture[]): AdaSession[] {
             if (na !== nb) return na - nb
             return startMs(a) - startMs(b)
         })
-        const talks = parts.map(buildTalk)
-        const times = talks.map((t) => t.startTime).filter(Boolean) as string[]
         const override = recordingOverride(parts)
+        // Apply a publishDate correction (if any) before deriving talk times
+        // and the day bucket, so a mis-stamped recording lands on the right day.
+        const eff =
+            override?.shiftHours != null
+                ? parts.map((p) => ({ ...p, publishDate: shiftIso(p.publishDate, override.shiftHours!) }))
+                : parts
+        const talks = eff.map(buildTalk)
+        const times = talks.map((t) => t.startTime).filter(Boolean) as string[]
         sessions.push({
             id,
             title:
@@ -370,7 +399,7 @@ export function buildAgenda(lectures: AgendaInputLecture[]): AdaSession[] {
             chair: parts.map((p) => tagValue(p.tags, 'chair:')).find(Boolean) ?? null,
             room: parts.map((p) => tagValue(p.tags, 'room:')).find(Boolean) ?? override?.room ?? null,
             sourceUrl: parts.find((p) => p.sourceUrl)?.sourceUrl ?? null,
-            dayKey: parts.map(dayKeyOf).find(Boolean) ?? UNSCHEDULED_DAY,
+            dayKey: eff.map(dayKeyOf).find(Boolean) ?? UNSCHEDULED_DAY,
             startTime: times.length ? times.reduce((a, b) => (Date.parse(a) <= Date.parse(b) ? a : b)) : null,
             endTime: times.length ? times.reduce((a, b) => (Date.parse(a) >= Date.parse(b) ? a : b)) : null,
             talks,
