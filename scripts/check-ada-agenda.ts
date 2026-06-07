@@ -63,7 +63,7 @@ const solo: AgendaInputLecture = {
     title: 'A standalone talk',
     subcategory: 'complications',
     sourceUrl: 'https://events.diabetes.org/live/player/9999',
-    tags: ['ADA 2026', 'Complications'],
+    tags: ['ADA 2026', 'Complications', 'titleZh:中文策展標題', 'summaryZh:一行中文核心重點'],
     publishDate: '2026-06-06T18:00:00.000Z',
     slideCount: 3,
     pdfUrl: null,
@@ -167,9 +167,18 @@ check(
     foot4738?.startTime === '2026-06-05T17:45:00.000Z' && foot4738?.endTime === '2026-06-05T18:45:00.000Z',
     `got ${foot4738?.startTime}–${foot4738?.endTime}`,
 )
+const soloSession = sessions.find((s) => s.isSolo && s.talks[0]?.lectureId === 'lec-solo')
+check('unique-recording talk stays solo', Boolean(soloSession))
 check(
-    'unique-recording talk stays solo',
-    Boolean(sessions.find((s) => s.isSolo && s.talks[0]?.lectureId === 'lec-solo')),
+    'titleZh:/summaryZh: tag metadata surfaces on the talk',
+    soloSession?.talks[0]?.titleZh === '中文策展標題' &&
+        soloSession?.talks[0]?.summaryZh === '一行中文核心重點',
+    `got titleZh="${soloSession?.talks[0]?.titleZh}" summaryZh="${soloSession?.talks[0]?.summaryZh}"`,
+)
+check(
+    'titleZh/summaryZh tags never leak into topic chips',
+    !(soloSession?.talks[0]?.subtopics ?? []).some((c) => c.includes('中文')) &&
+        soloSession?.talks[0]?.primaryTopic !== '中文策展標題',
 )
 check(
     'portal landing page does NOT merge unrelated talks',

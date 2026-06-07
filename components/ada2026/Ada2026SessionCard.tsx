@@ -158,9 +158,12 @@ function SoloSession({
                     </div>
                     <h3 className="text-base md:text-lg font-semibold leading-tight break-words">
                         <Link href={`/lectures/${talk.lectureId}`} className="transition-colors hover:text-rose-700">
-                            {session.title}
+                            {talk.titleZh ?? session.title}
                         </Link>
                     </h3>
+                    {talk.titleZh && (
+                        <p className="text-[11px] leading-snug text-foreground/40 break-words">{session.title}</p>
+                    )}
                     <TalkMeta talk={talk} />
                 </div>
                 <div className="flex flex-shrink-0 flex-col items-end gap-2">
@@ -207,8 +210,11 @@ function TalkRow({
                 </span>
                 <div className="min-w-0 flex-1 space-y-1">
                     <p className="text-sm font-medium leading-snug text-foreground transition-colors group-hover:text-rose-700 break-words">
-                        {talk.title}
+                        {talk.titleZh ?? talk.title}
                     </p>
+                    {talk.titleZh && (
+                        <p className="text-[11px] leading-snug text-foreground/40 break-words">{talk.title}</p>
+                    )}
                     <TalkMeta talk={talk} />
                 </div>
                 <ChevronRight className="mt-1 h-4 w-4 flex-shrink-0 text-foreground/25 transition group-hover:translate-x-0.5 group-hover:text-rose-500" />
@@ -244,9 +250,13 @@ function TalkMeta({ talk }: { talk: AdaTalk }) {
                     ))}
                 </div>
             )}
-            {talk.keyTakeaway && (
-                <p className="line-clamp-1 text-xs leading-relaxed text-foreground/55">
-                    {talk.keyTakeaway}
+            {(talk.summaryZh ?? talk.keyTakeaway) && (
+                <p
+                    className={`line-clamp-2 text-xs leading-relaxed ${
+                        talk.summaryZh ? 'text-foreground/70' : 'text-foreground/55'
+                    }`}
+                >
+                    {talk.summaryZh ?? talk.keyTakeaway}
                 </p>
             )}
         </>

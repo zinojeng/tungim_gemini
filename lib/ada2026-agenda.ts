@@ -60,6 +60,10 @@ export interface AgendaInputLecture {
 export interface AdaTalk {
     lectureId: string
     title: string
+    /** Curated Chinese title (display); falls back to `title` when absent. */
+    titleZh: string | null
+    /** Curated one-line Chinese core summary; preferred over `keyTakeaway`. */
+    summaryZh: string | null
     speaker: string | null
     /** lead topic — first topic chip, else the track short name */
     primaryTopic: string | null
@@ -115,6 +119,8 @@ const HIDDEN_TAG_PREFIXES = [
     'day:',
     'chair:',
     'room:',
+    'titleZh:',
+    'summaryZh:',
 ] as const
 
 /** Promote `topic:foo` → `foo`, pass plain tags through, drop infra tags.
@@ -195,6 +201,58 @@ function dayKeyOf(l: AgendaInputLecture): string | null {
     return null
 }
 
+interface LectureNote {
+    /** Chinese title for the talk row. */
+    titleZh: string
+    /** One-line Chinese core summary (speaker/institution/date excluded). */
+    summaryZh: string
+}
+
+/**
+ * Curated Chinese title + one-line core summary, keyed by lecture id.
+ *
+ * A temporary bridge so the agenda's secondary line reads as the talk's core
+ * point in Chinese rather than a speaker/institution/date excerpt. Authored by
+ * reading each talk's content. Remove an entry once the uploader supplies
+ * `titleZh`/`summaryZh` metadata for that talk.
+ *
+ * Currently covers the 8-talk player/4948 opening session (the demo set).
+ */
+const LECTURE_NOTES: Record<string, LectureNote> = {
+    '2c437404-a1b2-474e-b9e3-674031c552e4': {
+        titleZh: '歡迎來到 2026 ADA 科學年會',
+        summaryZh: '開幕致詞：從胰島素到 β 細胞替代，迎向全球糖尿病與肥胖大流行的挑戰',
+    },
+    '9c66985b-43ca-4cbe-bf90-7393df3ff866': {
+        titleZh: '開場引言',
+        summaryZh: 'ADA 倡議：擴大研究經費、將胰島素月費上限納入全民保險',
+    },
+    'cec61e85-ba45-459b-9be4-37e96202775b': {
+        titleZh: '主題演講：糖尿病的未來——NIH 的下世代研究願景',
+        summaryZh: 'NIH 以全人健康視角整合多平台，系統性探究糖尿病的根本成因並轉化至基層',
+    },
+    '167f71d4-9357-4013-857d-df3dabca4f45': {
+        titleZh: '爐邊對談：NIH 的糖尿病研究方向',
+        summaryZh: '以「黃金標準科學」探究病因，並平衡專家評審與戰略導向的科研資助',
+    },
+    'e20729b6-b58b-4e6e-928a-11afe43b611a': {
+        titleZh: '「Pathway to Stop Diabetes」研討會引言',
+        summaryZh: '支持青年研究員、營造高風險高回報環境，推動研究從基礎走向臨床',
+    },
+    'a2523f76-a90f-4239-9895-5e668930a0a9': {
+        titleZh: '能在發病前阻止糖尿病嗎？橫跨生命歷程的精準預防',
+        summaryZh: '以胚胎源性疾病觀與精準醫學，在生命早期阻斷糖尿病跨世代傳遞',
+    },
+    '0e11a56e-a978-4fe8-868f-e1d8384d4aab': {
+        titleZh: '進食時機很重要：晝夜節律失調如何驅動代謝疾病',
+        summaryZh: '進食時間失調擾亂脂肪組織生物鐘；早期限時飲食可改善代謝健康',
+    },
+    '5e092392-0b8c-4991-81a7-a040e2b1a306': {
+        titleZh: '運用蛋白體學與 AI 優化飲食以預防糖尿病',
+        summaryZh: '結合蛋白體學與 AI，打造因地制宜的個人化飲食以預防第 2 型糖尿病',
+    },
+}
+
 function buildTalk(l: AgendaInputLecture): AdaTalk {
     // Drop generic conference/theme tokens ("ADA 2026", "Complications", …) so
     // the lead chip is a real topic (e.g. "oxidative stress", "DKD") rather
@@ -203,11 +261,16 @@ function buildTalk(l: AgendaInputLecture): AdaTalk {
     const theme = getTheme(l.subcategory)
     const primaryTopic = chips[0] ?? theme?.shortName ?? null
     const subtopics = chips.slice(1, 4)
+    const note = LECTURE_NOTES[l.id]
     const partRaw = tagValue(l.tags, 'part:')
     const partNum = partRaw != null ? Number(partRaw) : NaN
     return {
         lectureId: l.id,
         title: l.title,
+        // Priority: uploaded `titleZh:`/`summaryZh:` tag metadata → curated
+        // frontend bridge (LECTURE_NOTES) → English fallback at render time.
+        titleZh: tagValue(l.tags, 'titleZh:') ?? note?.titleZh ?? null,
+        summaryZh: tagValue(l.tags, 'summaryZh:') ?? note?.summaryZh ?? null,
         speaker: tagValue(l.tags, 'speaker:'),
         primaryTopic,
         subtopics,

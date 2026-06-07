@@ -365,9 +365,28 @@ this order so future filters / search work well:
     "archiveGroup:" + groupId,   // optional — see §ARCHIVE GROUPING below
     "part:" + partNN,            // optional — e.g. "part:03" (zero-padded)
     "archiveTitle:" + title,     // optional — group label, one part can set this
+    "titleZh:" + zhTitle,        // RECOMMENDED — curated Chinese talk title
+    "summaryZh:" + zhCore,       // RECOMMENDED — one-line Chinese core point
     "topic:" + slug,             // optional — see §TAG VISIBILITY below
     ...frontmatter.tags          // user free-text: drug names, trial names, etc.
   ]
+
+NOTE on titleZh / summaryZh (the agenda's Chinese display):
+  - titleZh   : a curated Chinese title for the talk. Translate/condense the
+                English title; the page shows it as the talk-row title with the
+                English title beneath it in small grey.
+  - summaryZh : ONE line of Traditional Chinese capturing the talk's CORE
+                point. Generate it from the full summary/transcript. It must
+                NOT contain the speaker's name, their institution, or the
+                presentation date, and must NOT just translate the title —
+                the reader should grasp "what this talk is about" in one line.
+                Keep it short (≈20–35 chars). The page shows it as the talk's
+                secondary line, preferred over the first keyTakeaway.
+  Both are optional but strongly recommended — without them the page falls back
+  to the English title and the first keyTakeaway (which often leads with a
+  speaker bio). Until the uploader provides them, the frontend keeps a small
+  curated bridge map (lib/ada2026-agenda.ts `LECTURE_NOTES`); supplying the
+  tags makes that entry redundant.
 
 ────────────────────────────────────────
  TAG VISIBILITY ON THE CARD
@@ -379,6 +398,8 @@ The /ada2026 lecture card surfaces tags by category:
     - part:NN         → "Part N/M" badge (bottom-left), when in a group
     - speaker:*       → "🎤 <name>" line under the title
     - archiveTitle:*  → group container header (above the cards)
+    - titleZh:*       → talk-row title (Chinese); English shown beneath in grey
+    - summaryZh:*     → talk-row secondary line (Chinese core point)
 
   HIDDEN entirely (infrastructure, never shown to readers):
     - clientRef:*     → idempotency only

@@ -24,6 +24,13 @@ left for the next pass. None are blocking; the MVP is considered passed.
 - **Talk lead chip** (`primaryTopic`) filters out generic tokens ("ADA 2026",
   theme names) so it surfaces a real topic; it falls back to the theme short
   name when a talk has no topic tag.
+- **Chinese title + core line**: a talk row shows `titleZh` (Chinese title,
+  with the English title beneath in grey) and `summaryZh` (a one-line Chinese
+  core point) as its secondary line. Priority: `titleZh:`/`summaryZh:` **tag
+  metadata** from the uploader → a curated frontend bridge
+  (`LECTURE_NOTES` in `lib/ada2026-agenda.ts`, currently the 8 player/4948
+  talks) → English title / first keyTakeaway. The bridge is temporary; an
+  uploaded tag makes its entry redundant.
 - **Regression guard**: `npm run check:ada` (`scripts/check-ada-agenda.ts`).
 - Key files: `lib/ada2026-agenda.ts`, `components/ada2026/Ada2026Agenda.tsx`,
   `components/ada2026/Ada2026SessionCard.tsx`, `app/ada2026/page.tsx`,
@@ -64,6 +71,13 @@ shift assertion) and `RECORDING_OVERRIDES`.
   session name" above) on each part of a recording. Once present it overrides
   the in-code map, so the corresponding `RECORDING_OVERRIDES` entry can be
   deleted. Also add `room:` if you want the room to survive without the map.
+- `titleZh:` / `summaryZh:` — **the priority item.** The uploader should
+  generate, from the full summary/transcript, a curated Chinese title and a
+  one-line Chinese core point (no speaker/institution/date, not a bare
+  translation) and write them as `titleZh:<…>` / `summaryZh:<…>` tags. The
+  frontend already prefers these over the `LECTURE_NOTES` bridge and the
+  English fallback; once supplied, delete the matching `LECTURE_NOTES` entry.
+  See the contract in `docs/UPLOADER-PROMPT-ADA2026.md` §TAGS.
 - `speaker:` — speakers currently live in the summary body, not in tags, so
   talk rows show no speaker line (the takeaway preview sometimes leaks a
   "講者: …" line, which is incidental). Add `speaker:<name>` per talk for a
@@ -73,6 +87,9 @@ shift assertion) and `RECORDING_OVERRIDES`.
   falling back to the theme name.
 - Optionally backfill `archiveGroup:` + `part:` so grouping no longer depends
   on the `sourceUrl` fallback at all.
+
+The 8 player/4948 talks are curated in `LECTURE_NOTES` as a demo. Extend to the
+other 10 talks (or, better, have the uploader emit the tags) when ready.
 
 When a future recording has no `RECORDING_OVERRIDES` entry, the card shows only
 the session start time (no end). To show a real window, either add an override
