@@ -20,7 +20,8 @@ function check(name: string, cond: boolean, detail = '') {
     }
 }
 
-const PLAYER_4948 = 'https://events.diabetes.org/live/player/4948'
+const PLAYER_4948 = 'https://events.diabetes.org/live/player/4948' // in RECORDING_OVERRIDES
+const PLAYER_SYNTH = 'https://events.diabetes.org/live/player/9001' // not overridden — tests derived title
 const PORTAL = 'https://events.diabetes.org/live/32/page/330'
 
 function part(i: number, title: string, sourceUrl: string, extraTags: string[] = []): AgendaInputLecture {
@@ -40,8 +41,10 @@ function part(i: number, title: string, sourceUrl: string, extraTags: string[] =
     }
 }
 
-// 8 talks sharing the player/4948 recording, NO archiveGroup tag — the exact
-// production shape today (grouping must fall back to sourceUrl).
+// 8 talks sharing one recording, NO archiveGroup tag — the exact production
+// shape today (grouping must fall back to sourceUrl). Uses a synthetic player
+// URL that is NOT in RECORDING_OVERRIDES, so the session title exercises the
+// derived-from-shared-tag path.
 const pathway: AgendaInputLecture[] = [
     'Welcome to the 2026 ADA Scientific Sessions!',
     'Introduction',
@@ -51,7 +54,7 @@ const pathway: AgendaInputLecture[] = [
     'Can we Stop Diabetes Before it Begins?',
     'When We Eat Matters',
     'Optimizing Diet for Global Diabetes Prevention',
-].map((t, i) => part(i, t, PLAYER_4948))
+].map((t, i) => part(i, t, PLAYER_SYNTH))
 
 // A genuine solo: unique recording URL, only one talk.
 const solo: AgendaInputLecture = {
@@ -71,18 +74,24 @@ const solo: AgendaInputLecture = {
 const portalA: AgendaInputLecture = { ...solo, id: 'lec-portalA', title: 'Portal A', sourceUrl: PORTAL }
 const portalB: AgendaInputLecture = { ...solo, id: 'lec-portalB', title: 'Portal B', sourceUrl: PORTAL }
 
-const sessions = buildAgenda([...pathway, solo, portalA, portalB])
+// Two parts at player/4948 — exercises the RECORDING_OVERRIDES official-name path.
+const overridePair: AgendaInputLecture[] = [
+    part(0, 'Welcome', PLAYER_4948),
+    part(1, 'Keynote', PLAYER_4948),
+]
+
+const sessions = buildAgenda([...pathway, ...overridePair, solo, portalA, portalB])
 
 console.log('ADA agenda grouping checks:')
 
 const multi = sessions.filter((s) => s.talks.length > 1)
 check('at least one multi-talk session exists', multi.length >= 1)
 
-const recording = sessions.find((s) => s.id === 'rec:player-4948')
-check('player/4948 forms one session', Boolean(recording))
-check('player/4948 session has 8 talks', recording?.talks.length === 8, `got ${recording?.talks.length}`)
+const recording = sessions.find((s) => s.id === 'rec:player-9001')
+check('shared recording forms one session', Boolean(recording))
+check('recording session has 8 talks', recording?.talks.length === 8, `got ${recording?.talks.length}`)
 check(
-    'player/4948 talks are time-ordered',
+    'recording talks are time-ordered',
     Boolean(
         recording &&
             recording.talks.every(
@@ -99,6 +108,15 @@ check(
     recording?.title === 'Pathway to Stop Diabetes',
     `got "${recording?.title}"`,
 )
+
+const overridden = sessions.find((s) => s.id === 'rec:player-4948')
+check(
+    'RECORDING_OVERRIDES supplies the official session name',
+    overridden?.title ===
+        "Welcome to the 2026 ADA Scientific Sessions: Keynote Address by Jay Bhattacharya, MD, PhD & 'Pathway to Stop Diabetes' Symposium",
+    `got "${overridden?.title}"`,
+)
+check('overridden session carries the official room', overridden?.room === 'Hall F (Level 1)', `got "${overridden?.room}"`)
 check(
     'unique-recording talk stays solo',
     Boolean(sessions.find((s) => s.isSolo && s.talks[0]?.lectureId === 'lec-solo')),

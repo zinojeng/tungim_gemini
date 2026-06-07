@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
-import { Clock, Layers, Mic, PlayCircle, FileText, ChevronRight, UserSquare } from 'lucide-react'
+import { Clock, Layers, Mic, PlayCircle, FileText, ChevronRight, UserSquare, MapPin } from 'lucide-react'
 import { getTheme } from '@/lib/ada2026-themes'
 import type { AdaSession, AdaTalk } from '@/lib/ada2026-agenda'
 
@@ -74,6 +74,12 @@ export function Ada2026SessionCard({ session, tz, matchedIds }: Props) {
                             <Layers className="h-3.5 w-3.5" />
                             {session.talks.length} talks
                         </span>
+                        {session.room && (
+                            <span className="inline-flex items-center gap-1">
+                                <MapPin className="h-3.5 w-3.5" />
+                                {session.room}
+                            </span>
+                        )}
                     </div>
                     <h3 className="text-base md:text-lg font-semibold leading-tight text-foreground break-words">
                         {session.title}

@@ -255,6 +255,50 @@ function isGenericTitleTag(tag: string): boolean {
     )
 }
 
+interface RecordingOverride {
+    title: string
+    room?: string
+}
+
+/**
+ * Official ADA 2026 session names, keyed by the recording's parent player URL.
+ * Source: the Scientific Sessions program (docs/SS26_Program_Digital_051326.pdf),
+ * matched to each recording by day + time + topic.
+ *
+ * This is a TEMPORARY bridge so the page shows the official session name (and
+ * room) before the uploader writes them into `archiveTitle:`. An `archiveTitle:`
+ * tag, when present, still takes precedence — so once a recording is re-uploaded
+ * with the official name, its entry here becomes dead and can be removed.
+ *
+ * Note: player/4738 (diabetic foot) is intentionally omitted — its content
+ * matches the Fri "Beyond Conventional Care…Diabetic Foot Ulcer" oral session,
+ * but the uploaded publishDate places it on Saturday, so the mapping is
+ * unconfirmed. Add it here once verified.
+ */
+const RECORDING_OVERRIDES: Record<string, RecordingOverride> = {
+    'https://events.diabetes.org/live/player/4948': {
+        title:
+            "Welcome to the 2026 ADA Scientific Sessions: Keynote Address by Jay Bhattacharya, MD, PhD & 'Pathway to Stop Diabetes' Symposium",
+        room: 'Hall F (Level 1)',
+    },
+    'https://events.diabetes.org/live/player/4734': {
+        title: 'Management of Diabetic Retinopathy—Clinical Perspective',
+        room: 'Room 220 (Level 2)',
+    },
+    'https://events.diabetes.org/live/player/4728': {
+        title: 'Top Research Abstracts: Mechanisms of Diabetic Kidney Disease',
+        room: 'Hall E-2 (Level 1)',
+    },
+}
+
+function recordingOverride(parts: AgendaInputLecture[]): RecordingOverride | undefined {
+    for (const p of parts) {
+        const key = p.sourceUrl?.replace(/\/+$/, '')
+        if (key && RECORDING_OVERRIDES[key]) return RECORDING_OVERRIDES[key]
+    }
+    return undefined
+}
+
 /** When no archiveTitle tag exists, derive a session label from the most
  *  descriptive plain tag shared by ALL parts (e.g. "Pathway to Stop
  *  Diabetes"), skipping generic conference/theme tokens. Used for DISPLAY
@@ -314,15 +358,17 @@ export function buildAgenda(lectures: AgendaInputLecture[]): AdaSession[] {
         })
         const talks = parts.map(buildTalk)
         const times = talks.map((t) => t.startTime).filter(Boolean) as string[]
+        const override = recordingOverride(parts)
         sessions.push({
             id,
             title:
                 parts.map((p) => tagValue(p.tags, 'archiveTitle:')).find(Boolean) ??
+                override?.title ??
                 derivedSessionTitle(parts) ??
                 'Archive recording',
             track: parts.map((p) => p.subcategory).find(Boolean) ?? null,
             chair: parts.map((p) => tagValue(p.tags, 'chair:')).find(Boolean) ?? null,
-            room: parts.map((p) => tagValue(p.tags, 'room:')).find(Boolean) ?? null,
+            room: parts.map((p) => tagValue(p.tags, 'room:')).find(Boolean) ?? override?.room ?? null,
             sourceUrl: parts.find((p) => p.sourceUrl)?.sourceUrl ?? null,
             dayKey: parts.map(dayKeyOf).find(Boolean) ?? UNSCHEDULED_DAY,
             startTime: times.length ? times.reduce((a, b) => (Date.parse(a) <= Date.parse(b) ? a : b)) : null,
