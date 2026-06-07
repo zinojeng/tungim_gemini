@@ -7,6 +7,11 @@ RUN npm ci --include=dev
 FROM node:20-alpine AS builder
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
+# node:20 in a constrained build container defaults its V8 heap too low for a
+# Next 16 production build, which aborts the build worker with SIGABRT
+# ("JavaScript heap out of memory"). Raise the heap cap so the build can use
+# the container's available RAM. Build-stage only — does not affect runtime.
+ENV NODE_OPTIONS=--max-old-space-size=4096
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
