@@ -196,7 +196,10 @@ function dayKeyOf(l: AgendaInputLecture): string | null {
 }
 
 function buildTalk(l: AgendaInputLecture): AdaTalk {
-    const chips = displayChips(l.tags)
+    // Drop generic conference/theme tokens ("ADA 2026", "Complications", …) so
+    // the lead chip is a real topic (e.g. "oxidative stress", "DKD") rather
+    // than the conference name. Falls back to the theme short name.
+    const chips = displayChips(l.tags).filter((c) => !isGenericTitleTag(c))
     const theme = getTheme(l.subcategory)
     const primaryTopic = chips[0] ?? theme?.shortName ?? null
     const subtopics = chips.slice(1, 4)
@@ -259,6 +262,14 @@ interface RecordingOverride {
     title: string
     room?: string
     /**
+     * Official session block start/end (ISO, CDT = −05:00) from the program.
+     * The session card shows this as the time range — the true session window,
+     * not "first talk start → last talk start". Without these, the card shows
+     * only the start time (we can't infer a real end from talk start times).
+     */
+    start?: string
+    end?: string
+    /**
      * Hours to shift every part's publishDate by, to correct a wrong upload
      * timestamp (applied for agenda display only — the lecture row is
      * untouched). Uniform across parts, so their order and spacing are
@@ -294,14 +305,20 @@ const RECORDING_OVERRIDES: Record<string, RecordingOverride> = {
         title:
             "Welcome to the 2026 ADA Scientific Sessions: Keynote Address by Jay Bhattacharya, MD, PhD & 'Pathway to Stop Diabetes' Symposium",
         room: 'Hall F (Level 1)',
+        start: '2026-06-05T10:30:00-05:00',
+        end: '2026-06-05T12:30:00-05:00',
     },
     'https://events.diabetes.org/live/player/4734': {
         title: 'Management of Diabetic Retinopathy—Clinical Perspective',
         room: 'Room 220 (Level 2)',
+        start: '2026-06-05T12:45:00-05:00',
+        end: '2026-06-05T13:45:00-05:00',
     },
     'https://events.diabetes.org/live/player/4728': {
         title: 'Top Research Abstracts: Mechanisms of Diabetic Kidney Disease',
         room: 'Hall E-2 (Level 1)',
+        start: '2026-06-05T12:45:00-05:00',
+        end: '2026-06-05T13:45:00-05:00',
     },
     // Diabetic-foot oral session. Content + program (the only foot-ulcer oral
     // session, and Saturday has no oral session at this hour) place it on
@@ -310,6 +327,8 @@ const RECORDING_OVERRIDES: Record<string, RecordingOverride> = {
     'https://events.diabetes.org/live/player/4738': {
         title: 'Beyond Conventional Care: Regenerative Medicine and Smart Dressings for Diabetic Foot Ulcer',
         room: 'Room 217 (Level 2)',
+        start: '2026-06-05T12:45:00-05:00',
+        end: '2026-06-05T13:45:00-05:00',
         shiftHours: -20,
     },
 }
@@ -400,8 +419,16 @@ export function buildAgenda(lectures: AgendaInputLecture[]): AdaSession[] {
             room: parts.map((p) => tagValue(p.tags, 'room:')).find(Boolean) ?? override?.room ?? null,
             sourceUrl: parts.find((p) => p.sourceUrl)?.sourceUrl ?? null,
             dayKey: eff.map(dayKeyOf).find(Boolean) ?? UNSCHEDULED_DAY,
-            startTime: times.length ? times.reduce((a, b) => (Date.parse(a) <= Date.parse(b) ? a : b)) : null,
-            endTime: times.length ? times.reduce((a, b) => (Date.parse(a) >= Date.parse(b) ? a : b)) : null,
+            // Prefer the official program window. Without it, fall back to the
+            // earliest talk start for ordering, but leave endTime null — the
+            // last talk's *start* is not the session end, so the card shows
+            // just the start time rather than a misleading range.
+            startTime: override?.start
+                ? new Date(override.start).toISOString()
+                : times.length
+                    ? times.reduce((a, b) => (Date.parse(a) <= Date.parse(b) ? a : b))
+                    : null,
+            endTime: override?.end ? new Date(override.end).toISOString() : null,
             talks,
             hasArchive: talks.some((t) => t.hasArchive),
             hasHandouts: talks.some((t) => t.hasHandouts),

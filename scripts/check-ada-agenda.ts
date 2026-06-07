@@ -130,6 +130,15 @@ check(
     recording?.title === 'Pathway to Stop Diabetes',
     `got "${recording?.title}"`,
 )
+check(
+    'non-override session shows only a start time (endTime null)',
+    recording?.endTime === null,
+    `got "${recording?.endTime}"`,
+)
+check(
+    'talk primaryTopic is never the generic "ADA 2026" tag',
+    Boolean(recording?.talks.every((t) => t.primaryTopic !== 'ADA 2026')),
+)
 
 const overridden = sessions.find((s) => s.id === 'rec:player-4948')
 check(
@@ -152,6 +161,11 @@ check(
     '4738 official title + room',
     foot4738?.title === 'Beyond Conventional Care: Regenerative Medicine and Smart Dressings for Diabetic Foot Ulcer' &&
         foot4738?.room === 'Room 217 (Level 2)',
+)
+check(
+    '4738 uses the official program window (12:45–13:45 CDT)',
+    foot4738?.startTime === '2026-06-05T17:45:00.000Z' && foot4738?.endTime === '2026-06-05T18:45:00.000Z',
+    `got ${foot4738?.startTime}–${foot4738?.endTime}`,
 )
 check(
     'unique-recording talk stays solo',

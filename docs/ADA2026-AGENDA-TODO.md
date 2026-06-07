@@ -12,11 +12,18 @@ left for the next pass. None are blocking; the MVP is considered passed.
   `archiveGroup:` tag when present, else by the shared recording `sourceUrl`
   (`/player/<n>`). The portal landing page `/live/32/page/330` is excluded so
   unrelated solos never merge. Talks order by `part:` then `startTime`.
-- **Session names + rooms** currently come from `RECORDING_OVERRIDES` in
-  `lib/ada2026-agenda.ts` — a **temporary bridge** matched against the official
-  program (`docs/SS26_Program_Digital_051326.pdf`). An `archiveTitle:` tag, when
-  present, takes precedence, so each override entry becomes dead once the
-  uploader writes the official name in.
+- **Session names, rooms, and the time window** currently come from
+  `RECORDING_OVERRIDES` in `lib/ada2026-agenda.ts` — a **temporary bridge**
+  matched against the official program (`docs/SS26_Program_Digital_051326.pdf`).
+  An `archiveTitle:` tag, when present, takes precedence, so each override entry
+  becomes dead once the uploader writes the official name in.
+- **Session time window**: the card shows the official program block (e.g.
+  12:45–13:45 CDT) from the override `start`/`end`. For a recording WITHOUT an
+  override, `endTime` is left null and the card shows only the start time — the
+  last talk's *start* is not the session end, so we don't fabricate a range.
+- **Talk lead chip** (`primaryTopic`) filters out generic tokens ("ADA 2026",
+  theme names) so it surfaces a real topic; it falls back to the theme short
+  name when a talk has no topic tag.
 - **Regression guard**: `npm run check:ada` (`scripts/check-ada-agenda.ts`).
 - Key files: `lib/ada2026-agenda.ts`, `components/ada2026/Ada2026Agenda.tsx`,
   `components/ada2026/Ada2026SessionCard.tsx`, `app/ada2026/page.tsx`,
@@ -61,8 +68,16 @@ shift assertion) and `RECORDING_OVERRIDES`.
   talk rows show no speaker line (the takeaway preview sometimes leaks a
   "講者: …" line, which is incidental). Add `speaker:<name>` per talk for a
   proper speaker line. This is more reliable than parsing the body.
+- `topic:` — add a real topic per talk (e.g. `topic:VEGF therapy`,
+  `topic:topical insulin dressings`) so the lead chip is descriptive instead of
+  falling back to the theme name.
 - Optionally backfill `archiveGroup:` + `part:` so grouping no longer depends
   on the `sourceUrl` fallback at all.
+
+When a future recording has no `RECORDING_OVERRIDES` entry, the card shows only
+the session start time (no end). To show a real window, either add an override
+`start`/`end` from the program, or give the uploader a way to record the
+session block end.
 
 ### 3. Minor UI polish
 
