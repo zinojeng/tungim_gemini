@@ -1,10 +1,11 @@
 import { db } from '@/lib/db'
-import { lectures, summaries, transcripts } from '@/db/schema'
-import { eq, desc, and } from 'drizzle-orm'
+import { lectures, summaries, transcripts, slides } from '@/db/schema'
+import { eq, desc, and, sql } from 'drizzle-orm'
 import type { Metadata } from 'next'
 import { CalendarDays, MapPin, Sparkles, PlayCircle } from 'lucide-react'
 import { ADA_2026_META, ADA_2026_THEMES } from '@/lib/ada2026-themes'
-import { Ada2026Board, type Ada2026Lecture } from '@/components/ada2026/Ada2026Board'
+import { buildAgenda } from '@/lib/ada2026-agenda'
+import { Ada2026Agenda, type Ada2026AgendaLecture } from '@/components/ada2026/Ada2026Agenda'
 
 const SITE_URL = 'https://mednote.zeabur.app'
 
@@ -58,7 +59,21 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-async function getAdaLectures(): Promise<Ada2026Lecture[]> {
+interface MergedRow {
+    id: string
+    title: string
+    sourceUrl: string | null
+    subcategory: string | null
+    tags: string[] | null
+    pdfUrl: string | null
+    publishDate: Date | null
+    executiveSummary: string | null
+    fullMarkdownContent: string | null
+    keyTakeaways: unknown
+    transcriptContent: string | null
+}
+
+async function getAdaLectures(): Promise<Ada2026AgendaLecture[]> {
     try {
         // LEFT JOIN summaries + transcripts so we can index their text in the
         // client-side search blob. Both tables may have >1 row per lecture
@@ -69,16 +84,10 @@ async function getAdaLectures(): Promise<Ada2026Lecture[]> {
                 id: lectures.id,
                 title: lectures.title,
                 sourceUrl: lectures.sourceUrl,
-                videoFileUrl: lectures.videoFileUrl,
-                audioFileUrl: lectures.audioFileUrl,
-                provider: lectures.provider,
-                category: lectures.category,
                 subcategory: lectures.subcategory,
                 tags: lectures.tags,
-                coverImage: lectures.coverImage,
+                pdfUrl: lectures.pdfUrl,
                 publishDate: lectures.publishDate,
-                status: lectures.status,
-                isPublished: lectures.isPublished,
                 executiveSummary: summaries.executiveSummary,
                 fullMarkdownContent: summaries.fullMarkdownContent,
                 keyTakeaways: summaries.keyTakeaways,
@@ -95,15 +104,33 @@ async function getAdaLectures(): Promise<Ada2026Lecture[]> {
             )
             .orderBy(desc(lectures.publishDate))
 
+        // Slide counts per ADA lecture — drives the "Handouts" badge. Kept as
+        // a separate grouped query so it doesn't multiply the join above.
+        const slideRows = await db
+            .select({ lectureId: slides.lectureId, count: sql<number>`count(*)` })
+            .from(slides)
+            .innerJoin(lectures, eq(slides.lectureId, lectures.id))
+            .where(
+                and(
+                    eq(lectures.isPublished, true),
+                    eq(lectures.category, 'ADA2026'),
+                ),
+            )
+            .groupBy(slides.lectureId)
+        const slideCounts = new Map<string, number>()
+        for (const r of slideRows) {
+            if (r.lectureId) slideCounts.set(r.lectureId, Number(r.count) || 0)
+        }
+
         // Collapse duplicates from the join. Both joined tables can have many
         // rows per lecture, so a 2-summary x 3-transcript lecture returns 6
         // rows. Keep all distinct searchable content instead of only the first
         // non-null value encountered.
-        const byId = new Map<string, Ada2026Lecture>()
+        const byId = new Map<string, MergedRow>()
         for (const r of rows) {
             const prev = byId.get(r.id)
             if (!prev) {
-                byId.set(r.id, r as Ada2026Lecture)
+                byId.set(r.id, r as MergedRow)
                 continue
             }
             byId.set(r.id, {
@@ -114,7 +141,21 @@ async function getAdaLectures(): Promise<Ada2026Lecture[]> {
                 transcriptContent: appendDistinctText(prev.transcriptContent, r.transcriptContent),
             })
         }
-        return [...byId.values()]
+
+        return [...byId.values()].map((r) => ({
+            id: r.id,
+            title: r.title,
+            subcategory: r.subcategory,
+            sourceUrl: r.sourceUrl,
+            tags: r.tags,
+            publishDate: r.publishDate ? r.publishDate.toISOString() : null,
+            slideCount: slideCounts.get(r.id) ?? 0,
+            pdfUrl: r.pdfUrl,
+            keyTakeaways: r.keyTakeaways,
+            executiveSummary: r.executiveSummary,
+            fullMarkdownContent: r.fullMarkdownContent,
+            transcriptContent: r.transcriptContent,
+        }))
     } catch (error) {
         console.error('Error fetching ADA 2026 lectures:', error)
         return []
@@ -124,13 +165,18 @@ async function getAdaLectures(): Promise<Ada2026Lecture[]> {
 export default async function Ada2026Page() {
     const adaLectures = await getAdaLectures()
     const archiveCount = adaLectures.filter((l) => Boolean(l.sourceUrl)).length
+    const sessionCount = buildAgenda(adaLectures).length
 
     return (
         <div className="container py-8 md:py-10 max-w-6xl space-y-8">
-            <Ada2026Hero talksIndexed={adaLectures.length} archiveCount={archiveCount} />
+            <Ada2026Hero
+                sessionCount={sessionCount}
+                talksIndexed={adaLectures.length}
+                archiveCount={archiveCount}
+            />
 
             <section id="talks" className="space-y-6">
-                <Ada2026Board lectures={adaLectures} />
+                <Ada2026Agenda lectures={adaLectures} />
             </section>
 
             <footer className="pt-6 mt-12 border-t text-xs text-foreground/50">
@@ -152,9 +198,11 @@ export default async function Ada2026Page() {
 }
 
 function Ada2026Hero({
+    sessionCount,
     talksIndexed,
     archiveCount,
 }: {
+    sessionCount: number
     talksIndexed: number
     archiveCount: number
 }) {
@@ -203,16 +251,16 @@ function Ada2026Hero({
                 </div>
 
                 <p className="mt-6 max-w-3xl text-foreground/75 leading-relaxed">
-                    本頁是{' '}
-                    <strong className="text-foreground/90">策展型 archive 重點整理</strong>
-                    ：只收錄具有 on-demand 錄影回播的演講，附逐字稿、投影片重點與我整理的摘要。並非完整議程。
+                    本頁以{' '}
+                    <strong className="text-foreground/90">議程（Agenda）視圖</strong>
+                    呈現：依 session 分組，每個 session 下列出各場 talk 的講者、主題與重點預覽。只收錄具有 on-demand 錄影回播的場次，附逐字稿、投影片與摘要。
                 </p>
                 <p className="mt-2 max-w-3xl text-sm text-foreground/60">
                     註：與導覽列「2026 ADA」（學會年度治療指引）為不同頁面——此處專注於 ADA 2026 大會現場演講。
                 </p>
 
                 <div className="mt-8 grid grid-cols-3 gap-3 max-w-2xl">
-                    <StatTile label="Themes" value={ADA_2026_THEMES.length} />
+                    <StatTile label="Sessions" value={sessionCount} />
                     <StatTile label="Talks indexed" value={talksIndexed} />
                     <StatTile label="With archive" value={archiveCount} />
                 </div>
@@ -222,7 +270,7 @@ function Ada2026Hero({
                         href="#talks"
                         className="inline-flex items-center rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium hover:opacity-90 transition"
                     >
-                        瀏覽演講重點
+                        瀏覽議程
                     </a>
                     <a
                         href={ADA_2026_META.archiveUrl}
