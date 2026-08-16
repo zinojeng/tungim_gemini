@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import rehypeKatex from "rehype-katex"
 import rehypeRaw from "rehype-raw"
@@ -10,11 +10,15 @@ import remarkMath from "remark-math"
 import {
     ArrowLeft,
     BookOpenText,
+    ChevronLeft,
+    ChevronRight,
     Download,
     ExternalLink,
     FileText,
     Images,
+    Maximize2,
     ShieldCheck,
+    X,
 } from "lucide-react"
 import { ENDO_2026_OFFICIAL_URL, type EndoArticle } from "@/lib/endo2026"
 
@@ -27,6 +31,129 @@ interface Endo2026ArticleProps {
 
 type ArticleTab = "note" | "transcript" | "slides"
 
+function getSlideTimestamp(slide: string) {
+    const match = slide.match(/_(\d{2}-\d{2})_h\d+/)
+    return match?.[1].replace("-", ":") ?? ""
+}
+
+interface SlideNavigatorProps {
+    article: EndoArticle
+    slides: string[]
+    selectedIndex: number
+    onSelect: (index: number) => void
+    onOpen: () => void
+    layout: "inline" | "sidebar"
+}
+
+function SlideNavigator({
+    article,
+    slides,
+    selectedIndex,
+    onSelect,
+    onOpen,
+    layout,
+}: SlideNavigatorProps) {
+    const currentSlide = slides[selectedIndex]
+    const previous = () => onSelect((selectedIndex - 1 + slides.length) % slides.length)
+    const next = () => onSelect((selectedIndex + 1) % slides.length)
+
+    return (
+        <section
+            aria-label="投影片對照"
+            className="overflow-hidden rounded-3xl border border-white/10 bg-[#0b1e2d] shadow-2xl shadow-black/20"
+        >
+            <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+                <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.22em] text-teal-300">Slide companion</p>
+                    <h2 className="mt-1 text-sm font-black text-white">投影片同步對照</h2>
+                </div>
+                <span className="rounded-full bg-white/[0.07] px-2.5 py-1 text-xs font-semibold text-slate-300">
+                    {selectedIndex + 1} / {slides.length}
+                </span>
+            </div>
+
+            <button
+                type="button"
+                onClick={onOpen}
+                className="group relative block w-full bg-black/25"
+                aria-label={`放大檢視第 ${selectedIndex + 1} 張投影片`}
+            >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                    src={currentSlide}
+                    alt={`${article.code} slide ${selectedIndex + 1}`}
+                    className="aspect-video w-full object-contain"
+                />
+                <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-slate-950/75 px-2.5 py-1.5 text-[11px] font-semibold text-white opacity-0 backdrop-blur transition group-hover:opacity-100 group-focus-visible:opacity-100">
+                    <Maximize2 className="h-3.5 w-3.5" /> 放大
+                </span>
+            </button>
+
+            <div className="flex items-center justify-between border-y border-white/10 px-3 py-2.5">
+                <button
+                    type="button"
+                    onClick={previous}
+                    className="rounded-full border border-white/10 p-2 text-slate-300 transition hover:bg-white/10 hover:text-white"
+                    aria-label="上一張投影片"
+                >
+                    <ChevronLeft className="h-4 w-4" />
+                </button>
+                <div className="text-center">
+                    <p className="text-xs font-bold text-slate-200">Slide {String(selectedIndex + 1).padStart(2, "0")}</p>
+                    {getSlideTimestamp(currentSlide) ? (
+                        <p className="mt-0.5 font-mono text-[10px] text-slate-500">{getSlideTimestamp(currentSlide)}</p>
+                    ) : null}
+                </div>
+                <button
+                    type="button"
+                    onClick={next}
+                    className="rounded-full border border-white/10 p-2 text-slate-300 transition hover:bg-white/10 hover:text-white"
+                    aria-label="下一張投影片"
+                >
+                    <ChevronRight className="h-4 w-4" />
+                </button>
+            </div>
+
+            <div
+                className={
+                    layout === "sidebar"
+                        ? "grid max-h-[38vh] grid-cols-3 gap-2 overflow-y-auto p-3"
+                        : "flex snap-x gap-2 overflow-x-auto p-3"
+                }
+                aria-label="投影片縮圖"
+            >
+                {slides.map((slide, index) => (
+                    <button
+                        key={slide}
+                        type="button"
+                        onClick={() => onSelect(index)}
+                        className={`relative shrink-0 overflow-hidden rounded-lg border-2 transition ${
+                            layout === "inline" ? "w-28 snap-start" : "w-full"
+                        } ${
+                            selectedIndex === index
+                                ? "border-teal-300 ring-2 ring-teal-300/20"
+                                : "border-transparent opacity-60 hover:opacity-100"
+                        }`}
+                        aria-label={`檢視第 ${index + 1} 張投影片`}
+                        aria-current={selectedIndex === index ? "true" : undefined}
+                    >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src={slide}
+                            alt=""
+                            className="aspect-video w-full bg-black/20 object-cover"
+                            loading="lazy"
+                        />
+                        <span className="absolute bottom-1 left-1 rounded bg-slate-950/75 px-1.5 py-0.5 text-[9px] font-bold text-white">
+                            {index + 1}
+                        </span>
+                    </button>
+                ))}
+            </div>
+        </section>
+    )
+}
+
 export function Endo2026ArticleView({
     article,
     primaryContent,
@@ -34,13 +161,38 @@ export function Endo2026ArticleView({
     slides,
 }: Endo2026ArticleProps) {
     const [activeTab, setActiveTab] = useState<ArticleTab>("note")
+    const [selectedSlide, setSelectedSlide] = useState(0)
+    const [lightboxOpen, setLightboxOpen] = useState(false)
+
+    useEffect(() => {
+        if (!lightboxOpen) return
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") setLightboxOpen(false)
+            if (event.key === "ArrowLeft") {
+                setSelectedSlide((current) => (current - 1 + slides.length) % slides.length)
+            }
+            if (event.key === "ArrowRight") {
+                setSelectedSlide((current) => (current + 1) % slides.length)
+            }
+        }
+
+        const previousOverflow = document.body.style.overflow
+        document.body.style.overflow = "hidden"
+        window.addEventListener("keydown", handleKeyDown)
+
+        return () => {
+            document.body.style.overflow = previousOverflow
+            window.removeEventListener("keydown", handleKeyDown)
+        }
+    }, [lightboxOpen, slides.length])
 
     const tabs: { id: ArticleTab; label: string; count?: number; icon: typeof FileText }[] = [
         { id: "note", label: article.status === "source-review" ? "投影片重點" : "繁中整合筆記", icon: BookOpenText },
     ]
 
     if (transcriptContent) tabs.push({ id: "transcript", label: "校訂英文逐字稿", icon: FileText })
-    if (slides.length > 0) tabs.push({ id: "slides", label: "投影片圖庫", count: slides.length, icon: Images })
+    if (slides.length > 0) tabs.push({ id: "slides", label: "全部投影片", count: slides.length, icon: Images })
 
     return (
         <div className="min-h-screen bg-[#06131f] text-slate-100">
@@ -80,8 +232,14 @@ export function Endo2026ArticleView({
                 </div>
             </header>
 
-            <main className="container max-w-6xl py-10 md:py-14">
-                <div className="grid gap-8 lg:grid-cols-[230px_minmax(0,1fr)]">
+            <main className="container max-w-[1520px] py-10 md:py-14">
+                <div
+                    className={
+                        slides.length > 0
+                            ? "grid gap-8 lg:grid-cols-[210px_minmax(0,1fr)] xl:grid-cols-[210px_minmax(0,1fr)_360px]"
+                            : "grid gap-8 lg:grid-cols-[230px_minmax(0,1fr)]"
+                    }
+                >
                     <aside className="lg:sticky lg:top-20 lg:self-start">
                         <nav aria-label="文章內容" className="space-y-2">
                             {tabs.map((tab) => {
@@ -128,6 +286,19 @@ export function Endo2026ArticleView({
                     </aside>
 
                     <div className="min-w-0">
+                        {slides.length > 0 && activeTab !== "slides" ? (
+                            <div className="mb-6 xl:hidden">
+                                <SlideNavigator
+                                    article={article}
+                                    slides={slides}
+                                    selectedIndex={selectedSlide}
+                                    onSelect={setSelectedSlide}
+                                    onOpen={() => setLightboxOpen(true)}
+                                    layout="inline"
+                                />
+                            </div>
+                        ) : null}
+
                         {article.status === "source-review" ? (
                             <div className="mb-6 rounded-2xl border border-sky-200/15 bg-sky-200/[0.06] p-4 text-sm leading-6 text-sky-50/80">
                                 本篇只根據投影片圖像與 OCR 建立，未使用音訊內容；所有臨床數據與圖表均保留來源限制，正式引用前請回查原始研究。
@@ -170,24 +341,103 @@ export function Endo2026ArticleView({
                                 </div>
                                 {slides.map((slide, index) => (
                                     <figure key={slide} className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.035]">
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img
-                                            src={slide}
-                                            alt={`${article.code} slide ${index + 1}`}
-                                            className="aspect-video w-full bg-black/20 object-contain"
-                                            loading="lazy"
-                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setSelectedSlide(index)
+                                                setLightboxOpen(true)
+                                            }}
+                                            className="group relative block w-full"
+                                            aria-label={`放大檢視第 ${index + 1} 張投影片`}
+                                        >
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src={slide}
+                                                alt={`${article.code} slide ${index + 1}`}
+                                                className="aspect-video w-full bg-black/20 object-contain"
+                                                loading="lazy"
+                                            />
+                                            <span className="absolute right-4 top-4 inline-flex items-center gap-2 rounded-full bg-slate-950/75 px-3 py-2 text-xs font-semibold text-white opacity-0 backdrop-blur transition group-hover:opacity-100 group-focus-visible:opacity-100">
+                                                <Maximize2 className="h-4 w-4" /> 放大檢視
+                                            </span>
+                                        </button>
                                         <figcaption className="flex items-center justify-between px-4 py-3 text-xs text-slate-500">
                                             <span className="font-semibold text-slate-300">Slide {String(index + 1).padStart(2, "0")}</span>
-                                            <span className="font-mono">{slide.split("_").slice(2, 3)[0]?.replace("-", ":")}</span>
+                                            <span className="font-mono">{getSlideTimestamp(slide)}</span>
                                         </figcaption>
                                     </figure>
                                 ))}
                             </div>
                         ) : null}
                     </div>
+
+                    {slides.length > 0 && activeTab !== "slides" ? (
+                        <aside className="hidden xl:block xl:sticky xl:top-20 xl:self-start">
+                            <SlideNavigator
+                                article={article}
+                                slides={slides}
+                                selectedIndex={selectedSlide}
+                                onSelect={setSelectedSlide}
+                                onOpen={() => setLightboxOpen(true)}
+                                layout="sidebar"
+                            />
+                        </aside>
+                    ) : null}
                 </div>
             </main>
+
+            {lightboxOpen && slides[selectedSlide] ? (
+                <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="投影片放大檢視"
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/95 p-4 backdrop-blur-sm md:p-10"
+                    onClick={() => setLightboxOpen(false)}
+                >
+                    <button
+                        type="button"
+                        onClick={() => setLightboxOpen(false)}
+                        className="absolute right-4 top-4 rounded-full border border-white/15 bg-white/10 p-3 text-white transition hover:bg-white/20 md:right-8 md:top-8"
+                        aria-label="關閉投影片放大檢視"
+                    >
+                        <X className="h-5 w-5" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={(event) => {
+                            event.stopPropagation()
+                            setSelectedSlide((current) => (current - 1 + slides.length) % slides.length)
+                        }}
+                        className="absolute left-3 rounded-full border border-white/15 bg-white/10 p-3 text-white transition hover:bg-white/20 md:left-8"
+                        aria-label="上一張投影片"
+                    >
+                        <ChevronLeft className="h-6 w-6" />
+                    </button>
+                    <figure className="max-h-full max-w-6xl" onClick={(event) => event.stopPropagation()}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src={slides[selectedSlide]}
+                            alt={`${article.code} slide ${selectedSlide + 1}`}
+                            className="max-h-[82vh] max-w-full rounded-xl object-contain shadow-2xl shadow-black/60"
+                        />
+                        <figcaption className="mt-4 text-center text-sm font-semibold text-slate-300">
+                            Slide {String(selectedSlide + 1).padStart(2, "0")} / {slides.length}
+                            {getSlideTimestamp(slides[selectedSlide]) ? ` · ${getSlideTimestamp(slides[selectedSlide])}` : ""}
+                        </figcaption>
+                    </figure>
+                    <button
+                        type="button"
+                        onClick={(event) => {
+                            event.stopPropagation()
+                            setSelectedSlide((current) => (current + 1) % slides.length)
+                        }}
+                        className="absolute right-3 rounded-full border border-white/15 bg-white/10 p-3 text-white transition hover:bg-white/20 md:right-8"
+                        aria-label="下一張投影片"
+                    >
+                        <ChevronRight className="h-6 w-6" />
+                    </button>
+                </div>
+            ) : null}
         </div>
     )
 }

@@ -62,11 +62,11 @@ export default async function Endo2026ArticlePage({ params }: PageProps) {
         ? readPublicText(article.transcriptPath)
         : undefined
 
-    const slides = article.hasSlides
-        ? readdirSync(join(process.cwd(), "public", "endo2026", "media", "mtp26-slides"))
+    const slides = article.slidesDirectory
+        ? readdirSync(join(process.cwd(), "public", "endo2026", "media", article.slidesDirectory))
             .filter((file) => file.endsWith(".jpg"))
             .sort()
-            .map((file) => `/endo2026/media/mtp26-slides/${file}`)
+            .map((file) => `/endo2026/media/${article.slidesDirectory}/${file}`)
         : []
 
     return (

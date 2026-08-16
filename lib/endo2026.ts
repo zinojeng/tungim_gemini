@@ -31,7 +31,7 @@ export interface EndoArticle {
     statusLabel: string
     primaryContentPath?: string
     transcriptPath?: string
-    hasSlides?: boolean
+    slidesDirectory?: string
     publishedAt?: string
 }
 
@@ -204,7 +204,7 @@ export const ENDO_2026_ARTICLES: EndoArticle[] = [
         statusLabel: "完整繁中筆記",
         primaryContentPath: "/endo2026/content/mtp37-note-zh-tw.md",
         transcriptPath: "/endo2026/content/mtp37-transcript-en.md",
-        hasSlides: false,
+        slidesDirectory: "mtp37-slides",
         publishedAt: "2026-08-16",
     },
     {
@@ -218,7 +218,7 @@ export const ENDO_2026_ARTICLES: EndoArticle[] = [
         status: "source-review",
         statusLabel: "投影片重點整理",
         primaryContentPath: "/endo2026/content/mtp26-slides-zh-tw.md",
-        hasSlides: true,
+        slidesDirectory: "mtp26-slides",
         publishedAt: "2026-08-16",
     },
     {
@@ -231,7 +231,6 @@ export const ENDO_2026_ARTICLES: EndoArticle[] = [
         coverImage: "/endo2026/media/mtp39-cover.jpg",
         status: "in-production",
         statusLabel: "整合稿製作中",
-        hasSlides: false,
     },
 ]
 
