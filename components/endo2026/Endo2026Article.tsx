@@ -1,8 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
-import ReactMarkdown from "react-markdown"
+import { useEffect, useMemo, useRef, useState } from "react"
+import ReactMarkdown, { type Components } from "react-markdown"
 import rehypeKatex from "rehype-katex"
 import rehypeRaw from "rehype-raw"
 import remarkGfm from "remark-gfm"
@@ -21,6 +21,12 @@ import {
     X,
 } from "lucide-react"
 import { ENDO_2026_OFFICIAL_URL, type EndoArticle } from "@/lib/endo2026"
+import {
+    decorateEndoSlideReferences,
+    findEndoSlideIndex,
+    parseEndoSlideReference,
+    type EndoSlideReference,
+} from "@/lib/endo2026-slide-references"
 
 interface Endo2026ArticleProps {
     article: EndoArticle
@@ -68,6 +74,7 @@ function SlideNavigator({
     layout,
 }: SlideNavigatorProps) {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+    const selectedThumbnailRef = useRef<HTMLButtonElement>(null)
     const currentSlide = slides[selectedIndex]
     const currentIdentity = getSlideIdentity(currentSlide, selectedIndex)
     const previewIndex = hoveredIndex ?? selectedIndex
@@ -75,6 +82,14 @@ function SlideNavigator({
     const previewIdentity = getSlideIdentity(previewSlide, previewIndex)
     const previous = () => onSelect((selectedIndex - 1 + slides.length) % slides.length)
     const next = () => onSelect((selectedIndex + 1) % slides.length)
+
+    useEffect(() => {
+        selectedThumbnailRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "nearest",
+        })
+    }, [selectedIndex])
 
     return (
         <section
@@ -126,7 +141,7 @@ function SlideNavigator({
                 >
                     <ChevronLeft className="h-4 w-4" />
                 </button>
-                <div className="text-center">
+                <div className="text-center" aria-live="polite">
                     <p className="text-xs font-bold text-slate-200">{currentIdentity.label}</p>
                     {getSlideTimestamp(currentSlide) ? (
                         <p className="mt-0.5 font-mono text-[10px] text-slate-500">{getSlideTimestamp(currentSlide)}</p>
@@ -153,6 +168,7 @@ function SlideNavigator({
                 {slides.map((slide, index) => (
                     <button
                         key={slide}
+                        ref={selectedIndex === index ? selectedThumbnailRef : undefined}
                         type="button"
                         onClick={() => onSelect(index)}
                         onMouseEnter={() => layout === "sidebar" && setHoveredIndex(index)}
@@ -219,6 +235,10 @@ export function Endo2026ArticleView({
     const [activeTab, setActiveTab] = useState<ArticleTab>("note")
     const [selectedSlide, setSelectedSlide] = useState(0)
     const [lightboxOpen, setLightboxOpen] = useState(false)
+    const linkedPrimaryContent = useMemo(
+        () => decorateEndoSlideReferences(primaryContent, article.code),
+        [article.code, primaryContent],
+    )
 
     useEffect(() => {
         if (!lightboxOpen) return
@@ -249,6 +269,41 @@ export function Endo2026ArticleView({
 
     if (transcriptContent) tabs.push({ id: "transcript", label: "校訂英文逐字稿", icon: FileText })
     if (slides.length > 0) tabs.push({ id: "slides", label: "全部投影片", count: slides.length, icon: Images })
+
+    const openSlideReference = (reference: EndoSlideReference) => {
+        const index = findEndoSlideIndex(slides, reference)
+        if (index < 0) return
+
+        setSelectedSlide(index)
+
+        if (!window.matchMedia("(min-width: 1280px)").matches) {
+            setLightboxOpen(true)
+        }
+    }
+
+    const markdownComponents: Components = {
+        a: ({ href, children, title }) => {
+            const reference = parseEndoSlideReference(href)
+            if (reference && findEndoSlideIndex(slides, reference) >= 0) {
+                return (
+                    <button
+                        type="button"
+                        onClick={() => openSlideReference(reference)}
+                        className="not-prose my-1 inline-flex items-center gap-1.5 rounded-full border border-teal-700/20 bg-teal-50 px-2.5 py-1 text-xs font-bold text-teal-800 no-underline transition hover:border-teal-700/40 hover:bg-teal-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
+                        aria-label={`${String(children)}，切換右側對照投影片`}
+                    >
+                        <Images className="h-3.5 w-3.5" /> {children}
+                    </button>
+                )
+            }
+
+            return (
+                <a href={href} title={title}>
+                    {children}
+                </a>
+            )
+        },
+    }
 
     return (
         <div className="min-h-screen bg-[#06131f] text-slate-100">
@@ -378,10 +433,11 @@ export function Endo2026ArticleView({
                             <article className="rounded-3xl bg-white px-5 py-8 text-slate-900 shadow-2xl shadow-black/20 sm:px-9 md:px-12 md:py-12">
                                 <div className="prose prose-slate max-w-none prose-headings:scroll-mt-24 prose-headings:font-black prose-headings:tracking-tight prose-h1:text-3xl prose-h2:border-b prose-h2:border-slate-200 prose-h2:pb-3 prose-h2:text-2xl prose-h3:text-xl prose-p:leading-8 prose-li:leading-7 prose-a:text-teal-700 prose-table:text-sm prose-th:bg-slate-100 prose-th:p-3 prose-td:p-3">
                                     <ReactMarkdown
+                                        components={markdownComponents}
                                         rehypePlugins={[rehypeRaw, [rehypeKatex, { strict: false }]]}
                                         remarkPlugins={[remarkGfm, remarkMath]}
                                     >
-                                        {primaryContent}
+                                        {linkedPrimaryContent}
                                     </ReactMarkdown>
                                 </div>
                             </article>
