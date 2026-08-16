@@ -64,7 +64,11 @@ export default async function Endo2026ArticlePage({ params }: PageProps) {
 
     const slides = article.slidesDirectory
         ? readdirSync(join(process.cwd(), "public", "endo2026", "media", article.slidesDirectory))
-            .filter((file) => file.endsWith(".jpg"))
+            .filter((file) => {
+                if (!file.endsWith(".jpg")) return false
+                if (!article.slideTalk) return true
+                return file.startsWith(`talk${String(article.slideTalk).padStart(2, "0")}_`)
+            })
             .sort()
             .map((file) => `/endo2026/media/${article.slidesDirectory}/${file}`)
         : []

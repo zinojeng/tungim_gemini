@@ -32,6 +32,7 @@ export interface EndoArticle {
     primaryContentPath?: string
     transcriptPath?: string
     slidesDirectory?: string
+    slideTalk?: number
     publishedAt?: string
 }
 
@@ -238,15 +239,31 @@ export const ENDO_2026_ARTICLES: EndoArticle[] = [
     {
         slug: "orf05-adrenal-tumors-long-term-outcomes",
         code: "ORF05",
-        title: "Adrenal Tumors and Long-Term Outcomes",
-        titleZh: "腎上腺腫瘤與長期預後",
-        speaker: "Marta Araujo-Castro · Vania Balderrama-Brondani",
-        summary: "兩段完整短講：Osilodrostat 治療腎上腺庫欣氏症候群的國際真實世界資料，以及轉移性腎上腺皮質癌長期存活者的多模態治療經驗。",
+        title: "International Real-World Study on Osilodrostat Efficacy and Safety in Adrenal Cushing Syndrome",
+        titleZh: "國際真實世界研究：Osilodrostat 在腎上腺庫欣氏症候群的療效與安全性",
+        speaker: "Marta Araujo-Castro",
+        summary: "國際真實世界研究解析 Osilodrostat 在 ACTH 非依賴型腎上腺庫欣氏症候群的療效、治療模式、心代謝影響與安全性。",
         coverImage: "/endo2026/media/orf05-slides/talk01_slide_001_00-02_h720w1280.jpg",
         status: "published",
-        statusLabel: "2 段完整繁中筆記",
-        primaryContentPath: "/endo2026/content/orf05-note-zh-tw.md",
+        statusLabel: "完整繁中筆記",
+        primaryContentPath: "/endo2026/content/orf05-osilodrostat-note-zh-tw.md",
         slidesDirectory: "orf05-slides",
+        slideTalk: 1,
+        publishedAt: "2026-08-16",
+    },
+    {
+        slug: "orf05-metastatic-acc-long-term-survival",
+        code: "ORF05",
+        title: "Extended Survival in Metastatic Adrenocortical Carcinoma: Experience from a Tertiary Cancer Center",
+        titleZh: "轉移性腎上腺皮質癌之長期存活分析：單一三級癌症中心經驗",
+        speaker: "Vania Balderrama-Brondani",
+        summary: "聚焦轉移性腎上腺皮質癌診斷後存活超過 10 年患者，整理其臨床特徵、多模態治療歷程與長期存活線索。",
+        coverImage: "/endo2026/media/orf05-slides/talk02_slide_001_00-02_h720w1280.jpg",
+        status: "published",
+        statusLabel: "完整繁中筆記",
+        primaryContentPath: "/endo2026/content/orf05-metastatic-acc-note-zh-tw.md",
+        slidesDirectory: "orf05-slides",
+        slideTalk: 2,
         publishedAt: "2026-08-16",
     },
     {

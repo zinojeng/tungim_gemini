@@ -134,8 +134,8 @@ function getHeadingReference(code: string, talk: number | undefined, heading: st
         : undefined
 }
 
-export function decorateEndoSlideReferences(markdown: string, code: string) {
-    let currentTalk: number | undefined = code.startsWith("ORF") ? 0 : undefined
+export function decorateEndoSlideReferences(markdown: string, code: string, fixedTalk?: number) {
+    let currentTalk: number | undefined = code.startsWith("ORF") ? (fixedTalk ?? 0) : undefined
 
     return markdown
         .split("\n")
@@ -146,7 +146,7 @@ export function decorateEndoSlideReferences(markdown: string, code: string) {
                 const level = headingMatch[1].length
                 const heading = headingMatch[2].replace(/[*_`]/g, "").trim()
 
-                if (code.startsWith("ORF") && level === 2) {
+                if (code.startsWith("ORF") && fixedTalk === undefined && level === 2) {
                     currentTalk = (currentTalk ?? 0) + 1
                 }
 

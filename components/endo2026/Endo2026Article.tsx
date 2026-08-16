@@ -236,8 +236,8 @@ export function Endo2026ArticleView({
     const [selectedSlide, setSelectedSlide] = useState(0)
     const [lightboxOpen, setLightboxOpen] = useState(false)
     const linkedPrimaryContent = useMemo(
-        () => decorateEndoSlideReferences(primaryContent, article.code),
-        [article.code, primaryContent],
+        () => decorateEndoSlideReferences(primaryContent, article.code, article.slideTalk),
+        [article.code, article.slideTalk, primaryContent],
     )
 
     useEffect(() => {
