@@ -21,7 +21,8 @@ const NAV_LINKS: { href: string; label: string; isNew?: boolean }[] = [
     { href: "/diabetes-ai", label: "糖尿病 AI" },
     { href: "/aoce-2026", label: "AOCE2026" },
     { href: "/attd-2026", label: "ATTD2026" },
-    { href: "/ada2026", label: "ADA2026", isNew: true },
+    { href: "/ada2026", label: "ADA2026" },
+    { href: "/endo-2026", label: "ENDO2026", isNew: true },
     { href: "/about", label: "About" },
 ]
 import { useRouter } from "next/navigation"

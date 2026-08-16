@@ -1,0 +1,695 @@
+{
+  "generatedAt": "2026-08-15T22:48:18.365540+00:00",
+  "sessions": [
+    {
+      "code": "ORF07",
+      "title": "Emerging Mechanisms in Metabolic Regulation: From Nutrients to Hormonal Signaling (ORF07)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF15",
+      "title": "Mechanisms and Clinical Insights in MASLD (ORF15)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF50",
+      "title": "Adipose Tissue, Appetite, and Obesity: Emerging and Established Pharmacotherapies (ORF50)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY09",
+      "title": "The Evolving Adipose Organ: Single-Cell and Multi-Omic Windows into Metabolic Health and Disease (SY09)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF05",
+      "title": "Adrenal Tumors: Long-Term Outcomes (ORF05)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF13",
+      "title": "Adrenal: Back to the Basics (ORF13)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF25",
+      "title": "Highs and Lows: Queering Adrenal Cortex Function (ORF25)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF32",
+      "title": "New Therapies and Perspectives for Congenital Adrenal Hyperplasia and Adrenal Insufficiency (ORF32)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF08",
+      "title": "Rare and Complex Bone Diseases (ORF08)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF16",
+      "title": "Bone and Mineral Metabolism: Parathyroid Disease (ORF16)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF34",
+      "title": "Bone and Mineral Metabolism: Osteoporosis (ORF34)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF43",
+      "title": "Bone and Mineral Metabolism: Calcium, Bones, and Things In Between (ORF43)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF23",
+      "title": "Primary Aldosteronism: From Detection to Subtyping (ORF23)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF30",
+      "title": "All About Lipids (ORF30)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF31",
+      "title": "Primary Aldosteronism on the Global Stage: From Pathogenesis to Precision Treatments (ORF31)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF06",
+      "title": "Basic and Translational Science of Diabetes Complications (ORF06)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF14",
+      "title": "Islet Changes in Diabetes (ORF14)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF26",
+      "title": "Beyond Insulin: Glucagon, Islets, and the Future of Diabetes Treatment (ORF26)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF42",
+      "title": "Diabetes and Vascular Disease: Large Data Sets and Trials (ORF42)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF33",
+      "title": "Microvascular and Macrovascular Injury in Diabetes (ORF33)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "PL02",
+      "title": "Post-Plenary Discussion: Unraveling Hormonal Complexity: Genomics, Sex Differences, and Physiology (PL02)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF28",
+      "title": "The Command Axis: Translating Hypothalamic-Pituitary Physiology into Precision Care (ORF28)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF45",
+      "title": "Neuroendocrinology: Plasticity, Reproduction, and Metabolic Control (ORF45)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF47",
+      "title": "Pediatric and Adolescent Endocrinology: Growth and Puberty (ORF47)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF21",
+      "title": "Metabolic GPCR Networks in Adipose, Muscle and Islets: Mechanisms to Medicines (ORF21)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF29",
+      "title": "Metabolic Timekeepers: Nuclear Receptor Networks in Energy Homeostasis, Stress Adaptation and Aging (ORF29)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF17",
+      "title": "PCOS: Mechanisms and Basic Science I (ORF17)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF20",
+      "title": "PCOS: Mechanisms and Basic Science II (ORF20)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF36",
+      "title": "Primary Ovarian Insufficiency and Ovarian Biology (ORF36)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF38",
+      "title": "Menopause and Hormone Therapy (ORF38)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF46",
+      "title": "Outcomes of Sex Hormone Therapy (ORF46)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY02",
+      "title": "Endocrine Pathways to Fatherhood: Innovations in Male Fertility (SY02)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF12",
+      "title": "New Biomarkers, Surgical Trends, and Therapeutic Paradigms in Differentiated and Medullary Thyroid Cancer (ORF12)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF40",
+      "title": "From Liquid Biopsy to AI to Characterize Thyroid Nodules and RFA to Treat Them (ORF40)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY55",
+      "title": "Key Evaluation of Thyroid Nodules (SY55)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF24",
+      "title": "Tumor Biology: Tumor Metabolism and Metastatic Disease (ORF24)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF51",
+      "title": "New Neuroendocrine Pathways Controlling Appetite and Metabolism (ORF51)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF37",
+      "title": "Late-Breaking Oral Abstract/Rapid-Fire II (ORF37)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY10",
+      "title": "Hormone Havoc: The Ups and Downs of PTH/PTHrP Signaling (SY10)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF18",
+      "title": "Late-Breaking Oral Abstract/Rapid-Fire I (ORF18)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF02",
+      "title": "PCOS: Clinical Phenotypes, Epidemiology, and Diagnosis (ORF02)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY54",
+      "title": "Environmental Exposures and Development of Hormone-Dependent Cancers (SY54)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF11",
+      "title": "Tumor Microenvironment, Metastatic Disease, and Hormone Regulation (ORF11)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP02",
+      "title": "Critical Aspects in the Diagnosis and Management of MEN1-Associated Duodenopancreatic Neuroendocrine Tumors (MTP02)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "YI01",
+      "title": "Year in Thyroid (YI01)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY69",
+      "title": "Pediatric Thyroid Cancer (SY69)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY25",
+      "title": "Thyroid Hormone on the Brain (SY25)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY06",
+      "title": "Dissecting the Role of RET in Thyroid Cancer (SY06)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF49",
+      "title": "See Through TED (ORF49)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP33",
+      "title": "Targeted Therapy in Advanced Thyroid Cancer (MTP33)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP30",
+      "title": "Redefining the Role of RAI in Differentiated Thyroid Carcinoma (MTP30)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP18",
+      "title": "Evaluation and Management of Thyroid Dysfunction in Pregnancy (MTP18)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP03",
+      "title": "Recent Advances in the Management of Anaplastic Thyroid Cancer (MTP03)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY67",
+      "title": "Reproductive Health in Gender Diverse Individuals (SY67)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY60",
+      "title": "Advances in Male Hypogonadism Approach (SY60)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTS01",
+      "title": "Understanding the Human Condition Using New Model Systems Developed with Biobanked Female Reproductive Tract Tissue (Human FRT Biobank Supports Discoveries) (MTS01)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP35",
+      "title": "Update on Management of Androgen Insensitivity Syndromes (MTP35)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP14",
+      "title": "Hormone Balancing: Addressing Social Media Myths (MTP14)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP01",
+      "title": "Endocrine and Fertility Implications After Anabolic Steroids, Hormonal Contraception, and Gender-Affirming Hormone Therapy (MTP01)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "YI03",
+      "title": "Year In Nuclear Receptors (YI03)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY61",
+      "title": "Signaling: Everything, Everywhere, All at Once (SY61)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY43",
+      "title": "Steroid Receptor Actions in Immunity (SY43)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY23",
+      "title": "The Order & Disorder of Nuclear Receptors (SY23)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY04",
+      "title": "The PR Puzzle: Context-Dependent Actions Reveal Therapeutic Potential (SY04)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF48",
+      "title": "Reprogramming Steroid and Nuclear Receptor Networks in Cancer: From Chromatin Crosstalk to Targets (ORF48)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF39",
+      "title": "Immune Nuclear Receptors in Action: From Single Cells to Lifelong Programming (ORF39)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF19",
+      "title": "Silent Hormone Hijackers: Bisphenols and Other Disruptors in Brain, Vasculature and Early Life (ORF19)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY52",
+      "title": "Growth Disorders: Emerging Insights and Innovative Therapeutic Approaches (SY52)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY42",
+      "title": "Central Precocious Puberty: Evolving Concepts in Diagnosis, Treatment, and Surveillance (SY42)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY14",
+      "title": "Breaking Barriers: Addressing Endocrine Disorders in Underserved Populations (SY14)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY03",
+      "title": "Breakthroughs in Personalized Care in Adolescent PCOS (SY03)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF10",
+      "title": "Pediatric and Adolescent Endocrinology: Diabetes and Insulin (ORF10)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF03",
+      "title": "Pediatric and Adolescent Endocrinology: Metabolic Health (ORF03)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP25",
+      "title": "Pituitary Tumor Survivorship: Transitioning from Pediatric to Adult Endocrine Care (MTP25)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP19",
+      "title": "Management of 46, XY DSD Across the Lifespan: A Multidisciplinary Team Perspective (MTP19)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP16",
+      "title": "New Management Options for the Adult with Congenital Adrenal Hyperplasia (CAH) (MTP16)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP11",
+      "title": "Management of Hyperphagia in PWS and Other Monogenic Obesity Syndromes (MTP11)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "CPG01",
+      "title": "Central Precocious Puberty: An Endocrine Society Clinical Practice Guideline (CPG01)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY01",
+      "title": "When Benign Isn't Harmless: Revisiting Aggressiveness and Extrasellar Spread in Pituitary Adenomas (SY01)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF35",
+      "title": "When Remission Is Not Enough: Optimizing Outcomes in Cushing's Disease (ORF35)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP38",
+      "title": "Diagnosis and Management of Silent Paragangliomas (MTP38)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP34",
+      "title": "Updates in the Management of Pituitary Apoplexy (MTP34)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP13",
+      "title": "Current Approach to Acromegaly Care (MTP13)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP10",
+      "title": "Ectopic Cushing Syndrome (MTP10)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP07",
+      "title": "Neuroendocrine Adverse Effects of Cancer Treatment: Check Point Inhibitors (MTP07)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP04",
+      "title": "A Structured Diagnostic Approach to the Patient with Hypotonic Polyuria (MTP04)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MC01",
+      "title": "Ambiguity to Action: Multidisciplinary Management of Challenging Suprasellar Lesions (MC01)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "CPG02",
+      "title": "European Society of Endocrinology and Endocrine Society Joint Arginine Vasopressin Deficiency Guideline: Updates, Insights, and Next Steps (CPG02)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY31",
+      "title": "Clinical Pearls from JCEM Case Reports (SY31)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY11",
+      "title": "Artificial Intelligence in Endocrinology: Practical Uses, Lessons Learned, and What Comes Next (SY11)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "RS01",
+      "title": "Rising Stars Power Talks (RS01)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "PL01",
+      "title": "Unraveling Hormonal Complexity: Genomics, Sex Differences, and Physiology (PL01)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "PD12",
+      "title": "Endocrine Society Guideline Methodology: A Primer for Users and Aspiring Panelists (PD12)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTS05",
+      "title": "At the Interface Between Cartilage, Synovial Tissues, and Pain: Using State-of-the-Art Strategies to Dissect Cell-to-Cell Interactions (MTS05)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTS04",
+      "title": "How Did I Get Here? A Career Perspective from a Physician-Scientist (MTS04)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTS03",
+      "title": "Algorithms and Organoids: Transforming Diabetes Therapeutic Discovery (MTS03)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "L01",
+      "title": "Clark T. Sawin Memorial History of Endocrinology Lecture - History of the Thymus: From a Vestigial Organ to the Unique Orchestrator of the Central Immunological Self-Tolerance to Neuroendocrine Principles (L01)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ELP01",
+      "title": "Endocrine Feedback Loop Podcast (ELP01)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY70",
+      "title": "Out of Breath: Where Insulin Resistance Impacts Cardiorespiratory Fitness (SY70)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY38",
+      "title": "Obesity in Type 1 Diabetes: A Rising Immunometabolic Emergency (SY38)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY27",
+      "title": "Stopping Prediabetes in Its Tracks: Preventing Both T1D and T2D (SY27)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY17",
+      "title": "Keep it Flowing: How Vascular Endothelium Shapes Glucose Homeostasis (SY17)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY08",
+      "title": "In Range: Gadgets for a New Era of Precision Medicine in Glucose Management (SY08)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP40",
+      "title": "Managing Hyperglycemia in Hospitalized Patients (MTP40)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP31",
+      "title": "Use of Adjunctive Therapies to Target Cardiometabolic Risk in Type 1 Diabetes (MTP31)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP05",
+      "title": "Navigating Obesity Management in Menopause and Midlife (MTP05)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP08",
+      "title": "Dietary Patterns and Eating Strategies in Obesity Care: Timing, Composition, and Personalized Approaches (MTP08)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP23",
+      "title": "Lipedema at the Intersection of Endocrinology and Adipose Biology: From State of the Research to Clinical Care (MTP23)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP27",
+      "title": "Post-GLP-1: Preparing Patients for Long-Term Maintenance and Transition (MTP27)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "ORF27",
+      "title": "Adipose Tissue Plasticity and Thermogenic Regulation (ORF27)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP12",
+      "title": "Evaluation and Management of Primary Aldosteronism (MTP12)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP37",
+      "title": "Challenges in the Diagnosis and Management of Adrenal Insufficiency (MTP37)",
+      "status": "processed_qa_complete"
+    },
+    {
+      "code": "PL05",
+      "title": "Molecular Mechanisms in Hormone Signaling: From Bench to Bedside (PL05)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "PL06",
+      "title": "Post-Plenary Discussion: Molecular Mechanisms in Hormone Signaling: From Bench to Bedside (PL06)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY18",
+      "title": "Future Therapies for Obesity: From Oral GLP-1s to Triple Agonists and New Targets (SY18)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY57",
+      "title": "Hot Topics in Obesity Care in the GLP-1 Era: Biology, Safety, and Value in Chronic Disease (SY57)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY07",
+      "title": "Short- and Long-Term Outcomes in Pheochromocytoma and Paraganglioma (SY07)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP26",
+      "title": "Metabolic Implications of Adrenal Incidentalomas: When Do We Intervene? (MTP26)",
+      "status": "processed_qa_complete"
+    },
+    {
+      "code": "MTP39",
+      "title": "Adrenal Aftermath: Postoperative Adrenal Insufficiency and Glucocorticoid Withdrawal Syndrome Following Surgery for Cushing Syndrome (MTP39)",
+      "status": "processed_qa_complete"
+    },
+    {
+      "code": "SY37",
+      "title": "Adrenal Tumors: Assessing the Risk (SY37)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY56",
+      "title": "From Bench to Bedside: Tools for Personalized Care in Adrenal Disorders (SY56)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY64",
+      "title": "Navigating the CAH Care Continuum (SY64)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP06",
+      "title": "PTH Replacement Therapy in Chronic Hypoparathyroidism in Adults (MTP06)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP09",
+      "title": "Osteoanabolic Therapies in Osteoporosis: When to Build Bone and How to Sequence Treatment (MTP09)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP24",
+      "title": "Hypophosphatasia in Adults: Recognizing, Diagnosing, and Treating a Multisystem Disease (MTP24)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP29",
+      "title": "Osteoporosis in Women with Breast Cancer (MTP29)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP32",
+      "title": "Beyond Basic DXA (MTP32)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY29",
+      "title": "Weight Loss: Friend or Foe for Bone & Muscle? (SY29)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY39",
+      "title": "Signal Strength: Wnt Pathways Powering Bone Formation (SY39)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY49",
+      "title": "Bouncing Back From Denosumab Discontinuation (SY49)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY66",
+      "title": "Hardwired: Where Nerves Meet Bones (SY66)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "YI02",
+      "title": "Year In Bone (YI02)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP36",
+      "title": "Interpreting Aldosterone and Renin: Tricks of the Trade (MTP36)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY24",
+      "title": "Beyond Blood Pressure: Diverse Roles of the Mineralocorticoid Receptor (SY24)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "SY62",
+      "title": "Primary Aldosteronism in the Spotlight: Advances in Diagnosis and Treatment (SY62)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP15",
+      "title": "Transition of Care in Type 2 Diabetes Youth (MTP15)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP17",
+      "title": "GLP-1 Agonists and Pancreatitis/Pancreatic Lesions: What Is the Evidence and When Are They Contraindicated? (MTP17)",
+      "status": "pending_discovery"
+    },
+    {
+      "code": "MTP20",
+      "title": "Type 2 Diabetes in Preconception, Pregnancy, and Postpartum (MTP20)",
+      "status": "pending_discovery"
+    }
+  ]
+}
