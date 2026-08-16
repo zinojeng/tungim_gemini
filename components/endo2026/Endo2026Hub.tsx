@@ -216,7 +216,7 @@ export function Endo2026Hub({ sessions }: Endo2026HubProps) {
                         </div>
                         <div className="hidden items-center gap-2 text-sm text-slate-400 md:flex">
                             <BookOpenCheck className="h-4 w-4 text-teal-300" />
-                            1 篇完整筆記 · 1 篇投影片整理
+                            2 篇完整 transcript＋slides 筆記
                         </div>
                     </div>
 
