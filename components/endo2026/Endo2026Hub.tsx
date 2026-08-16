@@ -216,7 +216,7 @@ export function Endo2026Hub({ sessions }: Endo2026HubProps) {
                         </div>
                         <div className="hidden items-center gap-2 text-sm text-slate-400 md:flex">
                             <BookOpenCheck className="h-4 w-4 text-teal-300" />
-                            5 個完整 session · 8 段錄影筆記
+                            {new Set(ENDO_2026_ARTICLES.map((article) => article.code)).size} 個完整 session · {ENDO_2026_ARTICLES.length} 段錄影筆記
                         </div>
                     </div>
 

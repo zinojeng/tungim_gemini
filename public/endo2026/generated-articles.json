@@ -1,0 +1,50 @@
+[
+  {
+    "slug": "mtp26-adrenal-incidentalomas",
+    "code": "MTP26",
+    "presentationId": "MTP26",
+    "title": "Metabolic Implications of Adrenal Incidentalomas: When Do We Intervene?",
+    "titleZh": "腎上腺偶發瘤的代謝影響：何時介入？（Metabolic Implications of Adrenal Incidentalomas: When Do We Intervene?）",
+    "speaker": "John Newell-Price",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-mtp26-adrenal-incidentalomas-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/mtp26-adrenal-incidentalomas-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/mtp26-adrenal-incidentalomas-transcript-en.md",
+    "slidesDirectory": "generated-mtp26-adrenal-incidentalomas-slides",
+    "publishedAt": "2026-08-17"
+  },
+  {
+    "slug": "mtp37-adrenal-insufficiency",
+    "code": "MTP37",
+    "presentationId": "MTP37",
+    "title": "Challenges in the Diagnosis and Management of Adrenal Insufficiency",
+    "titleZh": "腎上腺功能不全的診斷與管理挑戰（Challenges in the Diagnosis and Management of Adrenal Insufficiency）",
+    "speaker": "Richard J. M. Ross",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-mtp37-adrenal-insufficiency-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/mtp37-adrenal-insufficiency-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/mtp37-adrenal-insufficiency-transcript-en.md",
+    "slidesDirectory": "generated-mtp37-adrenal-insufficiency-slides",
+    "publishedAt": "2026-08-17"
+  },
+  {
+    "slug": "mtp39-adrenal-aftermath",
+    "code": "MTP39",
+    "presentationId": "MTP39",
+    "title": "Adrenal Aftermath: Postoperative Adrenal Insufficiency and Glucocorticoid Withdrawal Syndrome Following Surgery for Cushing Syndrome",
+    "titleZh": "庫欣氏症候群術後 adrenal aftermath：術後腎上腺功能不全與糖皮質激素撤退症候群",
+    "speaker": "Guido Di Dalmazi",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-mtp39-adrenal-aftermath-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/mtp39-adrenal-aftermath-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/mtp39-adrenal-aftermath-transcript-en.md",
+    "slidesDirectory": "generated-mtp39-adrenal-aftermath-slides",
+    "publishedAt": "2026-08-17"
+  }
+]
