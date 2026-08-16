@@ -227,10 +227,13 @@ export const ENDO_2026_ARTICLES: EndoArticle[] = [
         title: "Adrenal Aftermath: Postoperative Adrenal Insufficiency and Glucocorticoid Withdrawal Syndrome Following Surgery for Cushing Syndrome",
         titleZh: "腎上腺術後：庫欣氏症術後腎上腺功能不全與糖皮質素戒斷症候群",
         speaker: "Guido Di Dalmazi",
-        summary: "音訊、官方逐字稿與投影片擷取已完成；繁中 transcript＋slides 整合稿仍在術語校對。",
+        summary: "以完整逐字稿與 64 張投影片整合術後腎上腺功能不全、糖皮質素撤退症候群、MACS 圍手術期管理與 HPA 軸恢復。",
         coverImage: "/endo2026/media/mtp39-cover.jpg",
-        status: "in-production",
-        statusLabel: "整合稿製作中",
+        status: "published",
+        statusLabel: "完整繁中筆記",
+        primaryContentPath: "/endo2026/content/mtp39-note-zh-tw.md",
+        slidesDirectory: "mtp39-slides",
+        publishedAt: "2026-08-16",
     },
 ]
 
