@@ -36,6 +36,20 @@ function getSlideTimestamp(slide: string) {
     return match?.[1].replace("-", ":") ?? ""
 }
 
+function getSlideIdentity(slide: string, fallbackIndex: number) {
+    const grouped = slide.match(/talk(\d+)_slide_(\d+)/i)
+    if (grouped) {
+        return {
+            label: `Talk ${Number(grouped[1])} · Slide ${grouped[2]}`,
+            shortLabel: `${Number(grouped[1])}·${Number(grouped[2])}`,
+        }
+    }
+
+    const numbered = slide.match(/slide_(\d+)/i)
+    const number = numbered?.[1] ?? String(fallbackIndex + 1).padStart(2, "0")
+    return { label: `Slide ${number}`, shortLabel: String(Number(number)) }
+}
+
 interface SlideNavigatorProps {
     article: EndoArticle
     slides: string[]
@@ -54,6 +68,7 @@ function SlideNavigator({
     layout,
 }: SlideNavigatorProps) {
     const currentSlide = slides[selectedIndex]
+    const currentIdentity = getSlideIdentity(currentSlide, selectedIndex)
     const previous = () => onSelect((selectedIndex - 1 + slides.length) % slides.length)
     const next = () => onSelect((selectedIndex + 1) % slides.length)
 
@@ -99,7 +114,7 @@ function SlideNavigator({
                     <ChevronLeft className="h-4 w-4" />
                 </button>
                 <div className="text-center">
-                    <p className="text-xs font-bold text-slate-200">Slide {String(selectedIndex + 1).padStart(2, "0")}</p>
+                    <p className="text-xs font-bold text-slate-200">{currentIdentity.label}</p>
                     {getSlideTimestamp(currentSlide) ? (
                         <p className="mt-0.5 font-mono text-[10px] text-slate-500">{getSlideTimestamp(currentSlide)}</p>
                     ) : null}
@@ -145,7 +160,7 @@ function SlideNavigator({
                             loading="lazy"
                         />
                         <span className="absolute bottom-1 left-1 rounded bg-slate-950/75 px-1.5 py-0.5 text-[9px] font-bold text-white">
-                            {index + 1}
+                            {getSlideIdentity(slide, index).shortLabel}
                         </span>
                     </button>
                 ))}
@@ -362,7 +377,7 @@ export function Endo2026ArticleView({
                                             </span>
                                         </button>
                                         <figcaption className="flex items-center justify-between px-4 py-3 text-xs text-slate-500">
-                                            <span className="font-semibold text-slate-300">Slide {String(index + 1).padStart(2, "0")}</span>
+                                            <span className="font-semibold text-slate-300">{getSlideIdentity(slide, index).label}</span>
                                             <span className="font-mono">{getSlideTimestamp(slide)}</span>
                                         </figcaption>
                                     </figure>
@@ -421,7 +436,7 @@ export function Endo2026ArticleView({
                             className="max-h-[82vh] max-w-full rounded-xl object-contain shadow-2xl shadow-black/60"
                         />
                         <figcaption className="mt-4 text-center text-sm font-semibold text-slate-300">
-                            Slide {String(selectedSlide + 1).padStart(2, "0")} / {slides.length}
+                            {getSlideIdentity(slides[selectedSlide], selectedSlide).label} · {selectedSlide + 1} / {slides.length}
                             {getSlideTimestamp(slides[selectedSlide]) ? ` · ${getSlideTimestamp(slides[selectedSlide])}` : ""}
                         </figcaption>
                     </figure>
