@@ -67,20 +67,29 @@ function SlideNavigator({
     onOpen,
     layout,
 }: SlideNavigatorProps) {
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
     const currentSlide = slides[selectedIndex]
     const currentIdentity = getSlideIdentity(currentSlide, selectedIndex)
+    const previewIndex = hoveredIndex ?? selectedIndex
+    const previewSlide = slides[previewIndex]
+    const previewIdentity = getSlideIdentity(previewSlide, previewIndex)
     const previous = () => onSelect((selectedIndex - 1 + slides.length) % slides.length)
     const next = () => onSelect((selectedIndex + 1) % slides.length)
 
     return (
         <section
             aria-label="投影片對照"
-            className="overflow-hidden rounded-3xl border border-white/10 bg-[#0b1e2d] shadow-2xl shadow-black/20"
+            className={`relative rounded-3xl border border-white/10 bg-[#0b1e2d] shadow-2xl shadow-black/20 ${
+                layout === "sidebar" ? "overflow-visible" : "overflow-hidden"
+            }`}
         >
-            <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+            <div className="flex items-center justify-between rounded-t-3xl border-b border-white/10 px-4 py-3">
                 <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.22em] text-teal-300">Slide companion</p>
                     <h2 className="mt-1 text-sm font-black text-white">投影片同步對照</h2>
+                    {layout === "sidebar" ? (
+                        <p className="mt-1 text-[10px] text-slate-500">滑過放大 · 點擊全螢幕</p>
+                    ) : null}
                 </div>
                 <span className="rounded-full bg-white/[0.07] px-2.5 py-1 text-xs font-semibold text-slate-300">
                     {selectedIndex + 1} / {slides.length}
@@ -90,6 +99,10 @@ function SlideNavigator({
             <button
                 type="button"
                 onClick={onOpen}
+                onMouseEnter={() => layout === "sidebar" && setHoveredIndex(selectedIndex)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                onFocus={() => layout === "sidebar" && setHoveredIndex(selectedIndex)}
+                onBlur={() => setHoveredIndex(null)}
                 className="group relative block w-full bg-black/25"
                 aria-label={`放大檢視第 ${selectedIndex + 1} 張投影片`}
             >
@@ -132,7 +145,7 @@ function SlideNavigator({
             <div
                 className={
                     layout === "sidebar"
-                        ? "grid max-h-[38vh] grid-cols-3 gap-2 overflow-y-auto p-3"
+                        ? "grid max-h-[44vh] grid-cols-1 gap-2 overflow-y-auto rounded-b-3xl p-2.5"
                         : "flex snap-x gap-2 overflow-x-auto p-3"
                 }
                 aria-label="投影片縮圖"
@@ -142,6 +155,10 @@ function SlideNavigator({
                         key={slide}
                         type="button"
                         onClick={() => onSelect(index)}
+                        onMouseEnter={() => layout === "sidebar" && setHoveredIndex(index)}
+                        onMouseLeave={() => setHoveredIndex(null)}
+                        onFocus={() => layout === "sidebar" && setHoveredIndex(index)}
+                        onBlur={() => setHoveredIndex(null)}
                         className={`relative shrink-0 overflow-hidden rounded-lg border-2 transition ${
                             layout === "inline" ? "w-28 snap-start" : "w-full"
                         } ${
@@ -165,6 +182,30 @@ function SlideNavigator({
                     </button>
                 ))}
             </div>
+
+            {layout === "sidebar" ? (
+                <figure
+                    aria-hidden={hoveredIndex === null}
+                    className={`pointer-events-none absolute right-full top-0 z-50 mr-4 w-[min(58vw,760px)] origin-right overflow-hidden rounded-2xl border border-white/15 bg-[#071724] shadow-2xl shadow-black/60 transition duration-200 ${
+                        hoveredIndex === null
+                            ? "translate-x-3 scale-95 opacity-0"
+                            : "translate-x-0 scale-100 opacity-100"
+                    }`}
+                >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                        src={previewSlide}
+                        alt=""
+                        className="aspect-video w-full bg-black/30 object-contain"
+                    />
+                    <figcaption className="flex items-center justify-between gap-4 border-t border-white/10 px-4 py-3 text-xs">
+                        <span className="font-bold text-white">{previewIdentity.label}</span>
+                        <span className="font-mono text-slate-400">
+                            {getSlideTimestamp(previewSlide) || `第 ${previewIndex + 1} 張`}
+                        </span>
+                    </figcaption>
+                </figure>
+            ) : null}
         </section>
     )
 }
@@ -250,8 +291,8 @@ export function Endo2026ArticleView({
             <main className="container max-w-[1520px] py-10 md:py-14">
                 <div
                     className={
-                        slides.length > 0
-                            ? "grid gap-8 lg:grid-cols-[210px_minmax(0,1fr)] xl:grid-cols-[210px_minmax(0,1fr)_360px]"
+                        slides.length > 0 && activeTab !== "slides"
+                            ? "grid gap-8 lg:grid-cols-[210px_minmax(0,1fr)] xl:grid-cols-[200px_minmax(0,1fr)_260px] xl:gap-6"
                             : "grid gap-8 lg:grid-cols-[230px_minmax(0,1fr)]"
                     }
                 >
@@ -312,6 +353,19 @@ export function Endo2026ArticleView({
                                     layout="inline"
                                 />
                             </div>
+                        ) : null}
+
+                        {slides.length > 0 && activeTab !== "slides" ? (
+                            <button
+                                type="button"
+                                onClick={() => setActiveTab("slides")}
+                                className="mb-4 hidden w-full items-center justify-between rounded-2xl border border-teal-200/15 bg-teal-200/[0.06] px-4 py-3 text-left text-xs font-semibold text-teal-50/80 transition hover:border-teal-200/30 hover:bg-teal-200/[0.1] xl:flex"
+                            >
+                                <span className="inline-flex items-center gap-2">
+                                    <Images className="h-4 w-4 text-teal-300" /> 右側投影片可滑過放大，點擊可全螢幕檢視
+                                </span>
+                                <span className="text-teal-200">查看全部 {slides.length} 張 →</span>
+                            </button>
                         ) : null}
 
                         {article.status === "source-review" ? (
