@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T04:52:17.102516+08:00",
+  "generatedAt": "2026-08-18T07:57:44.396825+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -454,7 +454,7 @@
     {
       "code": "RS01",
       "title": "Rising Stars Power Talks (RS01)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "PL01",
