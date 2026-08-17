@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T01:24:58.222266+08:00",
+  "generatedAt": "2026-08-18T01:45:32.860777+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -224,7 +224,7 @@
     {
       "code": "YI01",
       "title": "Year in Thyroid (YI01)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY69",
