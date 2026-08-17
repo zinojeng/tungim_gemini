@@ -160,6 +160,54 @@
     "publishedAt": "2026-08-17"
   },
   {
+    "slug": "orf18-01-xuhui-li",
+    "code": "ORF18",
+    "presentationId": "ORF18-01",
+    "title": "The Flavanol Gallocatechin as a Novel Therapeutic Candidate for Thyroid Eye Disease by Mitigating Pathological Remodeling in Orbital Fibroblasts",
+    "titleZh": "沒食子兒茶素作為甲狀腺眼病變候選治療：減緩眼眶纖維母細胞病理性重塑（The Flavanol Gallocatechin as a Novel Therapeutic Candidate for Thyroid Eye Disease by Mitigating Pathological Remodeling in Orbital Fibroblasts）",
+    "speaker": "Xuhui Li",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-orf18-01-xuhui-li-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/orf18-01-xuhui-li-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/orf18-01-xuhui-li-transcript-en.md",
+    "slidesDirectory": "generated-orf18-01-xuhui-li-slides",
+    "publishedAt": "2026-08-18"
+  },
+  {
+    "slug": "orf18-03-elizabeth-nunn",
+    "code": "ORF18",
+    "presentationId": "ORF18-03",
+    "title": "Skeletal Muscle, Adipocyte, and Hepatocyte-Autonomous Roles of the Activin Type II Receptors in the Regulation of Body Weight/Composition",
+    "titleZh": "骨骼肌、脂肪細胞與肝細胞自主性 Activin II 型受體在體重與身體組成調節中的角色",
+    "speaker": "Elizabeth Nunn",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-orf18-03-elizabeth-nunn-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/orf18-03-elizabeth-nunn-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/orf18-03-elizabeth-nunn-transcript-en.md",
+    "slidesDirectory": "generated-orf18-03-elizabeth-nunn-slides",
+    "publishedAt": "2026-08-18"
+  },
+  {
+    "slug": "orf18-05-mutayyaba-adnan",
+    "code": "ORF18",
+    "presentationId": "ORF18-05",
+    "title": "A Novel TSHR Blocking Antibody Effectively Reduces Hyperthyroidism and Proptosis in a Mouse Model of Graves' and Thyroid Eye Disease",
+    "titleZh": "新型 TSHR 阻斷抗體於葛瑞夫茲病與甲狀腺眼病變小鼠模型中有效降低甲狀腺功能亢進與眼球突出",
+    "speaker": "Mutayyaba Adnan",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-orf18-05-mutayyaba-adnan-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/orf18-05-mutayyaba-adnan-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/orf18-05-mutayyaba-adnan-transcript-en.md",
+    "slidesDirectory": "generated-orf18-05-mutayyaba-adnan-slides",
+    "publishedAt": "2026-08-18"
+  },
+  {
     "slug": "orf37-01-elena-a-christofides",
     "code": "ORF37",
     "presentationId": "ORF37-01",
@@ -190,5 +238,21 @@
     "transcriptPath": "/endo2026/generated-content/orf37-03-martin-kroiss-transcript-en.md",
     "slidesDirectory": "generated-orf37-03-martin-kroiss-slides",
     "publishedAt": "2026-08-17"
+  },
+  {
+    "slug": "pl02-rohit-n-kulkarni-moderator-with-holly-a-ingraham-and-sadaf-farooqi",
+    "code": "PL02",
+    "presentationId": "PL02",
+    "title": "Post-Plenary Discussion: Unraveling Hormonal Complexity: Genomics, Sex Differences, and Physiology",
+    "titleZh": "ENDO 2026 大會精華：內分泌複雜性解析——基因體學、性別差異與生理學（大會總結專題討論）",
+    "speaker": "Rohit N. Kulkarni (moderator) with Holly A. Ingraham and Sadaf Farooqi",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-pl02-rohit-n-kulkarni-moderator-with-holly-a-ingraham-and-sadaf-farooqi-slides/slide_001_00-01_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/pl02-rohit-n-kulkarni-moderator-with-holly-a-ingraham-and-sadaf-farooqi-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/pl02-rohit-n-kulkarni-moderator-with-holly-a-ingraham-and-sadaf-farooqi-transcript-en.md",
+    "slidesDirectory": "generated-pl02-rohit-n-kulkarni-moderator-with-holly-a-ingraham-and-sadaf-farooqi-slides",
+    "publishedAt": "2026-08-18"
   }
 ]

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T21:40:28.491228+08:00",
+  "generatedAt": "2026-08-18T00:58:37.170292+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -104,7 +104,7 @@
     {
       "code": "PL02",
       "title": "Post-Plenary Discussion: Unraveling Hormonal Complexity: Genomics, Sex Differences, and Physiology (PL02)",
-      "status": "pending_discovery"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF28",
@@ -199,7 +199,7 @@
     {
       "code": "ORF18",
       "title": "Late-Breaking Oral Abstract/Rapid-Fire I (ORF18)",
-      "status": "pending_discovery"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF02",
