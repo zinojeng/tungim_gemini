@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T06:01:57.243730+08:00",
+  "generatedAt": "2026-08-17T11:27:43.655029+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -24,7 +24,7 @@
     {
       "code": "ORF05",
       "title": "Adrenal Tumors: Long-Term Outcomes (ORF05)",
-      "status": "pending_discovery"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF13",

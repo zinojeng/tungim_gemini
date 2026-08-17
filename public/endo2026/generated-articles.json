@@ -46,5 +46,21 @@
     "transcriptPath": "/endo2026/generated-content/mtp39-adrenal-aftermath-transcript-en.md",
     "slidesDirectory": "generated-mtp39-adrenal-aftermath-slides",
     "publishedAt": "2026-08-17"
+  },
+  {
+    "slug": "orf05-05-marta-araujo-castro",
+    "code": "ORF05",
+    "presentationId": "ORF05-05",
+    "title": "International Real-World Study on Osilodrostat Efficacy and Safety in Adrenal Cushing Syndrome",
+    "titleZh": "國際真實世界研究：osilodrostat 治療腎上腺庫欣氏症候群的療效與安全性（International Real-World Study on Osilodrostat Efficacy and Safety in Adrenal Cushing Syndrome）",
+    "speaker": "Marta Araujo-Castro",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-orf05-05-marta-araujo-castro-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/orf05-05-marta-araujo-castro-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/orf05-05-marta-araujo-castro-transcript-en.md",
+    "slidesDirectory": "generated-orf05-05-marta-araujo-castro-slides",
+    "publishedAt": "2026-08-17"
   }
 ]
