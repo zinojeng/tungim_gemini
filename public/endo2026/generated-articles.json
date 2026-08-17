@@ -126,5 +126,21 @@
     "transcriptPath": "/endo2026/generated-content/orf13-04-hala-al-asadi-transcript-en.md",
     "slidesDirectory": "generated-orf13-04-hala-al-asadi-slides",
     "publishedAt": "2026-08-17"
+  },
+  {
+    "slug": "orf13-07-angela-huebner",
+    "code": "ORF13",
+    "presentationId": "ORF13-07",
+    "title": "A Novel Humanized CYP21A2-I173N Mouse Model for Congenital Adrenal Hyperplasia (CAH) Mimics Phenotypic Features of Human CAH Patients",
+    "titleZh": "新型人類化 CYP21A2-I173N 小鼠模型重現人類先天性腎上腺增生症的表型特徵（A Novel Humanized CYP21A2-I173N Mouse Model for Congenital Adrenal Hyperplasia (CAH) Mimics Phenotypic Features of Human CAH Patients）",
+    "speaker": "Angela Huebner",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-orf13-07-angela-huebner-slides/slide_001_00-03_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/orf13-07-angela-huebner-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/orf13-07-angela-huebner-transcript-en.md",
+    "slidesDirectory": "generated-orf13-07-angela-huebner-slides",
+    "publishedAt": "2026-08-17"
   }
 ]
