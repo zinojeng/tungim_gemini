@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T00:58:37.170292+08:00",
+  "generatedAt": "2026-08-18T01:24:58.222266+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -389,7 +389,7 @@
     {
       "code": "CPG01",
       "title": "Central Precocious Puberty: An Endocrine Society Clinical Practice Guideline (CPG01)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY01",
@@ -439,7 +439,7 @@
     {
       "code": "CPG02",
       "title": "European Society of Endocrinology and Endocrine Society Joint Arginine Vasopressin Deficiency Guideline: Updates, Insights, and Next Steps (CPG02)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY31",
@@ -464,7 +464,7 @@
     {
       "code": "PD12",
       "title": "Endocrine Society Guideline Methodology: A Primer for Users and Aspiring Panelists (PD12)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTS05",

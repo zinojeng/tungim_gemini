@@ -1,6 +1,6 @@
 import generatedEndoArticles from "@/public/endo2026/generated-articles.json"
 
-export type EndoSessionStatus = "pending_discovery" | "processed_qa_complete"
+export type EndoSessionStatus = "pending_discovery" | "processing" | "processed_qa_complete"
 
 export interface EndoSession {
     code: string

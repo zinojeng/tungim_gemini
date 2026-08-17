@@ -138,7 +138,7 @@ export function Endo2026Hub({ sessions }: Endo2026HubProps) {
                                 ["12", "主題章節"],
                                 [String(sessions.length), "正式場次"],
                                 [totalCredits.toFixed(2), "CME 時數"],
-                                [String(processedCount), "已完成擷取"],
+                                [String(processedCount), "整場已完成"],
                             ].map(([value, label]) => (
                                 <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur">
                                     <div className="text-3xl font-black tracking-tight text-white">{value}</div>
@@ -170,6 +170,9 @@ export function Endo2026Hub({ sessions }: Endo2026HubProps) {
                             const completeCount = chapterSessions.filter(
                                 (session) => session.status === "processed_qa_complete",
                             ).length
+                            const inProgressCount = chapterSessions.filter(
+                                (session) => session.status === "processing",
+                            ).length
 
                             return (
                                 <button
@@ -196,8 +199,10 @@ export function Endo2026Hub({ sessions }: Endo2026HubProps) {
                                     <p className="mt-4 min-h-12 text-sm leading-6 text-slate-400">{chapter.description}</p>
                                     <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-4 text-xs font-semibold">
                                         <span className="text-slate-300">{chapterSessions.length} sessions</span>
-                                        <span className={completeCount > 0 ? "text-teal-200" : "text-slate-500"}>
-                                            {completeCount > 0 ? `${completeCount} 已完成` : "索引已建立"}
+                                        <span className={completeCount > 0 || inProgressCount > 0 ? "text-teal-200" : "text-slate-500"}>
+                                            {completeCount > 0 || inProgressCount > 0
+                                                ? `${completeCount} 完成 · ${inProgressCount} 整理中`
+                                                : "索引已建立"}
                                         </span>
                                     </div>
                                     <ArrowUpRight className="absolute bottom-5 right-5 h-4 w-4 text-slate-600 transition group-hover:text-white" />
@@ -344,10 +349,12 @@ export function Endo2026Hub({ sessions }: Endo2026HubProps) {
                                                     <div className="flex items-center gap-2 text-xs">
                                                         {session.status === "processed_qa_complete" ? (
                                                             <span className="inline-flex items-center gap-1.5 rounded-full bg-teal-300/10 px-3 py-1.5 font-bold text-teal-200">
-                                                                <CheckCircle2 className="h-3.5 w-3.5" /> 已擷取
+                                                                <CheckCircle2 className="h-3.5 w-3.5" /> 整場完成
                                                             </span>
+                                                        ) : session.status === "processing" ? (
+                                                            <span className="rounded-full bg-orange-300/10 px-3 py-1.5 font-bold text-orange-200">整理中</span>
                                                         ) : (
-                                                            <span className="rounded-full bg-white/5 px-3 py-1.5 font-medium text-slate-500">待整理</span>
+                                                            <span className="rounded-full bg-white/5 px-3 py-1.5 font-medium text-slate-500">待擷取</span>
                                                         )}
                                                         {readyArticle ? <ArrowUpRight className="h-4 w-4 text-teal-200" /> : null}
                                                     </div>
