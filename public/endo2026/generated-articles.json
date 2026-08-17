@@ -1,5 +1,21 @@
 [
   {
+    "slug": "cpg01-diagnosis-fernando-cassorla",
+    "code": "CPG01",
+    "presentationId": "CPG01-DIAGNOSIS",
+    "title": "Diagnosis of central precocious puberty: Case 1",
+    "titleZh": "中央性性早熟的診斷：病例一（Diagnosis of Central Precocious Puberty: Case 1）",
+    "speaker": "Fernando Cassorla",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-cpg01-diagnosis-fernando-cassorla-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/cpg01-diagnosis-fernando-cassorla-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/cpg01-diagnosis-fernando-cassorla-transcript-en.md",
+    "slidesDirectory": "generated-cpg01-diagnosis-fernando-cassorla-slides",
+    "publishedAt": "2026-08-18"
+  },
+  {
     "slug": "cpg01-grade-christopher-mccartney",
     "code": "CPG01",
     "presentationId": "CPG01-GRADE",
