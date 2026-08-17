@@ -80,6 +80,22 @@
     "publishedAt": "2026-08-17"
   },
   {
+    "slug": "orf13-01-marina-buchpiguel",
+    "code": "ORF13",
+    "presentationId": "ORF13-01",
+    "title": "Expanding the Clinical, Genetic, and Histopathological Spectrum of Primary Pigmented Nodular Adrenocortical Disease: Insights from a Brazilian Referral Cohort",
+    "titleZh": "原發性色素沉著結節性腎上腺皮質病變的臨床、基因與組織病理光譜（Expanding the Clinical, Genetic, and Histopathological Spectrum of Primary Pigmented Nodular Adrenocortical Disease: Insights from a Brazilian Referral Cohort）",
+    "speaker": "Marina Buchpiguel",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-orf13-01-marina-buchpiguel-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/orf13-01-marina-buchpiguel-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/orf13-01-marina-buchpiguel-transcript-en.md",
+    "slidesDirectory": "generated-orf13-01-marina-buchpiguel-slides",
+    "publishedAt": "2026-08-17"
+  },
+  {
     "slug": "orf13-04-hala-al-asadi",
     "code": "ORF13",
     "presentationId": "ORF13-04",
