@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T01:45:32.860777+08:00",
+  "generatedAt": "2026-08-18T02:47:13.358643+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -299,7 +299,7 @@
     {
       "code": "YI03",
       "title": "Year In Nuclear Receptors (YI03)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY61",
