@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T12:35:47.510058+08:00",
+  "generatedAt": "2026-08-17T14:37:50.522869+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -29,7 +29,7 @@
     {
       "code": "ORF13",
       "title": "Adrenal: Back to the Basics (ORF13)",
-      "status": "pending_discovery"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF25",

@@ -78,5 +78,21 @@
     "transcriptPath": "/endo2026/generated-content/orf05-05-marta-araujo-castro-transcript-en.md",
     "slidesDirectory": "generated-orf05-05-marta-araujo-castro-slides",
     "publishedAt": "2026-08-17"
+  },
+  {
+    "slug": "orf13-04-hala-al-asadi",
+    "code": "ORF13",
+    "presentationId": "ORF13-04",
+    "title": "Dual TP53 and MYC Pathway Alterations Identify a Clinically Aggressive Molecular Subtype of Adrenocortical Carcinoma",
+    "titleZh": "雙重 TP53 與 MYC 通路變異標定出臨床侵襲性較高的腎上腺皮質癌分子亞型（Dual TP53 and MYC Pathway Alterations Identify a Clinically Aggressive Molecular Subtype of Adrenocortical Carcinoma）",
+    "speaker": "Hala Al Asadi",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-orf13-04-hala-al-asadi-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/orf13-04-hala-al-asadi-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/orf13-04-hala-al-asadi-transcript-en.md",
+    "slidesDirectory": "generated-orf13-04-hala-al-asadi-slides",
+    "publishedAt": "2026-08-17"
   }
 ]
