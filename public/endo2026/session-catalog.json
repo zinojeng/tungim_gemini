@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T19:37:35.460056+08:00",
+  "generatedAt": "2026-08-17T20:38:34.910005+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -189,7 +189,7 @@
     {
       "code": "ORF37",
       "title": "Late-Breaking Oral Abstract/Rapid-Fire II (ORF37)",
-      "status": "pending_discovery"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY10",
