@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T06:32:28.669301+08:00",
+  "generatedAt": "2026-08-19T06:44:36.867949+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -159,7 +159,7 @@
     {
       "code": "SY02",
       "title": "Endocrine Pathways to Fatherhood: Innovations in Male Fertility (SY02)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF12",
@@ -339,7 +339,7 @@
     {
       "code": "SY52",
       "title": "Growth Disorders: Emerging Insights and Innovative Therapeutic Approaches (SY52)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY42",
@@ -454,7 +454,7 @@
     {
       "code": "RS01",
       "title": "Rising Stars Power Talks (RS01)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "PL01",

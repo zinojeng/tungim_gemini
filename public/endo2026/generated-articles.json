@@ -832,6 +832,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "rs01-11-konstantinos-stefanakis",
+    "code": "RS01",
+    "presentationId": "RS01-11",
+    "title": "A Systems-Level Map of the Circulating Serum Proteome Across the Fibrosis and Inflammation Spectrum in Biopsy-Proven Metabolic Dysfunction-Associated Steatohepatitis",
+    "titleZh": "以系統層級血清蛋白質體描繪切片證實 MASH 的纖維化與發炎光譜（A Systems-Level Map of the Circulating Serum Proteome Across the Fibrosis and Inflammation Spectrum in Biopsy-Proven Metabolic Dysfunction-Associated Steatohepatitis）",
+    "speaker": "Konstantinos Stefanakis",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-rs01-11-konstantinos-stefanakis-slides/slide_001_00-03_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/rs01-11-konstantinos-stefanakis-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/rs01-11-konstantinos-stefanakis-transcript-en.md",
+    "slidesDirectory": "generated-rs01-11-konstantinos-stefanakis-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy02-03-peter-schlegel-md",
+    "code": "SY02",
+    "presentationId": "SY02-03",
+    "title": "Optimizing Fertility Treatment in KS",
+    "titleZh": "Klinefelter syndrome 生育治療的最佳化（Optimizing Fertility Treatment in Klinefelter Syndrome）",
+    "speaker": "Peter Schlegel, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy02-03-peter-schlegel-md-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy02-03-peter-schlegel-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy02-03-peter-schlegel-md-transcript-en.md",
+    "slidesDirectory": "generated-sy02-03-peter-schlegel-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",
