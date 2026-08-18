@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T04:42:39.347330+08:00",
+  "generatedAt": "2026-08-19T05:24:33.250378+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -239,7 +239,7 @@
     {
       "code": "SY06",
       "title": "Dissecting the Role of RET in Thyroid Cancer (SY06)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "ORF49",
@@ -269,12 +269,12 @@
     {
       "code": "SY67",
       "title": "Reproductive Health in Gender Diverse Individuals (SY67)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY60",
       "title": "Advances in Male Hypogonadism Approach (SY60)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTS01",
