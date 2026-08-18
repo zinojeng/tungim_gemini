@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T04:40:49.799987+08:00",
+  "generatedAt": "2026-08-19T04:42:39.347330+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -569,7 +569,7 @@
     {
       "code": "PL06",
       "title": "Post-Plenary Discussion: Molecular Mechanisms in Hormone Signaling: From Bench to Bedside (PL06)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY18",
