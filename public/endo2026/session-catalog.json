@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T07:57:44.396825+08:00",
+  "generatedAt": "2026-08-18T08:54:34.548129+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -389,7 +389,7 @@
     {
       "code": "CPG01",
       "title": "Central Precocious Puberty: An Endocrine Society Clinical Practice Guideline (CPG01)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY01",
