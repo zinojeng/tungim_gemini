@@ -576,6 +576,22 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "pl05-02-daniel-drucker",
+    "code": "PL05",
+    "presentationId": "PL05-02",
+    "title": "Underlying the Metabolic Magic Of GLP-1 Medicines",
+    "titleZh": "GLP-1 藥物代謝奇蹟背後的機制（Underlying the Metabolic Magic of GLP-1 Medicines）",
+    "speaker": "Daniel Drucker",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-pl05-02-daniel-drucker-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/pl05-02-daniel-drucker-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/pl05-02-daniel-drucker-transcript-en.md",
+    "slidesDirectory": "generated-pl05-02-daniel-drucker-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "pl05-clinical-investigator-samuel-klein",
     "code": "PL05",
     "presentationId": "PL05-CLINICAL-INVESTIGATOR",

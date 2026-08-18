@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T03:15:30.864850+08:00",
+  "generatedAt": "2026-08-19T04:40:49.799987+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -209,7 +209,7 @@
     {
       "code": "SY54",
       "title": "Environmental Exposures and Development of Hormone-Dependent Cancers (SY54)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "ORF11",
@@ -229,12 +229,12 @@
     {
       "code": "SY69",
       "title": "Pediatric Thyroid Cancer (SY69)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY25",
       "title": "Thyroid Hormone on the Brain (SY25)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY06",
@@ -564,7 +564,7 @@
     {
       "code": "PL05",
       "title": "Molecular Mechanisms in Hormone Signaling: From Bench to Bedside (PL05)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "PL06",
