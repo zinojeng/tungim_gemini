@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T12:59:31.709824+08:00",
+  "generatedAt": "2026-08-18T14:01:40.100765+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -439,7 +439,7 @@
     {
       "code": "CPG02",
       "title": "European Society of Endocrinology and Endocrine Society Joint Arginine Vasopressin Deficiency Guideline: Updates, Insights, and Next Steps (CPG02)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY31",
