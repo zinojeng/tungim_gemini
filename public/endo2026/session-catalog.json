@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T22:18:06.608303+08:00",
+  "generatedAt": "2026-08-18T23:12:36.308743+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -659,7 +659,7 @@
     {
       "code": "YI02",
       "title": "Year In Bone (YI02)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP36",
