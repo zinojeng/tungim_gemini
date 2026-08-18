@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T06:05:18.163493+08:00",
+  "generatedAt": "2026-08-19T06:32:28.669301+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -319,7 +319,7 @@
     {
       "code": "SY04",
       "title": "The PR Puzzle: Context-Dependent Actions Reveal Therapeutic Potential (SY04)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "ORF48",
