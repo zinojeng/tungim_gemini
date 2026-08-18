@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T19:06:58.289232+08:00",
+  "generatedAt": "2026-08-18T20:17:52.266272+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -564,7 +564,7 @@
     {
       "code": "PL05",
       "title": "Molecular Mechanisms in Hormone Signaling: From Bench to Bedside (PL05)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "PL06",
