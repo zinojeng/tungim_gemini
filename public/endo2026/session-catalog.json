@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T07:27:01.752862+08:00",
+  "generatedAt": "2026-08-19T07:38:30.672188+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -354,7 +354,7 @@
     {
       "code": "SY03",
       "title": "Breakthroughs in Personalized Care in Adolescent PCOS (SY03)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "ORF10",
