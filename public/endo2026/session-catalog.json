@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T17:07:15.906655+08:00",
+  "generatedAt": "2026-08-18T18:09:51.530608+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -459,12 +459,12 @@
     {
       "code": "PL01",
       "title": "Unraveling Hormonal Complexity: Genomics, Sex Differences, and Physiology (PL01)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "PD12",
       "title": "Endocrine Society Guideline Methodology: A Primer for Users and Aspiring Panelists (PD12)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTS05",

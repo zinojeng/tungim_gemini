@@ -464,6 +464,22 @@
     "publishedAt": "2026-08-18"
   },
   {
+    "slug": "pd12-practical-lessons-naykky-singh-ospina",
+    "code": "PD12",
+    "presentationId": "PD12-PRACTICAL-LESSONS",
+    "title": "Practical lessons from guideline development and audience Q&A",
+    "titleZh": "臨床指引開發的實務經驗與現場問答（Practical Lessons from Guideline Development and Audience Q&A）",
+    "speaker": "Naykky Singh Ospina",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-pd12-practical-lessons-naykky-singh-ospina-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/pd12-practical-lessons-naykky-singh-ospina-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/pd12-practical-lessons-naykky-singh-ospina-transcript-en.md",
+    "slidesDirectory": "generated-pd12-practical-lessons-naykky-singh-ospina-slides",
+    "publishedAt": "2026-08-18"
+  },
+  {
     "slug": "pl02-rohit-n-kulkarni-moderator-with-holly-a-ingraham-and-sadaf-farooqi",
     "code": "PL02",
     "presentationId": "PL02",
