@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T02:53:49.796124+08:00",
+  "generatedAt": "2026-08-19T03:15:30.864850+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -194,7 +194,7 @@
     {
       "code": "SY10",
       "title": "Hormone Havoc: The Ups and Downs of PTH/PTHrP Signaling (SY10)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "ORF18",

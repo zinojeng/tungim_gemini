@@ -560,6 +560,22 @@
     "publishedAt": "2026-08-18"
   },
   {
+    "slug": "pl05-01-barbara-kahn",
+    "code": "PL05",
+    "presentationId": "PL05-01",
+    "title": "Biology and Therapeutic Potential of a Class of Lipids with Beneficial Actions for both Type 1 and Type 2 Diabetes",
+    "titleZh": "FAHFAs 的生物學與第一型、第二型糖尿病治療潛力（Biology and Therapeutic Potential of a Class of Lipids with Beneficial Actions for Both Type 1 and Type 2 Diabetes）",
+    "speaker": "Barbara Kahn",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-pl05-01-barbara-kahn-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/pl05-01-barbara-kahn-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/pl05-01-barbara-kahn-transcript-en.md",
+    "slidesDirectory": "generated-pl05-01-barbara-kahn-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "pl05-clinical-investigator-samuel-klein",
     "code": "PL05",
     "presentationId": "PL05-CLINICAL-INVESTIGATOR",
