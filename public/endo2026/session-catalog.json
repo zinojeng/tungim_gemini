@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T05:24:33.250378+08:00",
+  "generatedAt": "2026-08-19T06:05:18.163493+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -304,17 +304,17 @@
     {
       "code": "SY61",
       "title": "Signaling: Everything, Everywhere, All at Once (SY61)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY43",
       "title": "Steroid Receptor Actions in Immunity (SY43)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY23",
       "title": "The Order & Disorder of Nuclear Receptors (SY23)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY04",
