@@ -96,6 +96,22 @@
     "publishedAt": "2026-08-18"
   },
   {
+    "slug": "cpg02-diagnosis-mirjam-christ-crain",
+    "code": "CPG02",
+    "presentationId": "CPG02-DIAGNOSIS",
+    "title": "Diagnosis of arginine vasopressin deficiency",
+    "titleZh": "成人 AVP 缺乏症的臨床診斷：從基期評估到 copeptin 動態試驗（Diagnosis of Arginine Vasopressin Deficiency）",
+    "speaker": "Mirjam Christ-Crain",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-cpg02-diagnosis-mirjam-christ-crain-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/cpg02-diagnosis-mirjam-christ-crain-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/cpg02-diagnosis-mirjam-christ-crain-transcript-en.md",
+    "slidesDirectory": "generated-cpg02-diagnosis-mirjam-christ-crain-slides",
+    "publishedAt": "2026-08-18"
+  },
+  {
     "slug": "cpg02-methodology-cihan-atila",
     "code": "CPG02",
     "presentationId": "CPG02-METHODOLOGY",
