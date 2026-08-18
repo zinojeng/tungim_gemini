@@ -512,6 +512,22 @@
     "publishedAt": "2026-08-18"
   },
   {
+    "slug": "pl01-02-i-sadaf-farooqi",
+    "code": "PL01",
+    "presentationId": "PL01-02",
+    "title": "Obesity: From Genes to Cells and Therapeutic Targets",
+    "titleZh": "肥胖：從基因、細胞到治療標靶（Obesity: From Genes to Cells and Therapeutic Targets）",
+    "speaker": "I. Sadaf Farooqi",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-pl01-02-i-sadaf-farooqi-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/pl01-02-i-sadaf-farooqi-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/pl01-02-i-sadaf-farooqi-transcript-en.md",
+    "slidesDirectory": "generated-pl01-02-i-sadaf-farooqi-slides",
+    "publishedAt": "2026-08-18"
+  },
+  {
     "slug": "pl01-presidential-carol-a-lange",
     "code": "PL01",
     "presentationId": "PL01-PRESIDENTIAL",

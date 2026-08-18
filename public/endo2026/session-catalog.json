@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T21:10:10.850203+08:00",
+  "generatedAt": "2026-08-18T22:18:06.608303+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -459,7 +459,7 @@
     {
       "code": "PL01",
       "title": "Unraveling Hormonal Complexity: Genomics, Sex Differences, and Physiology (PL01)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "PD12",
@@ -569,7 +569,7 @@
     {
       "code": "PL06",
       "title": "Post-Plenary Discussion: Molecular Mechanisms in Hormone Signaling: From Bench to Bedside (PL06)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY18",
