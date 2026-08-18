@@ -21,6 +21,7 @@ import {
     X,
 } from "lucide-react"
 import { ENDO_2026_OFFICIAL_URL, type EndoArticle } from "@/lib/endo2026"
+import { normalizeEndoMarkdown } from "@/lib/endo2026-markdown"
 import {
     decorateEndoSlideReferences,
     findEndoSlideIndex,
@@ -235,9 +236,15 @@ export function Endo2026ArticleView({
     const [activeTab, setActiveTab] = useState<ArticleTab>("note")
     const [selectedSlide, setSelectedSlide] = useState(0)
     const [lightboxOpen, setLightboxOpen] = useState(false)
-    const linkedPrimaryContent = useMemo(
-        () => decorateEndoSlideReferences(primaryContent, article.code, article.slideTalk),
+    const renderedPrimaryContent = useMemo(
+        () => normalizeEndoMarkdown(
+            decorateEndoSlideReferences(primaryContent, article.code, article.slideTalk),
+        ),
         [article.code, article.slideTalk, primaryContent],
+    )
+    const renderedTranscriptContent = useMemo(
+        () => transcriptContent ? normalizeEndoMarkdown(transcriptContent) : undefined,
+        [transcriptContent],
     )
 
     useEffect(() => {
@@ -437,7 +444,7 @@ export function Endo2026ArticleView({
                                         rehypePlugins={[rehypeRaw, [rehypeKatex, { strict: false }]]}
                                         remarkPlugins={[remarkGfm, remarkMath]}
                                     >
-                                        {linkedPrimaryContent}
+                                        {renderedPrimaryContent}
                                     </ReactMarkdown>
                                 </div>
                             </article>
@@ -450,7 +457,12 @@ export function Endo2026ArticleView({
                                     <h2 className="mt-2 text-2xl font-black tracking-tight">校訂英文逐字稿</h2>
                                 </div>
                                 <div className="prose prose-slate max-w-none prose-headings:font-black prose-p:leading-8 prose-li:leading-7">
-                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{transcriptContent}</ReactMarkdown>
+                                    <ReactMarkdown
+                                        rehypePlugins={[rehypeRaw]}
+                                        remarkPlugins={[remarkGfm]}
+                                    >
+                                        {renderedTranscriptContent}
+                                    </ReactMarkdown>
                                 </div>
                             </article>
                         ) : null}
