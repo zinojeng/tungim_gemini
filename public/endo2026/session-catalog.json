@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T06:44:36.867949+08:00",
+  "generatedAt": "2026-08-19T07:07:12.449269+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -19,7 +19,7 @@
     {
       "code": "SY09",
       "title": "The Evolving Adipose Organ: Single-Cell and Multi-Omic Windows into Metabolic Health and Disease (SY09)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF05",
@@ -344,7 +344,7 @@
     {
       "code": "SY42",
       "title": "Central Precocious Puberty: Evolving Concepts in Diagnosis, Treatment, and Surveillance (SY42)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY14",

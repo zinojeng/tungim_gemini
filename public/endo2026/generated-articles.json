@@ -864,6 +864,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy09-02-carey-lumeng",
+    "code": "SY09",
+    "presentationId": "SY09-02",
+    "title": "Insights from Human Single Cell Sequencing Across the Lifespan",
+    "titleZh": "從單細胞定序洞察人類脂肪組織的生命歷程（Insights from Human Single Cell Sequencing Across the Lifespan）",
+    "speaker": "Carey Lumeng",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy09-02-carey-lumeng-slides/slide_007_00-41_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy09-02-carey-lumeng-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy09-02-carey-lumeng-transcript-en.md",
+    "slidesDirectory": "generated-sy09-02-carey-lumeng-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy09-03-ada-weinstock",
+    "code": "SY09",
+    "presentationId": "SY09-03",
+    "title": "Leveraging weight loss insights to resolve metabolic inflammation",
+    "titleZh": "從減重洞察促進代謝性發炎消退（Leveraging Weight-Loss Insights to Resolve Metabolic Inflammation）",
+    "speaker": "Ada Weinstock",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy09-03-ada-weinstock-slides/slide_001_00-01_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy09-03-ada-weinstock-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy09-03-ada-weinstock-transcript-en.md",
+    "slidesDirectory": "generated-sy09-03-ada-weinstock-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",
