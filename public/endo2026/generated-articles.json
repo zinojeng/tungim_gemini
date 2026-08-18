@@ -176,6 +176,22 @@
     "publishedAt": "2026-08-18"
   },
   {
+    "slug": "l01-vincent-g-geenen",
+    "code": "L01",
+    "presentationId": "L01",
+    "title": "Clark T. Sawin Memorial History of Endocrinology Lecture - History of the Thymus: From a Vestigial Organ to the Unique Orchestrator of Central Immunological Self-Tolerance to Neuroendocrine Principles",
+    "titleZh": "Clark T. Sawin 紀念演講：胸腺的歷史——從痕跡器官到中央免疫自我耐受的獨特協調者（History of the Thymus: From a Vestigial Organ to the Unique Orchestrator of Central Immunological Self-Tolerance to Neuroendocrine Principles）",
+    "speaker": "Vincent G. Geenen",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-l01-vincent-g-geenen-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/l01-vincent-g-geenen-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/l01-vincent-g-geenen-transcript-en.md",
+    "slidesDirectory": "generated-l01-vincent-g-geenen-slides",
+    "publishedAt": "2026-08-18"
+  },
+  {
     "slug": "mtp26-adrenal-incidentalomas",
     "code": "MTP26",
     "presentationId": "MTP26",

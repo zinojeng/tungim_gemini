@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T20:17:52.266272+08:00",
+  "generatedAt": "2026-08-18T21:10:10.850203+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -484,7 +484,7 @@
     {
       "code": "L01",
       "title": "Clark T. Sawin Memorial History of Endocrinology Lecture - History of the Thymus: From a Vestigial Organ to the Unique Orchestrator of the Central Immunological Self-Tolerance to Neuroendocrine Principles (L01)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ELP01",
