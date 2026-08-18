@@ -896,6 +896,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy10-02-giovanna-mantovani-md-phd",
+    "code": "SY10",
+    "presentationId": "SY10-02",
+    "title": "Crystals in the Wrong Place: Ectopic Ossification in Inactivating PTH/PTHrP/GNAS Disorders",
+    "titleZh": "錯位的結晶：去活化型 PTH/PTHrP/GNAS 疾病中的異位性骨化（Crystals in the Wrong Place: Ectopic Ossification in Inactivating PTH/PTHrP/GNAS Disorders）",
+    "speaker": "Giovanna Mantovani, MD, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy10-02-giovanna-mantovani-md-phd-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy10-02-giovanna-mantovani-md-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy10-02-giovanna-mantovani-md-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy10-02-giovanna-mantovani-md-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy10-03-lee-s-weinstein-md",
+    "code": "SY10",
+    "presentationId": "SY10-03",
+    "title": "The Many Faces of G Protein Signaling in Obesity",
+    "titleZh": "G 蛋白信號傳導在肥胖中的多重面向（The Many Faces of G Protein Signaling in Obesity）",
+    "speaker": "Lee S. Weinstein, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy10-03-lee-s-weinstein-md-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy10-03-lee-s-weinstein-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy10-03-lee-s-weinstein-md-transcript-en.md",
+    "slidesDirectory": "generated-sy10-03-lee-s-weinstein-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",

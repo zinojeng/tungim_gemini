@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T07:07:12.449269+08:00",
+  "generatedAt": "2026-08-19T07:27:01.752862+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -194,7 +194,7 @@
     {
       "code": "SY10",
       "title": "Hormone Havoc: The Ups and Downs of PTH/PTHrP Signaling (SY10)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF18",
@@ -349,7 +349,7 @@
     {
       "code": "SY14",
       "title": "Breaking Barriers: Addressing Endocrine Disorders in Underserved Populations (SY14)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY03",
