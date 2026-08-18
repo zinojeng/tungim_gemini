@@ -480,6 +480,22 @@
     "publishedAt": "2026-08-18"
   },
   {
+    "slug": "pl01-presidential-carol-a-lange",
+    "code": "PL01",
+    "presentationId": "PL01-PRESIDENTIAL",
+    "title": "Presidential Address and Award Presentations",
+    "titleZh": "理事長致辭與桂冠獎頒獎典禮（Presidential Address and Award Presentations）",
+    "speaker": "Carol A. Lange",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-pl01-presidential-carol-a-lange-slides/slide_001_00-05_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/pl01-presidential-carol-a-lange-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/pl01-presidential-carol-a-lange-transcript-en.md",
+    "slidesDirectory": "generated-pl01-presidential-carol-a-lange-slides",
+    "publishedAt": "2026-08-18"
+  },
+  {
     "slug": "pl02-rohit-n-kulkarni-moderator-with-holly-a-ingraham-and-sadaf-farooqi",
     "code": "PL02",
     "presentationId": "PL02",
