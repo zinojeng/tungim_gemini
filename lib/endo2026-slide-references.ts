@@ -8,6 +8,13 @@ interface HeadingSlideReference extends EndoSlideReference {
     startsWith: string
 }
 
+export interface EndoSlideDecorationOptions {
+    code: string
+    slideNumbers: number[]
+    fixedTalk?: number
+    presentationLocal?: boolean
+}
+
 const HEADING_SLIDE_REFERENCES: Record<string, HeadingSlideReference[]> = {
     MTP37: [
         { startsWith: "1. 開場與學習目標", slide: 1 },
@@ -115,52 +122,154 @@ function makeSlideReferenceHref(reference: EndoSlideReference) {
     return `#endo-slide-ref${talk}-s${reference.slide}${end}`
 }
 
-function makeSlideReferenceLabel(reference: EndoSlideReference) {
+function makeSlideReferenceLabel(reference: EndoSlideReference, sectionRange = false) {
     const talk = reference.talk ? `Talk ${reference.talk} · ` : ""
     const slides = reference.endSlide && reference.endSlide !== reference.slide
         ? `Slides ${reference.slide}–${reference.endSlide}`
         : `Slide ${reference.slide}`
-    return `對照 ${talk}${slides}`
+    return `對照${sectionRange ? "本章 " : " "}${talk}${slides}`
 }
 
-function getHeadingReference(code: string, talk: number | undefined, heading: string) {
+function getHeadingReference(
+    code: string,
+    talk: number | undefined,
+    heading: string,
+    slideNumbers: number[],
+    presentationLocal: boolean,
+) {
+    if (slideNumbers.length === 0) return undefined
+
     const reference = HEADING_SLIDE_REFERENCES[code]?.find((candidate) => {
-        const sameTalk = candidate.talk === undefined || candidate.talk === talk
+        const sameTalk = presentationLocal
+            || candidate.talk === undefined
+            || candidate.talk === talk
         return sameTalk && heading.startsWith(candidate.startsWith)
     })
 
-    return reference
-        ? { talk: reference.talk ?? talk, slide: reference.slide, endSlide: reference.endSlide }
+    if (!reference || reference.slide > slideNumbers.at(-1)!) return undefined
+
+    const start = slideNumbers.find((slide) => slide >= reference.slide)
+    if (start === undefined) return undefined
+    const requestedEnd = reference.endSlide
+    const end = requestedEnd
+        ? slideNumbers.filter((slide) => slide >= start && slide <= requestedEnd).at(-1)
         : undefined
+
+    return {
+        talk: presentationLocal ? undefined : (reference.talk ?? talk),
+        slide: start,
+        endSlide: end && end > start ? end : undefined,
+    }
 }
 
-export function decorateEndoSlideReferences(markdown: string, code: string, fixedTalk?: number) {
-    let currentTalk: number | undefined = code.startsWith("ORF") ? (fixedTalk ?? 0) : undefined
+function sectionTextWeight(lines: string[], start: number, end: number) {
+    const text = lines
+        .slice(start, end)
+        .join(" ")
+        .replace(/<[^>]+>/g, " ")
+        .replace(/!?\[[^\]]*\]\([^)]*\)/g, " ")
+        .replace(/[*_`#>|~-]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
 
-    return markdown
-        .split("\n")
-        .flatMap((line) => {
+    return Math.max(1, [...text].length)
+}
+
+function buildSectionSlideRanges(lines: string[], slideNumbers: number[]) {
+    const headings = lines.flatMap((line, lineIndex) => {
+        const match = line.match(/^###\s+(.+?)\s*$/)
+        return match ? [{ lineIndex, heading: match[1] }] : []
+    })
+    const ranges = new Map<number, EndoSlideReference>()
+    if (slideNumbers.length === 0 || headings.length === 0) return ranges
+
+    const weights = headings.map((heading, index) => {
+        const end = headings[index + 1]?.lineIndex ?? lines.length
+        return sectionTextWeight(lines, heading.lineIndex + 1, end)
+    })
+    const totalWeight = weights.reduce((sum, weight) => sum + weight, 0)
+    let consumedWeight = 0
+
+    headings.forEach((heading, index) => {
+        const startIndex = Math.min(
+            slideNumbers.length - 1,
+            Math.floor((consumedWeight / totalWeight) * slideNumbers.length),
+        )
+        consumedWeight += weights[index]
+        const endIndex = Math.max(
+            startIndex,
+            Math.min(
+                slideNumbers.length - 1,
+                Math.ceil((consumedWeight / totalWeight) * slideNumbers.length) - 1,
+            ),
+        )
+        const start = slideNumbers[startIndex]
+        const end = slideNumbers[endIndex]
+        ranges.set(heading.lineIndex, {
+            slide: start,
+            endSlide: end > start ? end : undefined,
+        })
+    })
+
+    return ranges
+}
+
+export function decorateEndoSlideReferences(
+    markdown: string,
+    {
+        code,
+        slideNumbers: rawSlideNumbers,
+        fixedTalk,
+        presentationLocal = false,
+    }: EndoSlideDecorationOptions,
+) {
+    const lines = markdown.split("\n")
+    const slideNumbers = [...new Set(rawSlideNumbers)].sort((left, right) => left - right)
+    const sectionRanges = buildSectionSlideRanges(lines, slideNumbers)
+    let currentTalk: number | undefined = code.startsWith("ORF") && !presentationLocal
+        ? (fixedTalk ?? 0)
+        : fixedTalk
+
+    return lines
+        .flatMap((line, lineIndex) => {
             const headingMatch = line.match(/^(#{2,4})\s+(.+?)\s*$/)
 
             if (headingMatch) {
                 const level = headingMatch[1].length
                 const heading = headingMatch[2].replace(/[*_`]/g, "").trim()
 
-                if (code.startsWith("ORF") && fixedTalk === undefined && level === 2) {
+                if (
+                    code.startsWith("ORF")
+                    && !presentationLocal
+                    && fixedTalk === undefined
+                    && level === 2
+                ) {
                     currentTalk = (currentTalk ?? 0) + 1
                 }
 
                 const explicitSlide = heading.match(/^Slides?\s+0*(\d+)(?:\s*[–—-]\s*0*(\d+))?/i)
-                const reference = explicitSlide
+                const explicitReference = explicitSlide
                     ? {
-                        talk: currentTalk,
+                        talk: presentationLocal ? undefined : currentTalk,
                         slide: Number(explicitSlide[1]),
                         endSlide: explicitSlide[2] ? Number(explicitSlide[2]) : undefined,
                     }
-                    : getHeadingReference(code, currentTalk, heading)
+                    : undefined
+                const configuredReference = getHeadingReference(
+                    code,
+                    currentTalk,
+                    heading,
+                    slideNumbers,
+                    presentationLocal,
+                )
+                const sectionReference = level === 3
+                    ? sectionRanges.get(lineIndex)
+                    : undefined
+                const reference = explicitReference ?? configuredReference ?? sectionReference
 
-                if (reference) {
-                    const link = `[${makeSlideReferenceLabel(reference)}](${makeSlideReferenceHref(reference)})`
+                if (reference && slideNumbers.includes(reference.slide)) {
+                    const isSectionRange = !explicitReference && !configuredReference
+                    const link = `[${makeSlideReferenceLabel(reference, isSectionRange)}](${makeSlideReferenceHref(reference)})`
                     return [line, "", link]
                 }
             }
@@ -168,7 +277,7 @@ export function decorateEndoSlideReferences(markdown: string, code: string, fixe
             const bulletSlide = line.match(/^(\s*[-*+]\s+)\*\*(Slides?\s+0*(\d+)(?:\s*[–—-]\s*0*(\d+))?)\*\*(.*)$/i)
             if (bulletSlide) {
                 const reference: EndoSlideReference = {
-                    talk: currentTalk,
+                    talk: presentationLocal ? undefined : currentTalk,
                     slide: Number(bulletSlide[3]),
                     endSlide: bulletSlide[4] ? Number(bulletSlide[4]) : undefined,
                 }
@@ -189,6 +298,11 @@ export function parseEndoSlideReference(href?: string): EndoSlideReference | und
         slide: Number(match[2]),
         endSlide: match[3] ? Number(match[3]) : undefined,
     }
+}
+
+export function getEndoSlideNumber(slide: string, fallbackIndex: number) {
+    const match = slide.match(/slide_0*(\d+)/i)
+    return match ? Number(match[1]) : fallbackIndex + 1
 }
 
 export function findEndoSlideIndex(slides: string[], reference: EndoSlideReference) {

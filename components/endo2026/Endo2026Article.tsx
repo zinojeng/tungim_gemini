@@ -25,6 +25,7 @@ import { normalizeEndoMarkdown } from "@/lib/endo2026-markdown"
 import {
     decorateEndoSlideReferences,
     findEndoSlideIndex,
+    getEndoSlideNumber,
     parseEndoSlideReference,
     type EndoSlideReference,
 } from "@/lib/endo2026-slide-references"
@@ -238,9 +239,14 @@ export function Endo2026ArticleView({
     const [lightboxOpen, setLightboxOpen] = useState(false)
     const renderedPrimaryContent = useMemo(
         () => normalizeEndoMarkdown(
-            decorateEndoSlideReferences(primaryContent, article.code, article.slideTalk),
+            decorateEndoSlideReferences(primaryContent, {
+                code: article.code,
+                fixedTalk: article.slideTalk,
+                presentationLocal: true,
+                slideNumbers: slides.map(getEndoSlideNumber),
+            }),
         ),
-        [article.code, article.slideTalk, primaryContent],
+        [article.code, article.slideTalk, primaryContent, slides],
     )
     const renderedTranscriptContent = useMemo(
         () => transcriptContent ? normalizeEndoMarkdown(transcriptContent) : undefined,
