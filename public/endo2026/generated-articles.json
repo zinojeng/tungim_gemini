@@ -128,6 +128,22 @@
     "publishedAt": "2026-08-18"
   },
   {
+    "slug": "cpg02-pituitary-surgery-lewis-blevins",
+    "code": "CPG02",
+    "presentationId": "CPG02-PITUITARY-SURGERY",
+    "title": "Management after pituitary surgery",
+    "titleZh": "垂體手術後 AVP-D 的診斷與管理（Management after pituitary surgery）",
+    "speaker": "Lewis Blevins",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-cpg02-pituitary-surgery-lewis-blevins-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/cpg02-pituitary-surgery-lewis-blevins-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/cpg02-pituitary-surgery-lewis-blevins-transcript-en.md",
+    "slidesDirectory": "generated-cpg02-pituitary-surgery-lewis-blevins-slides",
+    "publishedAt": "2026-08-18"
+  },
+  {
     "slug": "cpg02-treatment-joseph-verbalis",
     "code": "CPG02",
     "presentationId": "CPG02-TREATMENT",
