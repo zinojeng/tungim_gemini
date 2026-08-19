@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T22:14:34.853171+08:00",
+  "generatedAt": "2026-08-19T22:21:53.073265+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -669,7 +669,7 @@
     {
       "code": "SY24",
       "title": "Beyond Blood Pressure: Diverse Roles of the Mineralocorticoid Receptor (SY24)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY62",
