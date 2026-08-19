@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T01:17:15.472861+08:00",
+  "generatedAt": "2026-08-20T01:32:58.894738+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -479,7 +479,7 @@
     {
       "code": "MTS03",
       "title": "Algorithms and Organoids: Transforming Diabetes Therapeutic Discovery (MTS03)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "L01",
@@ -539,12 +539,12 @@
     {
       "code": "MTP23",
       "title": "Lipedema at the Intersection of Endocrinology and Adipose Biology: From State of the Research to Clinical Care (MTP23)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP27",
       "title": "Post-GLP-1: Preparing Patients for Long-Term Maintenance and Transition (MTP27)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "ORF27",
@@ -554,7 +554,7 @@
     {
       "code": "MTP12",
       "title": "Evaluation and Management of Primary Aldosteronism (MTP12)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP37",
@@ -639,7 +639,7 @@
     {
       "code": "SY29",
       "title": "Weight Loss: Friend or Foe for Bone & Muscle? (SY29)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY39",

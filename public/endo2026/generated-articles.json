@@ -304,6 +304,38 @@
     "publishedAt": "2026-08-17"
   },
   {
+    "slug": "mts03-01-shuibing-chen-phd",
+    "code": "MTS03",
+    "presentationId": "MTS03-01",
+    "title": "Human Pluripotent Stem Cells, Organoids, AI and Translational Medicine",
+    "titleZh": "人類多能幹細胞、類器官、人工智慧與轉譯醫學（Human Pluripotent Stem Cells, Organoids, AI and Translational Medicine）",
+    "speaker": "Shuibing Chen, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-mts03-01-shuibing-chen-phd-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/mts03-01-shuibing-chen-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/mts03-01-shuibing-chen-phd-transcript-en.md",
+    "slidesDirectory": "generated-mts03-01-shuibing-chen-phd-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
+    "slug": "mts03-02-cherie-stabler-phd",
+    "code": "MTS03",
+    "presentationId": "MTS03-02",
+    "title": "Diabetes In A Dish",
+    "titleZh": "培養皿中的糖尿病：以三維人類模型解析免疫細胞與 β 細胞互動（Diabetes In A Dish）",
+    "speaker": "Cherie Stabler, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-mts03-02-cherie-stabler-phd-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/mts03-02-cherie-stabler-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/mts03-02-cherie-stabler-phd-transcript-en.md",
+    "slidesDirectory": "generated-mts03-02-cherie-stabler-phd-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
     "slug": "orf05-03-vania-balderrama-brondani",
     "code": "ORF05",
     "presentationId": "ORF05-03",
@@ -1645,6 +1677,22 @@
     "primaryContentPath": "/endo2026/generated-content/sy29-02-clifford-j-rosen-md-note-zh-tw.md",
     "transcriptPath": "/endo2026/generated-content/sy29-02-clifford-j-rosen-md-transcript-en.md",
     "slidesDirectory": "generated-sy29-02-clifford-j-rosen-md-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
+    "slug": "sy29-03-elaine-w-yu-md-mmsc",
+    "code": "SY29",
+    "presentationId": "SY29-03",
+    "title": "Clinical Management of Musculoskeletal Health After Bariatric Surgery",
+    "titleZh": "減重手術後肌肉骨骼健康的臨床管理（Clinical Management of Musculoskeletal Health After Bariatric Surgery）",
+    "speaker": "Elaine W. Yu, MD, MMSc",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy29-03-elaine-w-yu-md-mmsc-slides/slide_004_00-35_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy29-03-elaine-w-yu-md-mmsc-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy29-03-elaine-w-yu-md-mmsc-transcript-en.md",
+    "slidesDirectory": "generated-sy29-03-elaine-w-yu-md-mmsc-slides",
     "publishedAt": "2026-08-20"
   },
   {
