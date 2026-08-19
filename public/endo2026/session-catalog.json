@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T16:41:42.163430+08:00",
+  "generatedAt": "2026-08-19T17:28:24.620968+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -514,7 +514,7 @@
     {
       "code": "SY08",
       "title": "In Range: Gadgets for a New Era of Precision Medicine in Glucose Management (SY08)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP40",
