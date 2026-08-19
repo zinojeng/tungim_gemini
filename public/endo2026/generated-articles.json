@@ -1552,6 +1552,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy37-01-marta-araujo-castro-md-phd",
+    "code": "SY37",
+    "presentationId": "SY37-01",
+    "title": "Non-functional Adrenal Nodules: Clinical Implications and follow-up",
+    "titleZh": "無功能性腎上腺結節：臨床意義與追蹤",
+    "speaker": "Marta Araujo-Castro, MD, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy37-01-marta-araujo-castro-md-phd-slides/slide_004_01-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy37-01-marta-araujo-castro-md-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy37-01-marta-araujo-castro-md-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy37-01-marta-araujo-castro-md-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy37-02-wiebke-arlt-md-dsc-frcp-fmedsci",
+    "code": "SY37",
+    "presentationId": "SY37-02",
+    "title": "Steroid Metabolomics for Detection and Classification of Adrenal Tumors",
+    "titleZh": "尿液類固醇代謝體學：腎上腺腫瘤的偵測與分類",
+    "speaker": "Wiebke Arlt, MD, DSc, FRCP, FMedSci",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy37-02-wiebke-arlt-md-dsc-frcp-fmedsci-slides/slide_004_00-46_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy37-02-wiebke-arlt-md-dsc-frcp-fmedsci-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy37-02-wiebke-arlt-md-dsc-frcp-fmedsci-transcript-en.md",
+    "slidesDirectory": "generated-sy37-02-wiebke-arlt-md-dsc-frcp-fmedsci-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "sy38-01-rasheed-ahmad-phd",
     "code": "SY38",
     "presentationId": "SY38-01",

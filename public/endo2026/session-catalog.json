@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T20:48:31.599248+08:00",
+  "generatedAt": "2026-08-19T21:33:00.515955+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -644,12 +644,12 @@
     {
       "code": "SY39",
       "title": "Signal Strength: Wnt Pathways Powering Bone Formation (SY39)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY49",
       "title": "Bouncing Back From Denosumab Discontinuation (SY49)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY66",
