@@ -1328,6 +1328,22 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy23-03-sethu-pitchiaya-phd",
+    "code": "SY23",
+    "presentationId": "SY23-03",
+    "title": "Transcription Regulation by Stress-induced Nuclear Biomolecular Condensates",
+    "titleZh": "Transcription Regulation by Stress-induced Nuclear Biomolecular Condensates",
+    "speaker": "Sethu Pitchiaya, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy23-03-sethu-pitchiaya-phd-slides/slide_004_00-48_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy23-03-sethu-pitchiaya-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy23-03-sethu-pitchiaya-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy23-03-sethu-pitchiaya-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "sy25-01-ricardo-h-costa-e-sousa-dvm-msc-dsc",
     "code": "SY25",
     "presentationId": "SY25-01",
@@ -1533,6 +1549,38 @@
     "primaryContentPath": "/endo2026/generated-content/sy42-03-ana-claudia-latronico-md-phd-note-zh-tw.md",
     "transcriptPath": "/endo2026/generated-content/sy42-03-ana-claudia-latronico-md-phd-transcript-en.md",
     "slidesDirectory": "generated-sy42-03-ana-claudia-latronico-md-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy43-01-dan-huang-md-phd",
+    "code": "SY43",
+    "presentationId": "SY43-01",
+    "title": "At the Crossroads of Signaling: PARP1 as a Tissue-Specific Mediator of Inflammatory and Hormonal Programs",
+    "titleZh": "訊號交會之處：PARP1 作為發炎與激素計畫的組織特異性調控因子（At the Crossroads of Signaling: PARP1 as a Tissue-Specific Mediator of Inflammatory and Hormonal Programs）",
+    "speaker": "Dan Huang, MD, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy43-01-dan-huang-md-phd-slides/slide_018_01-46_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy43-01-dan-huang-md-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy43-01-dan-huang-md-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy43-01-dan-huang-md-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy43-02-inez-rogatsky-phd",
+    "code": "SY43",
+    "presentationId": "SY43-02",
+    "title": "Differential Epigenomic and Transcriptional Programming of Macrophage Functional States",
+    "titleZh": "巨噬細胞功能狀態的差異性表觀基因組與轉錄程式化（Differential Epigenomic and Transcriptional Programming of Macrophage Functional States）",
+    "speaker": "Inez Rogatsky, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy43-02-inez-rogatsky-phd-slides/slide_004_00-41_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy43-02-inez-rogatsky-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy43-02-inez-rogatsky-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy43-02-inez-rogatsky-phd-slides",
     "publishedAt": "2026-08-19"
   },
   {

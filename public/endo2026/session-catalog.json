@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T19:11:42.248325+08:00",
+  "generatedAt": "2026-08-19T19:43:56.688444+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -314,7 +314,7 @@
     {
       "code": "SY23",
       "title": "The Order & Disorder of Nuclear Receptors (SY23)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY04",
