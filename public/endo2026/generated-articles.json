@@ -2208,6 +2208,22 @@
     "publishedAt": "2026-08-20"
   },
   {
+    "slug": "sy60-01-biagio-cangiano",
+    "code": "SY60",
+    "presentationId": "SY60-01",
+    "title": "Hypogonadism in Obstructive Sleep Apnea",
+    "titleZh": "阻塞性睡眠呼吸中止症中的性腺功能低下（Hypogonadism in Obstructive Sleep Apnea）",
+    "speaker": "Biagio Cangiano",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy60-01-biagio-cangiano-slides/slide_002_00-50_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy60-01-biagio-cangiano-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy60-01-biagio-cangiano-transcript-en.md",
+    "slidesDirectory": "generated-sy60-01-biagio-cangiano-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",
