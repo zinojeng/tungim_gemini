@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T07:38:30.672188+08:00",
+  "generatedAt": "2026-08-19T08:29:09.994589+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -394,7 +394,7 @@
     {
       "code": "SY01",
       "title": "When Benign Isn't Harmless: Revisiting Aggressiveness and Extrasellar Spread in Pituitary Adenomas (SY01)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "ORF35",
@@ -444,12 +444,12 @@
     {
       "code": "SY31",
       "title": "Clinical Pearls from JCEM Case Reports (SY31)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY11",
       "title": "Artificial Intelligence in Endocrinology: Practical Uses, Lessons Learned, and What Comes Next (SY11)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "RS01",

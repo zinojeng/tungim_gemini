@@ -848,6 +848,22 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy01-03-qilin-zhang-md-phd-mmsc",
+    "code": "SY01",
+    "presentationId": "SY01-03",
+    "title": "Molecular Biomarkers of Aggressiveness in Pituitary Neuroendocrine Tumors: From Early Detection to Targeted Therapy",
+    "titleZh": "垂體神經內分泌腫瘤侵襲性的分子生物標記：從早期偵測到標靶治療（Molecular Biomarkers of Aggressiveness in Pituitary Neuroendocrine Tumors: From Early Detection to Targeted Therapy）",
+    "speaker": "Qilin Zhang, MD, PhD, MMSc",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy01-03-qilin-zhang-md-phd-mmsc-slides/slide_001_00-11_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy01-03-qilin-zhang-md-phd-mmsc-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy01-03-qilin-zhang-md-phd-mmsc-transcript-en.md",
+    "slidesDirectory": "generated-sy01-03-qilin-zhang-md-phd-mmsc-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "sy02-03-peter-schlegel-md",
     "code": "SY02",
     "presentationId": "SY02-03",
@@ -861,6 +877,22 @@
     "primaryContentPath": "/endo2026/generated-content/sy02-03-peter-schlegel-md-note-zh-tw.md",
     "transcriptPath": "/endo2026/generated-content/sy02-03-peter-schlegel-md-transcript-en.md",
     "slidesDirectory": "generated-sy02-03-peter-schlegel-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy06-02-christine-spitzweg-md",
+    "code": "SY06",
+    "presentationId": "SY06-02",
+    "title": "RET-Fusions in Differentiated Thyroid Cancer",
+    "titleZh": "分化型甲狀腺癌中的 RET 融合（RET-Fusions in Differentiated Thyroid Cancer）",
+    "speaker": "Christine Spitzweg, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy06-02-christine-spitzweg-md-slides/slide_002_00-03_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy06-02-christine-spitzweg-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy06-02-christine-spitzweg-md-transcript-en.md",
+    "slidesDirectory": "generated-sy06-02-christine-spitzweg-md-slides",
     "publishedAt": "2026-08-19"
   },
   {
@@ -925,6 +957,22 @@
     "primaryContentPath": "/endo2026/generated-content/sy10-03-lee-s-weinstein-md-note-zh-tw.md",
     "transcriptPath": "/endo2026/generated-content/sy10-03-lee-s-weinstein-md-transcript-en.md",
     "slidesDirectory": "generated-sy10-03-lee-s-weinstein-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy25-01-ricardo-h-costa-e-sousa-dvm-msc-dsc",
+    "code": "SY25",
+    "presentationId": "SY25-01",
+    "title": "Neural Regulation of the Hypothalamic Pituitary Thyroid Axis",
+    "titleZh": "下視丘－垂體－甲狀腺軸的神經調節（Neural Regulation of the Hypothalamic Pituitary Thyroid Axis）",
+    "speaker": "Ricardo H. Costa e Sousa, DVM, MSc, DSc",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy25-01-ricardo-h-costa-e-sousa-dvm-msc-dsc-slides/slide_011_01-09_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy25-01-ricardo-h-costa-e-sousa-dvm-msc-dsc-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy25-01-ricardo-h-costa-e-sousa-dvm-msc-dsc-transcript-en.md",
+    "slidesDirectory": "generated-sy25-01-ricardo-h-costa-e-sousa-dvm-msc-dsc-slides",
     "publishedAt": "2026-08-19"
   },
   {
