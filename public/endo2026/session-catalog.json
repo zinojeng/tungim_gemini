@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-08-20T02:52:32.738469+08:00",
+  "generatedAt": "2026-08-20T03:02:29.413049+08:00",
   "sessions": [
     {
       "code": "ORF07",
       "title": "Emerging Mechanisms in Metabolic Regulation: From Nutrients to Hormonal Signaling (ORF07)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "ORF15",
       "title": "Mechanisms and Clinical Insights in MASLD (ORF15)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "ORF50",
