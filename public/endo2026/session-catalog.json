@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T02:03:52.353181+08:00",
+  "generatedAt": "2026-08-20T02:13:08.692946+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -604,7 +604,7 @@
     {
       "code": "SY56",
       "title": "From Bench to Bedside: Tools for Personalized Care in Adrenal Disorders (SY56)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY64",
@@ -679,12 +679,12 @@
     {
       "code": "MTP15",
       "title": "Transition of Care in Type 2 Diabetes Youth (MTP15)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP17",
       "title": "GLP-1 Agonists and Pancreatitis/Pancreatic Lesions: What Is the Evidence and When Are They Contraindicated? (MTP17)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP20",
