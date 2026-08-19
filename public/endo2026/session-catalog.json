@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T20:09:08.021214+08:00",
+  "generatedAt": "2026-08-19T20:26:40.845309+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -579,7 +579,7 @@
     {
       "code": "SY57",
       "title": "Hot Topics in Obesity Care in the GLP-1 Era: Biology, Safety, and Value in Chronic Disease (SY57)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY07",
