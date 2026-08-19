@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T23:10:00.598569+08:00",
+  "generatedAt": "2026-08-19T23:25:03.637948+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -249,7 +249,7 @@
     {
       "code": "MTP33",
       "title": "Targeted Therapy in Advanced Thyroid Cancer (MTP33)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP30",
@@ -284,17 +284,17 @@
     {
       "code": "MTP35",
       "title": "Update on Management of Androgen Insensitivity Syndromes (MTP35)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP14",
       "title": "Hormone Balancing: Addressing Social Media Myths (MTP14)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP01",
       "title": "Endocrine and Fertility Implications After Anabolic Steroids, Hormonal Contraception, and Gender-Affirming Hormone Therapy (MTP01)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "YI03",
@@ -339,7 +339,7 @@
     {
       "code": "SY52",
       "title": "Growth Disorders: Emerging Insights and Innovative Therapeutic Approaches (SY52)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY42",
@@ -369,7 +369,7 @@
     {
       "code": "MTP25",
       "title": "Pituitary Tumor Survivorship: Transitioning from Pediatric to Adult Endocrine Care (MTP25)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP19",
