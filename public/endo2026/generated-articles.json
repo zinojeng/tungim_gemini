@@ -1136,6 +1136,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy14-03-emily-hause-md-mph",
+    "code": "SY14",
+    "presentationId": "SY14-03",
+    "title": "Identifying Global Pediatric MSK Health Needs: The Tin Soldiers Global Program",
+    "titleZh": "全球兒童骨骼肌肉健康需求與 Tin Soldiers Global 計畫（Identifying Global Pediatric MSK Health Needs: The Tin Soldiers Global Program）",
+    "speaker": "Emily Hause, MD, MPH",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy14-03-emily-hause-md-mph-slides/slide_007_01-15_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy14-03-emily-hause-md-mph-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy14-03-emily-hause-md-mph-transcript-en.md",
+    "slidesDirectory": "generated-sy14-03-emily-hause-md-mph-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy17-01-aida-collado-s-nchez-phd",
+    "code": "SY17",
+    "presentationId": "SY17-01",
+    "title": "Linking Extracellular Vesicles and their Molecular Cargo to Endothelial Dysfunction in Type 2 Diabetes",
+    "titleZh": "外細胞囊泡及其分子載荷與第 2 型糖尿病內皮功能障礙（Linking Extracellular Vesicles and their Molecular Cargo to Endothelial Dysfunction in Type 2 Diabetes）",
+    "speaker": "Aida Collado Sánchez, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy17-01-aida-collado-s-nchez-phd-slides/slide_001_00-03_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy17-01-aida-collado-s-nchez-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy17-01-aida-collado-s-nchez-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy17-01-aida-collado-s-nchez-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "sy25-01-ricardo-h-costa-e-sousa-dvm-msc-dsc",
     "code": "SY25",
     "presentationId": "SY25-01",

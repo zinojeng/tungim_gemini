@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T14:53:32.057613+08:00",
+  "generatedAt": "2026-08-19T15:15:01.243528+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -349,7 +349,7 @@
     {
       "code": "SY14",
       "title": "Breaking Barriers: Addressing Endocrine Disorders in Underserved Populations (SY14)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY03",
