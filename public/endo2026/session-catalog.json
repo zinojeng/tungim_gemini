@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T23:48:21.452512+08:00",
+  "generatedAt": "2026-08-20T00:09:03.875277+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -264,7 +264,7 @@
     {
       "code": "MTP03",
       "title": "Recent Advances in the Management of Anaplastic Thyroid Cancer (MTP03)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY67",
@@ -374,12 +374,12 @@
     {
       "code": "MTP19",
       "title": "Management of 46, XY DSD Across the Lifespan: A Multidisciplinary Team Perspective (MTP19)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP16",
       "title": "New Management Options for the Adult with Congenital Adrenal Hyperplasia (CAH) (MTP16)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP11",
