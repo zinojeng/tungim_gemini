@@ -2256,6 +2256,38 @@
     "publishedAt": "2026-08-20"
   },
   {
+    "slug": "sy61-01-emilyn-u-alejandro-phd",
+    "code": "SY61",
+    "presentationId": "SY61-01",
+    "title": "Placental Insulin and mTOR Signaling Modulates Offspring Susceptibility to Metabolic Dysfunction",
+    "titleZh": "胎盤 insulin 與 mTOR 訊號如何調控子代代謝失衡易感性（Placental Insulin and mTOR Signaling Modulates Offspring Susceptibility to Metabolic Dysfunction）",
+    "speaker": "Emilyn U. Alejandro, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy61-01-emilyn-u-alejandro-phd-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy61-01-emilyn-u-alejandro-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy61-01-emilyn-u-alejandro-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy61-01-emilyn-u-alejandro-phd-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
+    "slug": "sy61-02-alexander-banks-phd",
+    "code": "SY61",
+    "presentationId": "SY61-02",
+    "title": "Activins in Type 2 Diabetes, Friend or Foe?",
+    "titleZh": "第二型糖尿病中的 Activin：朋友還是敵人？（Activins in Type 2 Diabetes, Friend or Foe?）",
+    "speaker": "Alexander Banks, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy61-02-alexander-banks-phd-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy61-02-alexander-banks-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy61-02-alexander-banks-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy61-02-alexander-banks-phd-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",
