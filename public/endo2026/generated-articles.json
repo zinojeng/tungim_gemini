@@ -1024,6 +1024,22 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy11-01-naykky-m-singh-ospina-md",
+    "code": "SY11",
+    "presentationId": "SY11-01",
+    "title": "Artificial Intelligence in Endocrinology: Practical Uses, Lessons Learned, and What Comes Next",
+    "titleZh": "醫療 AI 的真實世界導入：從承諾走向影響（AI in Real Life: Lessons From Implementation of Artificial Intelligence in Healthcare）",
+    "speaker": "Naykky M. Singh Ospina, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy11-01-naykky-m-singh-ospina-md-slides/slide_003_00-13_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy11-01-naykky-m-singh-ospina-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy11-01-naykky-m-singh-ospina-md-transcript-en.md",
+    "slidesDirectory": "generated-sy11-01-naykky-m-singh-ospina-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "sy11-02-david-toro-tobon-md",
     "code": "SY11",
     "presentationId": "SY11-02",
@@ -1037,6 +1053,22 @@
     "primaryContentPath": "/endo2026/generated-content/sy11-02-david-toro-tobon-md-note-zh-tw.md",
     "transcriptPath": "/endo2026/generated-content/sy11-02-david-toro-tobon-md-transcript-en.md",
     "slidesDirectory": "generated-sy11-02-david-toro-tobon-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy14-01-alicia-diaz-thomas-md-mph",
+    "code": "SY14",
+    "presentationId": "SY14-01",
+    "title": "From Social Medicine to Modern Equity: Frameworks for Reconceptualizing Endocrine Outcomes",
+    "titleZh": "從社會醫學到現代健康平權：重新理解內分泌預後的概念框架（From Social Medicine to Modern Equity: Frameworks for Reconceptualizing Endocrine Outcomes）",
+    "speaker": "Alicia Diaz-Thomas, MD, MPH",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy14-01-alicia-diaz-thomas-md-mph-slides/slide_004_02-16_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy14-01-alicia-diaz-thomas-md-mph-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy14-01-alicia-diaz-thomas-md-mph-transcript-en.md",
+    "slidesDirectory": "generated-sy14-01-alicia-diaz-thomas-md-mph-slides",
     "publishedAt": "2026-08-19"
   },
   {

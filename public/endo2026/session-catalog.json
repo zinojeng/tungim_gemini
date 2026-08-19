@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T13:28:17.276306+08:00",
+  "generatedAt": "2026-08-19T13:59:13.262818+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -449,7 +449,7 @@
     {
       "code": "SY11",
       "title": "Artificial Intelligence in Endocrinology: Practical Uses, Lessons Learned, and What Comes Next (SY11)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "RS01",
