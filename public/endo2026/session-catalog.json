@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T20:26:40.845309+08:00",
+  "generatedAt": "2026-08-19T20:37:10.354878+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -599,12 +599,12 @@
     {
       "code": "SY37",
       "title": "Adrenal Tumors: Assessing the Risk (SY37)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY56",
       "title": "From Bench to Bedside: Tools for Personalized Care in Adrenal Disorders (SY56)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY64",
