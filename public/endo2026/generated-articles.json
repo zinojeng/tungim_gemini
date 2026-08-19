@@ -2160,6 +2160,38 @@
     "publishedAt": "2026-08-20"
   },
   {
+    "slug": "sy57-01-david-d-kim-phd",
+    "code": "SY57",
+    "presentationId": "SY57-01",
+    "title": "Cost-effectiveness of GLP-1 Agonist Therapy in Care of Chronic Diseases",
+    "titleZh": "慢性病照護中 GLP-1 agonist therapy 的成本效益（Cost-effectiveness of GLP-1 Agonist Therapy in Care of Chronic Diseases）",
+    "speaker": "David D. Kim, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy57-01-david-d-kim-phd-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy57-01-david-d-kim-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy57-01-david-d-kim-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy57-01-david-d-kim-phd-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
+    "slug": "sy57-02-carolina-solis-herrera-md",
+    "code": "SY57",
+    "presentationId": "SY57-02",
+    "title": "GLP-1 Agonists Under the Microscope: Evaluating Risks",
+    "titleZh": "GLP-1 受體促效劑的風險檢視（GLP-1 Agonists Under the Microscope: Evaluating Risks）",
+    "speaker": "Carolina Solis-Herrera, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy57-02-carolina-solis-herrera-md-slides/slide_003_02-07_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy57-02-carolina-solis-herrera-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy57-02-carolina-solis-herrera-md-transcript-en.md",
+    "slidesDirectory": "generated-sy57-02-carolina-solis-herrera-md-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",
