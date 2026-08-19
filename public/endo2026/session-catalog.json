@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T01:03:17.920667+08:00",
+  "generatedAt": "2026-08-20T01:17:15.472861+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -529,12 +529,12 @@
     {
       "code": "MTP05",
       "title": "Navigating Obesity Management in Menopause and Midlife (MTP05)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP08",
       "title": "Dietary Patterns and Eating Strategies in Obesity Care: Timing, Composition, and Personalized Approaches (MTP08)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP23",
