@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T15:28:49.170488+08:00",
+  "generatedAt": "2026-08-19T15:55:46.721142+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -234,7 +234,7 @@
     {
       "code": "SY25",
       "title": "Thyroid Hormone on the Brain (SY25)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY06",
