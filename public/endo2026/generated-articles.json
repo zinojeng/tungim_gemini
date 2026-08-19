@@ -1760,6 +1760,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy39-01-matthew-t-drake-md-phd",
+    "code": "SY39",
+    "presentationId": "SY39-01",
+    "title": "Harnessing Wnt Signaling for Anabolic Bone Regeneration",
+    "titleZh": "以 Wnt 訊號促進骨合成再生（Harnessing Wnt Signaling for Anabolic Bone Regeneration）",
+    "speaker": "Matthew T. Drake, MD, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy39-01-matthew-t-drake-md-phd-slides/slide_004_01-20_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy39-01-matthew-t-drake-md-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy39-01-matthew-t-drake-md-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy39-01-matthew-t-drake-md-phd-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
+    "slug": "sy39-02-ryan-c-riddle-phd",
+    "code": "SY39",
+    "presentationId": "SY39-02",
+    "title": "Metabolic Integration by Wnt Signaling in Bone: Linking Cellular Bioenergetics to Anabolic Therapy",
+    "titleZh": "骨骼 Wnt 訊號的代謝整合：從細胞生物能到骨合成治療（Metabolic Integration by Wnt Signaling in Bone: Linking Cellular Bioenergetics to Anabolic Therapy）",
+    "speaker": "Ryan C. Riddle, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy39-02-ryan-c-riddle-phd-slides/slide_005_00-22_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy39-02-ryan-c-riddle-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy39-02-ryan-c-riddle-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy39-02-ryan-c-riddle-phd-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
     "slug": "sy42-01-liat-de-vries-md",
     "code": "SY42",
     "presentationId": "SY42-01",

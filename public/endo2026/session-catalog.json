@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T00:20:56.050660+08:00",
+  "generatedAt": "2026-08-20T00:36:25.018339+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -409,32 +409,32 @@
     {
       "code": "MTP34",
       "title": "Updates in the Management of Pituitary Apoplexy (MTP34)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP13",
       "title": "Current Approach to Acromegaly Care (MTP13)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP10",
       "title": "Ectopic Cushing Syndrome (MTP10)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP07",
       "title": "Neuroendocrine Adverse Effects of Cancer Treatment: Check Point Inhibitors (MTP07)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP04",
       "title": "A Structured Diagnostic Approach to the Patient with Hypotonic Polyuria (MTP04)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MC01",
       "title": "Ambiguity to Action: Multidisciplinary Management of Challenging Suprasellar Lesions (MC01)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "CPG02",
