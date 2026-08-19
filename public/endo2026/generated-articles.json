@@ -944,6 +944,22 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy06-03-gregory-randolph-md",
+    "code": "SY06",
+    "presentationId": "SY06-03",
+    "title": "Neoadjuvant Approaches in DTC 2026",
+    "titleZh": "2026 年分化型甲狀腺癌之術前輔助治療策略（Neoadjuvant Approaches in DTC 2026）",
+    "speaker": "Gregory Randolph, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy06-03-gregory-randolph-md-slides/slide_001_27-33_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy06-03-gregory-randolph-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy06-03-gregory-randolph-md-transcript-en.md",
+    "slidesDirectory": "generated-sy06-03-gregory-randolph-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "sy09-02-carey-lumeng",
     "code": "SY09",
     "presentationId": "SY09-02",
@@ -1005,6 +1021,22 @@
     "primaryContentPath": "/endo2026/generated-content/sy10-03-lee-s-weinstein-md-note-zh-tw.md",
     "transcriptPath": "/endo2026/generated-content/sy10-03-lee-s-weinstein-md-transcript-en.md",
     "slidesDirectory": "generated-sy10-03-lee-s-weinstein-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy11-02-david-toro-tobon-md",
+    "code": "SY11",
+    "presentationId": "SY11-02",
+    "title": "Artificial Intelligence in Endocrinology: Practical Uses, Lessons Learned, and What Comes Next",
+    "titleZh": "日常 AI：讓臨床與學術工作更有效率的實用工具（Everyday AI: Tools to Work Smarter in Clinical and Academic Life）",
+    "speaker": "David Toro Tobon, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy11-02-david-toro-tobon-md-slides/slide_002_03-12_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy11-02-david-toro-tobon-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy11-02-david-toro-tobon-md-transcript-en.md",
+    "slidesDirectory": "generated-sy11-02-david-toro-tobon-md-slides",
     "publishedAt": "2026-08-19"
   },
   {

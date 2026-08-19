@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T09:20:19.305185+08:00",
+  "generatedAt": "2026-08-19T13:28:17.276306+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -239,7 +239,7 @@
     {
       "code": "SY06",
       "title": "Dissecting the Role of RET in Thyroid Cancer (SY06)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF49",
