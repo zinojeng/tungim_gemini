@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T02:21:53.967954+08:00",
+  "generatedAt": "2026-08-20T02:32:20.329958+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -579,7 +579,7 @@
     {
       "code": "SY57",
       "title": "Hot Topics in Obesity Care in the GLP-1 Era: Biology, Safety, and Value in Chronic Disease (SY57)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY07",
@@ -689,7 +689,7 @@
     {
       "code": "MTP20",
       "title": "Type 2 Diabetes in Preconception, Pregnancy, and Postpartum (MTP20)",
-      "status": "pending_discovery"
+      "status": "processing"
     }
   ]
 }
