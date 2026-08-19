@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T01:32:58.894738+08:00",
+  "generatedAt": "2026-08-20T02:03:52.353181+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -614,27 +614,27 @@
     {
       "code": "MTP06",
       "title": "PTH Replacement Therapy in Chronic Hypoparathyroidism in Adults (MTP06)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP09",
       "title": "Osteoanabolic Therapies in Osteoporosis: When to Build Bone and How to Sequence Treatment (MTP09)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP24",
       "title": "Hypophosphatasia in Adults: Recognizing, Diagnosing, and Treating a Multisystem Disease (MTP24)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP29",
       "title": "Osteoporosis in Women with Breast Cancer (MTP29)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP32",
       "title": "Beyond Basic DXA (MTP32)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY29",
@@ -664,7 +664,7 @@
     {
       "code": "MTP36",
       "title": "Interpreting Aldosterone and Renin: Tricks of the Trade (MTP36)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY24",

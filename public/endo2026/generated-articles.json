@@ -2112,6 +2112,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy56-01-irina-chifu-md",
+    "code": "SY56",
+    "presentationId": "SY56-01",
+    "title": "Glucocorticoid Replacement Therapy in Adrenal Insufficiency: Are There Any Objective Biomarkers?",
+    "titleZh": "腎上腺功能不全的糖皮質素替代治療：是否存在客觀生物標記？（Glucocorticoid Replacement Therapy in Adrenal Insufficiency: Are There Any Objective Biomarkers?）",
+    "speaker": "Irina Chifu, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy56-01-irina-chifu-md-slides/slide_004_00-13_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy56-01-irina-chifu-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy56-01-irina-chifu-md-transcript-en.md",
+    "slidesDirectory": "generated-sy56-01-irina-chifu-md-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
+    "slug": "sy56-02-matthias-kroiss",
+    "code": "SY56",
+    "presentationId": "SY56-02",
+    "title": "Biomarkers of Survival and Treatment Response in Adrenocortical Carcinoma",
+    "titleZh": "腎上腺皮質癌的存活與治療反應生物標記（Biomarkers of Survival and Treatment Response in Adrenocortical Carcinoma）",
+    "speaker": "Matthias Kroiss",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy56-02-matthias-kroiss-slides/slide_005_00-20_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy56-02-matthias-kroiss-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy56-02-matthias-kroiss-transcript-en.md",
+    "slidesDirectory": "generated-sy56-02-matthias-kroiss-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",
