@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T13:59:13.262818+08:00",
+  "generatedAt": "2026-08-19T14:53:32.057613+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -319,7 +319,7 @@
     {
       "code": "SY04",
       "title": "The PR Puzzle: Context-Dependent Actions Reveal Therapeutic Potential (SY04)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF48",
@@ -509,7 +509,7 @@
     {
       "code": "SY17",
       "title": "Keep it Flowing: How Vascular Endothelium Shapes Glucose Homeostasis (SY17)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY08",
