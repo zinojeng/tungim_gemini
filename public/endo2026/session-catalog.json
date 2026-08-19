@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T02:36:48.545136+08:00",
+  "generatedAt": "2026-08-20T02:52:32.738469+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -274,7 +274,7 @@
     {
       "code": "SY60",
       "title": "Advances in Male Hypogonadism Approach (SY60)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTS01",

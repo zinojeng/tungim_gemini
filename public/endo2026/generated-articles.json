@@ -2224,6 +2224,38 @@
     "publishedAt": "2026-08-20"
   },
   {
+    "slug": "sy60-02-rodolfo-rey",
+    "code": "SY60",
+    "presentationId": "SY60-02",
+    "title": "The Role of Reproductive Biomarkers in Diagnosing Male Congenital Hypogonadotropic Hypogonadism in Childhood",
+    "titleZh": "兒童期男性先天性低促性腺素性性腺功能減退症的生殖生物標記（The Role of Reproductive Biomarkers in Diagnosing Male Congenital Hypogonadotropic Hypogonadism in Childhood）",
+    "speaker": "Rodolfo Rey",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy60-02-rodolfo-rey-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy60-02-rodolfo-rey-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy60-02-rodolfo-rey-transcript-en.md",
+    "slidesDirectory": "generated-sy60-02-rodolfo-rey-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
+    "slug": "sy60-03-let-cia-ferreira-gontijo-silveira-md-phd",
+    "code": "SY60",
+    "presentationId": "SY60-03",
+    "title": "Decoding the Genetic Landscape of Congenital Hypogonadotropic Hypogonadism",
+    "titleZh": "解碼先天性低促性腺素性性腺功能減退症的遺傳圖譜（Decoding the Genetic Landscape of Congenital Hypogonadotropic Hypogonadism）",
+    "speaker": "Letícia Ferreira Gontijo Silveira, MD, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy60-03-let-cia-ferreira-gontijo-silveira-md-phd-slides/slide_002_00-14_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy60-03-let-cia-ferreira-gontijo-silveira-md-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy60-03-let-cia-ferreira-gontijo-silveira-md-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy60-03-let-cia-ferreira-gontijo-silveira-md-phd-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",
