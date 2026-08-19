@@ -848,6 +848,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy01-01-eliza-b-geer-md",
+    "code": "SY01",
+    "presentationId": "SY01-01",
+    "title": "Genomic and Epigenomic Biomarkers of Aggressive Pituitary Tumors",
+    "titleZh": "高侵襲性腦下垂體腫瘤的基因體與表觀基因體生物標記（Genomic and Epigenomic Biomarkers of Aggressive Pituitary Tumors）",
+    "speaker": "Eliza B. Geer, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy01-01-eliza-b-geer-md-slides/slide_002_00-24_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy01-01-eliza-b-geer-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy01-01-eliza-b-geer-md-transcript-en.md",
+    "slidesDirectory": "generated-sy01-01-eliza-b-geer-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy01-02-etienne-lefevre-md-phd",
+    "code": "SY01",
+    "presentationId": "SY01-02",
+    "title": "Gateways to Invasion: How Pituitary Tumors Breach the Cavernous Sinus",
+    "titleZh": "垂體腫瘤如何突破海綿竇：從解剖屏障到侵襲前緣（Gateways to Invasion: How Pituitary Tumors Breach the Cavernous Sinus）",
+    "speaker": "Etienne Lefevre, MD, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy01-02-etienne-lefevre-md-phd-slides/slide_001_00-20_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy01-02-etienne-lefevre-md-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy01-02-etienne-lefevre-md-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy01-02-etienne-lefevre-md-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "sy01-03-qilin-zhang-md-phd-mmsc",
     "code": "SY01",
     "presentationId": "SY01-03",
@@ -877,6 +909,22 @@
     "primaryContentPath": "/endo2026/generated-content/sy02-03-peter-schlegel-md-note-zh-tw.md",
     "transcriptPath": "/endo2026/generated-content/sy02-03-peter-schlegel-md-transcript-en.md",
     "slidesDirectory": "generated-sy02-03-peter-schlegel-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy06-01-mimi-i-hu-md",
+    "code": "SY06",
+    "presentationId": "SY06-01",
+    "title": "RET-Mutated Medullary Thyroid Cancer",
+    "titleZh": "RET 突變型髓質甲狀腺癌：標靶治療、耐藥與臨床決策（RET-Mutated Medullary Thyroid Cancer）",
+    "speaker": "Mimi I. Hu, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy06-01-mimi-i-hu-md-slides/slide_002_01-46_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy06-01-mimi-i-hu-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy06-01-mimi-i-hu-md-transcript-en.md",
+    "slidesDirectory": "generated-sy06-01-mimi-i-hu-md-slides",
     "publishedAt": "2026-08-19"
   },
   {

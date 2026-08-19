@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T08:29:09.994589+08:00",
+  "generatedAt": "2026-08-19T09:20:19.305185+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -394,7 +394,7 @@
     {
       "code": "SY01",
       "title": "When Benign Isn't Harmless: Revisiting Aggressiveness and Extrasellar Spread in Pituitary Adenomas (SY01)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF35",
@@ -494,17 +494,17 @@
     {
       "code": "SY70",
       "title": "Out of Breath: Where Insulin Resistance Impacts Cardiorespiratory Fitness (SY70)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY38",
       "title": "Obesity in Type 1 Diabetes: A Rising Immunometabolic Emergency (SY38)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY27",
       "title": "Stopping Prediabetes in Its Tracks: Preventing Both T1D and T2D (SY27)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY17",
