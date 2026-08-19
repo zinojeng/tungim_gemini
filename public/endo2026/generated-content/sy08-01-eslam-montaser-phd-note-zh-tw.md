@@ -38,7 +38,7 @@ Montaser 的出發點是：fasting glucose、HbA1c 與 oral glucose tolerance te
 
 ### CGM 特徵的 machine-learning 分類
 
-第一項研究納入 60 位 T1D 親屬：autoantibody-negative 21 人、1 autoantibody 18 人、≥2 autoantibodies 21 人，完成 1-week home CGM。研究比較全天、午夜至清晨 6 時的 overnight traces，以及 standardized liquid mixed meal 後的 glucose features，再以 LDA、linear SVM、logistic regression 與 KNN 區分 Ab-positive 與 Ab-negative。投影片顯示整合 overnight 與 mixed-meal 的 21 個 features 時，LDA AUC 為 **0.804**、linear SVM 為 **0.825**。這是同一小型 cohort 的 classification performance，不是外部驗證後的臨床預測器。
+第一項研究納入 60 位 T1D 親屬：autoantibody-negative 21 人、1 autoantibody 18 人、≥2 autoantibodies 21 人，完成 1-week home CGM。研究比較全天、午夜至清晨 6 時的 overnight traces，以及 standardized liquid mixed meal（SLMM）後的 glucose features，再以 LDA、linear SVM、logistic regression 與 KNN 區分 Ab-positive 與 Ab-negative。投影片顯示只使用 SLMM 的 9 個 features 時，LDA AUC 為 **0.804**、linear SVM 為 **0.825**；整合 overnight 與 SLMM 的 21 個 features 時，兩者則分別為 0.693 與 0.776。這是同一小型 cohort 的 classification performance，不是外部驗證後的臨床預測器。
 
 第二項研究只分析 39 位 autoantibody-positive 親屬：1 autoantibody 18 人、≥2 autoantibodies 21 人，結合 post-meal CGM features 與 T1D genetic risk score（GRS）。GRS 與多數 CGM features 關聯低，代表可能提供互補資訊。Linear SVM 使用全部 features 的平均 AUC 為 0.80；經 recursive feature elimination 後為 **0.93**。由於樣本小、在同一資料集做 feature selection 與 5-fold cross-validation，0.93 不應描述成已能「精準識別」個人，仍需 independent external validation 與 calibration。
 

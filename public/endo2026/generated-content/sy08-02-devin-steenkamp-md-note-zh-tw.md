@@ -34,7 +34,7 @@ Nicole Spartano 團隊在 Framingham Heart Study 邀請超過 2,000 名參與者
 
 中國 multicentre cross-sectional study 最初納入 842 人，排除 CGM 資料不足者後分析 **815 人**：type 1 diabetes 501 人、LADA 105 人、type 2 diabetes 209 人。參與者使用 Medtronic MiniMed iPro2／Enlite 至少 5 天並完成 2-hour mixed-meal tolerance test。三組 HbA1c 相近，而 fasting 與 2-hour C-peptide 由 type 1 diabetes、LADA 至 type 2 diabetes 依序上升；type 1 diabetes 的 SD、MAGE 與 CV 最高。LADA 中，高 GADA titre 的 LADA-1 較接近 type 1 diabetes，低 titre 的 LADA-2 較接近 type 2 diabetes；C-peptide 是 GV 的重要負向預測因子。
 
-講者也引用西班牙 2026 年 multicentre retrospective cohort：以診斷年齡 <30 歲區分 type 1 diabetes 555 人、>30 歲區分 LADA 890 人，回顧 FreeStyle Libre 2 的 56 天資料。time below range <70 mg/dL（TBR70）區分兩組的 ROC AUC 僅 **0.608**；LADA 的 GV 與低血糖風險較低，即使校正病程仍有差異。年齡切點不是完善的病因分類，AUC 也只代表有限辨識力，因此這項結果不能把 CGM 當成 LADA 的確診工具。
+講者也引用西班牙 2026 年 multicentre cross-sectional observational study：以診斷年齡 <30 歲區分 type 1 diabetes 555 人、≥30 歲區分 LADA 890 人，分析 FreeStyle Libre 2 的既往 56 天資料。time below range <70 mg/dL（TBR70）區分兩組的 ROC AUC 僅 **0.608**；LADA 的 GV 與低血糖風險較低，即使校正病程仍有差異。年齡切點不是完善的病因分類，AUC 也只代表有限辨識力，因此這項結果不能把 CGM 當成 LADA 的確診工具。
 
 ### HNF1A-MODY：餐後尖峰與跨日可重複性
 
