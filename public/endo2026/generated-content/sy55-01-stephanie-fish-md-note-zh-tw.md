@@ -119,7 +119,7 @@ UCLA 隨機對照試驗針對 Bethesda III/IV 嗜酸性細胞亞組的分析（R
 
 <u>Slides 延伸補充：Raghunathan et al. Surgery 2024 之 UCLA 嗜酸性結節次組分析數據表：</u>
 
-| 評估指標 | Afirma GSC (n=79) | ThyroSeq v3 (n=61) | p 值 |
+| 評估指標 | Afirma GSC | ThyroSeq v3 | p 值 |
 | :--- | :--- | :--- | :--- |
 | **分子檢測良性/陰性（Benign/Negative）** | 66 例（經證實 0 例惡性） | 34 例（經證實 0 例惡性） | — |
 | **分子檢測疑惡性/陽性（Suspicious/Positive）** | 16 例（13 例良性、3 例惡性） | 30 例（27 例良性、3 例惡性） | — |
