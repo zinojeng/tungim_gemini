@@ -912,6 +912,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy03-01-christine-m-burt-solorzano-md",
+    "code": "SY03",
+    "presentationId": "SY03-01",
+    "title": "The Intersection of Metabolism and Reproduction: Treatment Outcomes in Adolescent PCOS",
+    "titleZh": "代謝與生殖的交會：青少年 PMOS 的治療結果（The Intersection of Metabolism and Reproduction: Treatment Outcomes in Adolescent PCOS）",
+    "speaker": "Christine M. Burt Solorzano, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy03-01-christine-m-burt-solorzano-md-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy03-01-christine-m-burt-solorzano-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy03-01-christine-m-burt-solorzano-md-transcript-en.md",
+    "slidesDirectory": "generated-sy03-01-christine-m-burt-solorzano-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy03-02-natalie-d-shaw-md-mmsc",
+    "code": "SY03",
+    "presentationId": "SY03-02",
+    "title": "Obesity, Androgens, and Female Pubertal Development",
+    "titleZh": "肥胖、雄性素與女性青春期發育（Obesity, Androgens, and Female Pubertal Development）",
+    "speaker": "Natalie D. Shaw, MD, MMSc",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy03-02-natalie-d-shaw-md-mmsc-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy03-02-natalie-d-shaw-md-mmsc-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy03-02-natalie-d-shaw-md-mmsc-transcript-en.md",
+    "slidesDirectory": "generated-sy03-02-natalie-d-shaw-md-mmsc-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "sy03-03-heidi-vanden-brink-phd-msc",
     "code": "SY03",
     "presentationId": "SY03-03",
