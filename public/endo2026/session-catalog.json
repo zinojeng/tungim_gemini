@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T21:33:00.515955+08:00",
+  "generatedAt": "2026-08-19T21:52:55.503269+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -599,7 +599,7 @@
     {
       "code": "SY37",
       "title": "Adrenal Tumors: Assessing the Risk (SY37)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY56",
@@ -654,7 +654,7 @@
     {
       "code": "SY66",
       "title": "Hardwired: Where Nerves Meet Bones (SY66)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "YI02",
@@ -669,12 +669,12 @@
     {
       "code": "SY24",
       "title": "Beyond Blood Pressure: Diverse Roles of the Mineralocorticoid Receptor (SY24)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY62",
       "title": "Primary Aldosteronism in the Spotlight: Advances in Diagnosis and Treatment (SY62)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP15",

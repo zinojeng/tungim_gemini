@@ -1584,6 +1584,22 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy37-03-hironobu-sasano-md-phd",
+    "code": "SY37",
+    "presentationId": "SY37-03",
+    "title": "Updates on WHO Classification, Molecular Characteristics and Tumor Microenvironment of Adrenocortical Tumors",
+    "titleZh": "腎上腺皮質腫瘤的 WHO 分類、分子特徵與腫瘤微環境更新",
+    "speaker": "Hironobu Sasano, MD, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy37-03-hironobu-sasano-md-phd-slides/slide_004_00-34_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy37-03-hironobu-sasano-md-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy37-03-hironobu-sasano-md-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy37-03-hironobu-sasano-md-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "sy38-01-rasheed-ahmad-phd",
     "code": "SY38",
     "presentationId": "SY38-01",
