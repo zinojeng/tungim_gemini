@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T18:41:44.633974+08:00",
+  "generatedAt": "2026-08-19T19:11:42.248325+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -344,7 +344,7 @@
     {
       "code": "SY42",
       "title": "Central Precocious Puberty: Evolving Concepts in Diagnosis, Treatment, and Surveillance (SY42)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY14",
