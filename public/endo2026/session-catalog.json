@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T15:15:01.243528+08:00",
+  "generatedAt": "2026-08-19T15:28:49.170488+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -509,7 +509,7 @@
     {
       "code": "SY17",
       "title": "Keep it Flowing: How Vascular Endothelium Shapes Glucose Homeostasis (SY17)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY08",
