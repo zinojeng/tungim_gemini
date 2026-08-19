@@ -1616,6 +1616,22 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy29-02-clifford-j-rosen-md",
+    "code": "SY29",
+    "presentationId": "SY29-02",
+    "title": "Understanding the Pathophysiology of Musculoskeletal Effects of Bone Loss",
+    "titleZh": "減重造成骨骼肌肉影響的病理生理（Understanding the Pathophysiology of Musculoskeletal Effects of Bone Loss）",
+    "speaker": "Clifford J. Rosen, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy29-02-clifford-j-rosen-md-slides/slide_004_00-50_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy29-02-clifford-j-rosen-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy29-02-clifford-j-rosen-md-transcript-en.md",
+    "slidesDirectory": "generated-sy29-02-clifford-j-rosen-md-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
     "slug": "sy31-01-zin-htut-mbbs-mrcp-uk",
     "code": "SY31",
     "presentationId": "SY31-01",
@@ -1789,6 +1805,22 @@
     "primaryContentPath": "/endo2026/generated-content/sy39-02-ryan-c-riddle-phd-note-zh-tw.md",
     "transcriptPath": "/endo2026/generated-content/sy39-02-ryan-c-riddle-phd-transcript-en.md",
     "slidesDirectory": "generated-sy39-02-ryan-c-riddle-phd-slides",
+    "publishedAt": "2026-08-20"
+  },
+  {
+    "slug": "sy39-03-alexander-robling-phd",
+    "code": "SY39",
+    "presentationId": "SY39-03",
+    "title": "Mechanotransduction and Wnt Signaling in Bone: Decoding the Skeleton's Response to Load",
+    "titleZh": "骨骼力學轉導與 Wnt 訊號：解碼骨骼對負重的反應（Mechanotransduction and Wnt Signaling in Bone: Decoding the Skeleton's Response to Load）",
+    "speaker": "Alexander Robling, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy39-03-alexander-robling-phd-slides/slide_004_00-42_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy39-03-alexander-robling-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy39-03-alexander-robling-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy39-03-alexander-robling-phd-slides",
     "publishedAt": "2026-08-20"
   },
   {

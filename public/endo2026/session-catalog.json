@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T00:36:25.018339+08:00",
+  "generatedAt": "2026-08-20T01:03:17.920667+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -474,12 +474,12 @@
     {
       "code": "MTS04",
       "title": "How Did I Get Here? A Career Perspective from a Physician-Scientist (MTS04)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTS03",
       "title": "Algorithms and Organoids: Transforming Diabetes Therapeutic Discovery (MTS03)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "L01",
@@ -489,7 +489,7 @@
     {
       "code": "ELP01",
       "title": "Endocrine Feedback Loop Podcast (ELP01)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY70",
@@ -519,12 +519,12 @@
     {
       "code": "MTP40",
       "title": "Managing Hyperglycemia in Hospitalized Patients (MTP40)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP31",
       "title": "Use of Adjunctive Therapies to Target Cardiometabolic Risk in Type 1 Diabetes (MTP31)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP05",
@@ -644,7 +644,7 @@
     {
       "code": "SY39",
       "title": "Signal Strength: Wnt Pathways Powering Bone Formation (SY39)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY49",
