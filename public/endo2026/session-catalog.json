@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T22:21:53.073265+08:00",
+  "generatedAt": "2026-08-19T22:35:04.198265+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -499,7 +499,7 @@
     {
       "code": "SY38",
       "title": "Obesity in Type 1 Diabetes: A Rising Immunometabolic Emergency (SY38)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY27",

@@ -1680,6 +1680,22 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy38-03-renata-risi-md",
+    "code": "SY38",
+    "presentationId": "SY38-03",
+    "title": "Fat Mass Excess and Abnormal Distribution in T1D: Pathological and Clinical Consequences",
+    "titleZh": "第 1 型糖尿病的脂肪量過多與異常分布：病理與臨床後果（Fat Mass Excess and Abnormal Distribution in T1D: Pathological and Clinical Consequences）",
+    "speaker": "Renata Risi, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy38-03-renata-risi-md-slides/slide_001_00-11_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy38-03-renata-risi-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy38-03-renata-risi-md-transcript-en.md",
+    "slidesDirectory": "generated-sy38-03-renata-risi-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "sy42-01-liat-de-vries-md",
     "code": "SY42",
     "presentationId": "SY42-01",
@@ -1773,6 +1789,22 @@
     "primaryContentPath": "/endo2026/generated-content/sy43-03-sara-torstensson-phd-note-zh-tw.md",
     "transcriptPath": "/endo2026/generated-content/sy43-03-sara-torstensson-phd-transcript-en.md",
     "slidesDirectory": "generated-sy43-03-sara-torstensson-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy49-01-marian-schini-md-phd",
+    "code": "SY49",
+    "presentationId": "SY49-01",
+    "title": "Discontinuation of Denosumab: Bone Loss and Vertebral Fractures: Risk Factors and Red Flags",
+    "titleZh": "停用 Denosumab 後的骨量流失與脊椎骨折：危險因子與紅旗警訊（Discontinuation of Denosumab: Bone Loss and Vertebral Fractures: Risk Factors and Red Flags）",
+    "speaker": "Marian Schini, MD, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy49-01-marian-schini-md-phd-slides/slide_018_01-56_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy49-01-marian-schini-md-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy49-01-marian-schini-md-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy49-01-marian-schini-md-phd-slides",
     "publishedAt": "2026-08-19"
   },
   {
