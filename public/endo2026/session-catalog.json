@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T19:43:56.688444+08:00",
+  "generatedAt": "2026-08-19T20:01:06.684372+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -574,7 +574,7 @@
     {
       "code": "SY18",
       "title": "Future Therapies for Obesity: From Oral GLP-1s to Triple Agonists and New Targets (SY18)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY57",
