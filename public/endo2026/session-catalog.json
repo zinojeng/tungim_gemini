@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T00:09:03.875277+08:00",
+  "generatedAt": "2026-08-20T00:20:56.050660+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -284,7 +284,7 @@
     {
       "code": "MTP35",
       "title": "Update on Management of Androgen Insensitivity Syndromes (MTP35)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP14",
@@ -384,7 +384,7 @@
     {
       "code": "MTP11",
       "title": "Management of Hyperphagia in PWS and Other Monogenic Obesity Syndromes (MTP11)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "CPG01",
@@ -404,7 +404,7 @@
     {
       "code": "MTP38",
       "title": "Diagnosis and Management of Silent Paragangliomas (MTP38)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP34",
