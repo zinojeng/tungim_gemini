@@ -1328,6 +1328,22 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy18-03-david-d-alessio-md",
+    "code": "SY18",
+    "presentationId": "SY18-03",
+    "title": "Next-Generation Injectable Incretin-Based Therapies: Dual and Triple Agonists",
+    "titleZh": "次世代注射型腸促胰島素療法：雙重與三重促效劑（Next-Generation Injectable Incretin-Based Therapies: Dual and Triple Agonists）",
+    "speaker": "David D'Alessio, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy18-03-david-d-alessio-md-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy18-03-david-d-alessio-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy18-03-david-d-alessio-md-transcript-en.md",
+    "slidesDirectory": "generated-sy18-03-david-d-alessio-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "sy23-01-nada-lallous-phd",
     "code": "SY23",
     "presentationId": "SY23-01",
@@ -1549,6 +1565,22 @@
     "primaryContentPath": "/endo2026/generated-content/sy38-01-rasheed-ahmad-phd-note-zh-tw.md",
     "transcriptPath": "/endo2026/generated-content/sy38-01-rasheed-ahmad-phd-transcript-en.md",
     "slidesDirectory": "generated-sy38-01-rasheed-ahmad-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy38-02-daria-igudesman-phd-ms-rd",
+    "code": "SY38",
+    "presentationId": "SY38-02",
+    "title": "Weight Management in T1D: Current Challenges and Novel Perspectives",
+    "titleZh": "第一型糖尿病的體重管理：當前挑戰與新穎觀點（Weight Management in T1D: Current Challenges and Novel Perspectives）",
+    "speaker": "Daria Igudesman, PhD, MS, RD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy38-02-daria-igudesman-phd-ms-rd-slides/slide_001_00-07_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy38-02-daria-igudesman-phd-ms-rd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy38-02-daria-igudesman-phd-ms-rd-transcript-en.md",
+    "slidesDirectory": "generated-sy38-02-daria-igudesman-phd-ms-rd-slides",
     "publishedAt": "2026-08-19"
   },
   {

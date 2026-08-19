@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T20:37:10.354878+08:00",
+  "generatedAt": "2026-08-19T20:48:31.599248+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -574,7 +574,7 @@
     {
       "code": "SY18",
       "title": "Future Therapies for Obesity: From Oral GLP-1s to Triple Agonists and New Targets (SY18)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY57",
@@ -609,7 +609,7 @@
     {
       "code": "SY64",
       "title": "Navigating the CAH Care Continuum (SY64)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP06",
@@ -639,7 +639,7 @@
     {
       "code": "SY29",
       "title": "Weight Loss: Friend or Foe for Bone & Muscle? (SY29)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY39",
