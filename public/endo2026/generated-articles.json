@@ -1920,6 +1920,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy55-01-stephanie-fish-md",
+    "code": "SY55",
+    "presentationId": "SY55-01",
+    "title": "Role of Molecular Markers in Indeterminate Thyroid Nodules",
+    "titleZh": "分子標記在細胞學未確定甲狀腺結節中的角色 (Role of Molecular Markers in Indeterminate Thyroid Nodules)",
+    "speaker": "Stephanie Fish, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy55-01-stephanie-fish-md-slides/slide_001_00-01_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy55-01-stephanie-fish-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy55-01-stephanie-fish-md-transcript-en.md",
+    "slidesDirectory": "generated-sy55-01-stephanie-fish-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy55-02-lisa-orloff-md",
+    "code": "SY55",
+    "presentationId": "SY55-02",
+    "title": "Ablative Strategies for Thyroid Nodules or Locoregional Control of Thyroid Cancer",
+    "titleZh": "甲狀腺結節消融策略與甲狀腺癌之區域控制",
+    "speaker": "Lisa Orloff, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy55-02-lisa-orloff-md-slides/slide_001_00-01_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy55-02-lisa-orloff-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy55-02-lisa-orloff-md-transcript-en.md",
+    "slidesDirectory": "generated-sy55-02-lisa-orloff-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",
