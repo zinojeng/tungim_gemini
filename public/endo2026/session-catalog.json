@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T20:01:06.684372+08:00",
+  "generatedAt": "2026-08-19T20:09:08.021214+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -309,7 +309,7 @@
     {
       "code": "SY43",
       "title": "Steroid Receptor Actions in Immunity (SY43)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY23",
@@ -584,7 +584,7 @@
     {
       "code": "SY07",
       "title": "Short- and Long-Term Outcomes in Pheochromocytoma and Paraganglioma (SY07)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP26",
