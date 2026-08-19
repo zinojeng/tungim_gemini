@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T23:25:03.637948+08:00",
+  "generatedAt": "2026-08-19T23:37:36.777107+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -219,7 +219,7 @@
     {
       "code": "MTP02",
       "title": "Critical Aspects in the Diagnosis and Management of MEN1-Associated Duodenopancreatic Neuroendocrine Tumors (MTP02)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "YI01",

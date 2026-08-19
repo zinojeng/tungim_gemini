@@ -192,6 +192,22 @@
     "publishedAt": "2026-08-18"
   },
   {
+    "slug": "mtp02-omair-a-shariq-mbbs-phd",
+    "code": "MTP02",
+    "presentationId": "MTP02",
+    "title": "Critical Aspects in the Diagnosis and Management of MEN1-Associated Duodenopancreatic Neuroendocrine Tumors",
+    "titleZh": "MEN1 相關十二指腸胰臟神經內分泌腫瘤的診斷與治療關鍵（Critical Aspects in the Diagnosis and Management of MEN1-Associated Duodenopancreatic Neuroendocrine Tumors）",
+    "speaker": "Omair A. Shariq, MBBS, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-mtp02-omair-a-shariq-mbbs-phd-slides/slide_001_00-01_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/mtp02-omair-a-shariq-mbbs-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/mtp02-omair-a-shariq-mbbs-phd-transcript-en.md",
+    "slidesDirectory": "generated-mtp02-omair-a-shariq-mbbs-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "mtp26-adrenal-incidentalomas",
     "code": "MTP26",
     "presentationId": "MTP26",
