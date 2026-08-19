@@ -1440,6 +1440,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy31-02-tamaryn-j-fox-md",
+    "code": "SY31",
+    "presentationId": "SY31-02",
+    "title": "Functional Suppression of a Prolactinoma by a Dopamine-Secreting Paraganglioma",
+    "titleZh": "多巴胺分泌型副神經節瘤對泌乳素瘤的功能性抑制（Functional Suppression of a Prolactinoma by a Dopamine-Secreting Paraganglioma）",
+    "speaker": "Tamaryn J. Fox, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy31-02-tamaryn-j-fox-md-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy31-02-tamaryn-j-fox-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy31-02-tamaryn-j-fox-md-transcript-en.md",
+    "slidesDirectory": "generated-sy31-02-tamaryn-j-fox-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy31-03-krista-n-grennan-md",
+    "code": "SY31",
+    "presentationId": "SY31-03",
+    "title": "Fatal, Fulminant, Necrotizing Pancreatitis Associated With Recent Tirzepatide Initiation",
+    "titleZh": "與近期開始使用 tirzepatide 相關的致死性爆發性壞死性胰臟炎（Fatal, Fulminant, Necrotizing Pancreatitis Associated With Recent Tirzepatide Initiation）",
+    "speaker": "Krista N. Grennan, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy31-03-krista-n-grennan-md-slides/slide_001_00-21_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy31-03-krista-n-grennan-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy31-03-krista-n-grennan-md-transcript-en.md",
+    "slidesDirectory": "generated-sy31-03-krista-n-grennan-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",
