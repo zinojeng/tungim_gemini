@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T22:55:35.733625+08:00",
+  "generatedAt": "2026-08-19T23:10:00.598569+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -264,7 +264,7 @@
     {
       "code": "MTP03",
       "title": "Recent Advances in the Management of Anaplastic Thyroid Cancer (MTP03)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY67",
@@ -279,7 +279,7 @@
     {
       "code": "MTS01",
       "title": "Understanding the Human Condition Using New Model Systems Developed with Biobanked Female Reproductive Tract Tissue (Human FRT Biobank Supports Discoveries) (MTS01)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP35",
