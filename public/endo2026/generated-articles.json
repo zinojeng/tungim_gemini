@@ -1808,6 +1808,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy49-02-albert-s-kim-mbbs-phd",
+    "code": "SY49",
+    "presentationId": "SY49-02",
+    "title": "Understanding the Pathophysiology of the Post-Denosumab Overshoot: Mechanistic Insights",
+    "titleZh": "停用 Denosumab 後骨轉換超越基線的病理生理：機制洞見（Understanding the Pathophysiology of the Post-Denosumab Overshoot: Mechanistic Insights）",
+    "speaker": "Albert S. Kim, MBBS, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy49-02-albert-s-kim-mbbs-phd-slides/slide_004_00-24_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy49-02-albert-s-kim-mbbs-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy49-02-albert-s-kim-mbbs-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy49-02-albert-s-kim-mbbs-phd-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy49-03-bente-langdahl-md-phd-dmsc",
+    "code": "SY49",
+    "presentationId": "SY49-03",
+    "title": "Strategies to Mitigate Bone Loss After Denosumab Cessation - Current and Future Perspectives",
+    "titleZh": "停用 Denosumab 後減緩骨質流失的策略：現階段與未來展望（Strategies to Mitigate Bone Loss After Denosumab Cessation—Current and Future Perspectives）",
+    "speaker": "Bente Langdahl, MD, PhD, DMSc",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy49-03-bente-langdahl-md-phd-dmsc-slides/slide_007_00-44_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy49-03-bente-langdahl-md-phd-dmsc-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy49-03-bente-langdahl-md-phd-dmsc-transcript-en.md",
+    "slidesDirectory": "generated-sy49-03-bente-langdahl-md-phd-dmsc-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",

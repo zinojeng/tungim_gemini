@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-19T22:35:04.198265+08:00",
+  "generatedAt": "2026-08-19T22:55:35.733625+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -219,7 +219,7 @@
     {
       "code": "MTP02",
       "title": "Critical Aspects in the Diagnosis and Management of MEN1-Associated Duodenopancreatic Neuroendocrine Tumors (MTP02)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "YI01",
@@ -249,17 +249,17 @@
     {
       "code": "MTP33",
       "title": "Targeted Therapy in Advanced Thyroid Cancer (MTP33)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP30",
       "title": "Redefining the Role of RAI in Differentiated Thyroid Carcinoma (MTP30)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP18",
       "title": "Evaluation and Management of Thyroid Dysfunction in Pregnancy (MTP18)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "MTP03",
@@ -649,7 +649,7 @@
     {
       "code": "SY49",
       "title": "Bouncing Back From Denosumab Discontinuation (SY49)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY66",
