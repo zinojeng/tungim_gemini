@@ -1408,6 +1408,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy27-04-ramachandra-g-naik-md",
+    "code": "SY27",
+    "presentationId": "SY27-04",
+    "title": "The Silent Threat: Prediabetes, Cardiovascular Risk, and the Need for Early Action",
+    "titleZh": "糖尿病前期的隱形威脅：心血管風險與早期行動（The Silent Threat: Prediabetes, Cardiovascular Risk, and the Need for Early Action）",
+    "speaker": "Ramachandra G. Naik, MD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy27-04-ramachandra-g-naik-md-slides/slide_001_00-09_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy27-04-ramachandra-g-naik-md-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy27-04-ramachandra-g-naik-md-transcript-en.md",
+    "slidesDirectory": "generated-sy27-04-ramachandra-g-naik-md-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
+    "slug": "sy31-01-zin-htut-mbbs-mrcp-uk",
+    "code": "SY31",
+    "presentationId": "SY31-01",
+    "title": "Enhanced Radiological Detection of a Corticotroph Adenoma Following Treatment With Osilodrostat",
+    "titleZh": "Osilodrostat 治療後增強皮質素細胞腺瘤影像偵測（Enhanced Radiological Detection of a Corticotroph Adenoma Following Treatment With Osilodrostat）",
+    "speaker": "Zin Htut, MBBS, MRCP(UK)",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy31-01-zin-htut-mbbs-mrcp-uk-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy31-01-zin-htut-mbbs-mrcp-uk-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy31-01-zin-htut-mbbs-mrcp-uk-transcript-en.md",
+    "slidesDirectory": "generated-sy31-01-zin-htut-mbbs-mrcp-uk-slides",
+    "publishedAt": "2026-08-19"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",
