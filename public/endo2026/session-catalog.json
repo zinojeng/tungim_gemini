@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T03:14:00.529948+08:00",
+  "generatedAt": "2026-08-21T00:43:57.705123+08:00",
   "sessions": [
     {
       "code": "ORF07",
@@ -304,7 +304,7 @@
     {
       "code": "SY61",
       "title": "Signaling: Everything, Everywhere, All at Once (SY61)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY43",

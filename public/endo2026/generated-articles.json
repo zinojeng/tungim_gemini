@@ -2288,6 +2288,38 @@
     "publishedAt": "2026-08-20"
   },
   {
+    "slug": "sy61-03-zhao-yang-presenting-for-jin-peng-sun-professor",
+    "code": "SY61",
+    "presentationId": "SY61-03",
+    "title": "Identification, Structure, and Agonist Design of an Androgen Membrane Receptor",
+    "titleZh": "雄激素膜受體的鑑定、結構與致效劑設計（Identification, Structure, and Agonist Design of an Androgen Membrane Receptor）",
+    "speaker": "Zhao Yang (presenting for Jin-Peng Sun, Professor)",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy61-03-zhao-yang-presenting-for-jin-peng-sun-professor-slides/slide_001_00-00_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy61-03-zhao-yang-presenting-for-jin-peng-sun-professor-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy61-03-zhao-yang-presenting-for-jin-peng-sun-professor-transcript-en.md",
+    "slidesDirectory": "generated-sy61-03-zhao-yang-presenting-for-jin-peng-sun-professor-slides",
+    "publishedAt": "2026-08-21"
+  },
+  {
+    "slug": "sy62-01-william-rainey-phd",
+    "code": "SY62",
+    "presentationId": "SY62-01",
+    "title": "Genomics of Primary Aldosteronism: Insights to Advance Precision Diagnosis and Therapy",
+    "titleZh": "原發性醛固酮過多症的基因體學：推進精準診斷與治療（Genomics of Primary Aldosteronism: Insights to Advance Precision Diagnosis and Therapy）",
+    "speaker": "William Rainey, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy62-01-william-rainey-phd-slides/slide_001_00-02_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy62-01-william-rainey-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy62-01-william-rainey-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy62-01-william-rainey-phd-slides",
+    "publishedAt": "2026-08-21"
+  },
+  {
     "slug": "yi03-scott-m-dehm",
     "code": "YI03",
     "presentationId": "YI03",
