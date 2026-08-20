@@ -1152,6 +1152,38 @@
     "publishedAt": "2026-08-19"
   },
   {
+    "slug": "sy07-01-madson-q-almeida-md-phd",
+    "code": "SY07",
+    "presentationId": "SY07-01",
+    "title": "Perioperative Care of Pheochromocytoma and Paraganglioma",
+    "titleZh": "嗜鉻細胞瘤與副神經節瘤的圍術期照護（Perioperative Care of Pheochromocytoma and Paraganglioma）",
+    "speaker": "Madson Q. Almeida, MD, PhD",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy07-01-madson-q-almeida-md-phd-slides/slide_004_00-54_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy07-01-madson-q-almeida-md-phd-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy07-01-madson-q-almeida-md-phd-transcript-en.md",
+    "slidesDirectory": "generated-sy07-01-madson-q-almeida-md-phd-slides",
+    "publishedAt": "2026-08-21"
+  },
+  {
+    "slug": "sy07-03-samantha-greenberg-phd-mph-ms-cgc",
+    "code": "SY07",
+    "presentationId": "SY07-03",
+    "title": "Genetic Testing and Risk Stratification in Hereditary PPGL",
+    "titleZh": "遺傳性 PPGL 的基因檢測與風險分層（Genetic Testing and Risk Stratification in Hereditary PPGL）",
+    "speaker": "Samantha Greenberg, PhD, MPH, MS, CGC",
+    "summary": "以校訂後完整逐字稿為主軸，將投影片證據整合至相應段落的 Gemini 繁體中文整理稿。",
+    "coverImage": "/endo2026/media/generated-sy07-03-samantha-greenberg-phd-mph-ms-cgc-slides/slide_004_00-27_h720w1280.jpg",
+    "status": "published",
+    "statusLabel": "來源 QA 完整繁中筆記",
+    "primaryContentPath": "/endo2026/generated-content/sy07-03-samantha-greenberg-phd-mph-ms-cgc-note-zh-tw.md",
+    "transcriptPath": "/endo2026/generated-content/sy07-03-samantha-greenberg-phd-mph-ms-cgc-transcript-en.md",
+    "slidesDirectory": "generated-sy07-03-samantha-greenberg-phd-mph-ms-cgc-slides",
+    "publishedAt": "2026-08-21"
+  },
+  {
     "slug": "sy08-01-eslam-montaser-phd",
     "code": "SY08",
     "presentationId": "SY08-01",
