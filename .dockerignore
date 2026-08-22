@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+.DS_Store
+.vscode
+.idea
+*.md
+!package.json
+!public/endo2026/generated-content/*.md
+.migration
+Icon?
