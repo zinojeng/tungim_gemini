@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
-import { readFileSync } from "node:fs"
-import { join } from "node:path"
 import { Endo2026Hub } from "@/components/endo2026/Endo2026Hub"
 import type { EndoSession } from "@/lib/endo2026"
+import sessionCatalog from "@/public/endo2026/session-catalog.json"
 
 const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://mednote.zeabur.app"
 const OG_IMAGE_URL = new URL("/endo2026/og.png", SITE_URL).toString()
@@ -26,12 +25,6 @@ export const metadata: Metadata = {
     },
 }
 
-function getSessionCatalog(): EndoSession[] {
-    const catalogPath = join(process.cwd(), "public", "endo2026", "session-catalog.json")
-    const data = JSON.parse(readFileSync(catalogPath, "utf8")) as { sessions: EndoSession[] }
-    return data.sessions
-}
-
 export default function Endo2026Page() {
-    return <Endo2026Hub sessions={getSessionCatalog()} />
+    return <Endo2026Hub sessions={sessionCatalog.sessions as EndoSession[]} />
 }

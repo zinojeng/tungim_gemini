@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-08-21T00:58:14.171058+08:00",
+  "generatedAt": "2026-08-22T05:36:05.547203+08:00",
   "sessions": [
     {
       "code": "ORF07",
       "title": "Emerging Mechanisms in Metabolic Regulation: From Nutrients to Hormonal Signaling (ORF07)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF15",
       "title": "Mechanisms and Clinical Insights in MASLD (ORF15)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF50",
       "title": "Adipose Tissue, Appetite, and Obesity: Emerging and Established Pharmacotherapies (ORF50)",
-      "status": "pending_discovery"
+      "status": "processing"
     },
     {
       "code": "SY09",
@@ -209,7 +209,7 @@
     {
       "code": "SY54",
       "title": "Environmental Exposures and Development of Hormone-Dependent Cancers (SY54)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF11",
@@ -224,12 +224,12 @@
     {
       "code": "YI01",
       "title": "Year in Thyroid (YI01)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY69",
       "title": "Pediatric Thyroid Cancer (SY69)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY25",
@@ -254,12 +254,12 @@
     {
       "code": "MTP30",
       "title": "Redefining the Role of RAI in Differentiated Thyroid Carcinoma (MTP30)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP18",
       "title": "Evaluation and Management of Thyroid Dysfunction in Pregnancy (MTP18)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP03",
@@ -269,7 +269,7 @@
     {
       "code": "SY67",
       "title": "Reproductive Health in Gender Diverse Individuals (SY67)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY60",
@@ -279,7 +279,7 @@
     {
       "code": "MTS01",
       "title": "Understanding the Human Condition Using New Model Systems Developed with Biobanked Female Reproductive Tract Tissue (Human FRT Biobank Supports Discoveries) (MTS01)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP35",
@@ -289,12 +289,12 @@
     {
       "code": "MTP14",
       "title": "Hormone Balancing: Addressing Social Media Myths (MTP14)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP01",
       "title": "Endocrine and Fertility Implications After Anabolic Steroids, Hormonal Contraception, and Gender-Affirming Hormone Therapy (MTP01)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "YI03",
@@ -369,22 +369,22 @@
     {
       "code": "MTP25",
       "title": "Pituitary Tumor Survivorship: Transitioning from Pediatric to Adult Endocrine Care (MTP25)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP19",
       "title": "Management of 46, XY DSD Across the Lifespan: A Multidisciplinary Team Perspective (MTP19)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP16",
       "title": "New Management Options for the Adult with Congenital Adrenal Hyperplasia (CAH) (MTP16)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP11",
       "title": "Management of Hyperphagia in PWS and Other Monogenic Obesity Syndromes (MTP11)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "CPG01",
@@ -404,37 +404,37 @@
     {
       "code": "MTP38",
       "title": "Diagnosis and Management of Silent Paragangliomas (MTP38)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP34",
       "title": "Updates in the Management of Pituitary Apoplexy (MTP34)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP13",
       "title": "Current Approach to Acromegaly Care (MTP13)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP10",
       "title": "Ectopic Cushing Syndrome (MTP10)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP07",
       "title": "Neuroendocrine Adverse Effects of Cancer Treatment: Check Point Inhibitors (MTP07)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP04",
       "title": "A Structured Diagnostic Approach to the Patient with Hypotonic Polyuria (MTP04)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MC01",
       "title": "Ambiguity to Action: Multidisciplinary Management of Challenging Suprasellar Lesions (MC01)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "CPG02",
@@ -474,7 +474,7 @@
     {
       "code": "MTS04",
       "title": "How Did I Get Here? A Career Perspective from a Physician-Scientist (MTS04)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTS03",
@@ -489,12 +489,12 @@
     {
       "code": "ELP01",
       "title": "Endocrine Feedback Loop Podcast (ELP01)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY70",
       "title": "Out of Breath: Where Insulin Resistance Impacts Cardiorespiratory Fitness (SY70)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY38",
@@ -519,32 +519,32 @@
     {
       "code": "MTP40",
       "title": "Managing Hyperglycemia in Hospitalized Patients (MTP40)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP31",
       "title": "Use of Adjunctive Therapies to Target Cardiometabolic Risk in Type 1 Diabetes (MTP31)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP05",
       "title": "Navigating Obesity Management in Menopause and Midlife (MTP05)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP08",
       "title": "Dietary Patterns and Eating Strategies in Obesity Care: Timing, Composition, and Personalized Approaches (MTP08)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP23",
       "title": "Lipedema at the Intersection of Endocrinology and Adipose Biology: From State of the Research to Clinical Care (MTP23)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP27",
       "title": "Post-GLP-1: Preparing Patients for Long-Term Maintenance and Transition (MTP27)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "ORF27",
@@ -554,7 +554,7 @@
     {
       "code": "MTP12",
       "title": "Evaluation and Management of Primary Aldosteronism (MTP12)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP37",
@@ -584,7 +584,7 @@
     {
       "code": "SY07",
       "title": "Short- and Long-Term Outcomes in Pheochromocytoma and Paraganglioma (SY07)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP26",
@@ -609,32 +609,32 @@
     {
       "code": "SY64",
       "title": "Navigating the CAH Care Continuum (SY64)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP06",
       "title": "PTH Replacement Therapy in Chronic Hypoparathyroidism in Adults (MTP06)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP09",
       "title": "Osteoanabolic Therapies in Osteoporosis: When to Build Bone and How to Sequence Treatment (MTP09)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP24",
       "title": "Hypophosphatasia in Adults: Recognizing, Diagnosing, and Treating a Multisystem Disease (MTP24)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP29",
       "title": "Osteoporosis in Women with Breast Cancer (MTP29)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP32",
       "title": "Beyond Basic DXA (MTP32)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY29",
@@ -654,17 +654,17 @@
     {
       "code": "SY66",
       "title": "Hardwired: Where Nerves Meet Bones (SY66)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "YI02",
       "title": "Year In Bone (YI02)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP36",
       "title": "Interpreting Aldosterone and Renin: Tricks of the Trade (MTP36)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "SY24",
@@ -674,22 +674,22 @@
     {
       "code": "SY62",
       "title": "Primary Aldosteronism in the Spotlight: Advances in Diagnosis and Treatment (SY62)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP15",
       "title": "Transition of Care in Type 2 Diabetes Youth (MTP15)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP17",
       "title": "GLP-1 Agonists and Pancreatitis/Pancreatic Lesions: What Is the Evidence and When Are They Contraindicated? (MTP17)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     },
     {
       "code": "MTP20",
       "title": "Type 2 Diabetes in Preconception, Pregnancy, and Postpartum (MTP20)",
-      "status": "processing"
+      "status": "processed_qa_complete"
     }
   ]
 }

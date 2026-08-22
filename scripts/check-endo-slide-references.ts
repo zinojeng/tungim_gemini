@@ -1,7 +1,6 @@
 import assert from "node:assert/strict"
-import { readdirSync, readFileSync } from "node:fs"
-import { join } from "node:path"
 import generatedArticles from "../public/endo2026/generated-articles.json"
+import staticEndoContent from "../lib/generated/endo2026-static-content.json"
 import {
     decorateEndoSlideReferences,
     findEndoSlideIndex,
@@ -14,21 +13,12 @@ let referenceCount = 0
 
 for (const article of generatedArticles) {
     assert.ok(article.slidesDirectory, `${article.slug}: missing slide directory`)
-    const slideDirectory = join(
-        process.cwd(),
-        "public",
-        "endo2026",
-        "media",
-        article.slidesDirectory,
-    )
-    const slides = readdirSync(slideDirectory)
-        .filter((file) => file.endsWith(".jpg"))
-        .sort()
-        .map((file) => `/endo2026/media/${article.slidesDirectory}/${file}`)
-    const markdown = readFileSync(
-        join(process.cwd(), "public", article.primaryContentPath.replace(/^\//, "")),
-        "utf8",
-    )
+    const content = staticEndoContent.articles[
+        article.slug as keyof typeof staticEndoContent.articles
+    ]
+    assert.ok(content, `${article.slug}: missing generated static content`)
+    const slides = content.slides
+    const markdown = content.primaryContent
     const headings = [...markdown.matchAll(/^###\s+(.+)$/gm)]
     const decorated = decorateEndoSlideReferences(markdown, {
         code: article.code,

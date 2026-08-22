@@ -7,13 +7,16 @@
     "build": "npm run check:endo-markdown && npm run check:endo-slides && next build",
     "start": "next start",
     "lint": "eslint",
+    "prebuild": "npm run generate:endo-static",
+    "generate:endo-static": "tsx scripts/generate-endo-static-content.ts",
     "db:push": "drizzle-kit push",
     "db:backup": "tsx scripts/backup-db.ts",
     "db:restore": "tsx scripts/restore-db.ts",
     "ingest:attd": "tsx scripts/ingest-attd-gemini.ts",
     "check:ada": "tsx scripts/check-ada-agenda.ts",
     "check:endo-markdown": "tsx scripts/check-endo-markdown-rendering.ts",
-    "check:endo-slides": "tsx scripts/check-endo-slide-references.ts"
+    "check:endo-slides": "tsx scripts/check-endo-slide-references.ts",
+    "deploy:branch": "bash scripts/update-clean-deployment-branch.sh"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.2",

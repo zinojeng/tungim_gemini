@@ -42,6 +42,13 @@ export interface EndoArticle {
 export const ENDO_2026_OFFICIAL_URL =
     "https://education.endocrine.org/Public/Catalog/Details.aspx?id=0pADczWeEKm0W1m3JPdoTA%3d%3d"
 
+export function resolveEndoAssetUrl(publicPath: string): string {
+    if (/^https?:\/\//i.test(publicPath)) return publicPath
+    const assetBaseUrl = process.env.NEXT_PUBLIC_ASSET_URL?.replace(/\/$/, "")
+    if (!assetBaseUrl) return publicPath
+    return `${assetBaseUrl}/${publicPath.replace(/^\//, "")}`
+}
+
 export const ENDO_2026_CHAPTERS: EndoChapter[] = [
     {
         slug: "adipose-obesity",
@@ -199,7 +206,10 @@ export const ENDO_2026_CHAPTERS: EndoChapter[] = [
 // registry intentionally renders no articles instead of reviving stale legacy
 // session aggregates or pre-QA manuscripts.
 export const ENDO_2026_ARTICLES: EndoArticle[] =
-    generatedEndoArticles as EndoArticle[]
+    (generatedEndoArticles as EndoArticle[]).map((article) => ({
+        ...article,
+        coverImage: resolveEndoAssetUrl(article.coverImage),
+    }))
 
 export function getEndoArticle(slug: string) {
     return ENDO_2026_ARTICLES.find((article) => article.slug === slug)

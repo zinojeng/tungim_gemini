@@ -10,3 +10,6 @@ npm-debug.log*
 .idea
 *.md
 !package.json
+!public/endo2026/generated-content/*.md
+.migration
+Icon?
